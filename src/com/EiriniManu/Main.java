@@ -5,10 +5,12 @@ import org.python.core.*;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args)
+    {
 	// write your code here
 
-       try(PythonInterpreter pyInt = new PythonInterpreter()){
+       try(PythonInterpreter pyInt = new PythonInterpreter())
+       {
            pyInt.exec("import sys");
            pyInt.exec("print('hello world')");
        }
