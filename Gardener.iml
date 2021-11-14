@@ -7,5 +7,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="jython-standalone-2.7.2" level="project" />
+    <orderEntry type="library" name="plantuml" level="project" />
   </component>
 </module>
