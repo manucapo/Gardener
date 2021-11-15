@@ -7,8 +7,7 @@ import net.sourceforge.plantuml.GeneratedImage;       // import plantUML file Re
 import net.sourceforge.plantuml.SourceFileReader;
 
 
-import org.python.util.PythonInterpreter; // import Jython inline Python interpreter.
-import org.python.core.*;
+
 
 
 public class Main {
@@ -18,14 +17,9 @@ public class Main {
 
         String seqDiagPath = "Diagrams\\sequenceDiagram.txt";  // relative path to sequence diagram file
 
-       try(PythonInterpreter pyInt = new PythonInterpreter()) // instantiate python script interpreter
-       {
-           pyInt.exec("tempdiag = open('" + seqDiagPath +  "', 'w+')");   // create and write to file
-           pyInt.exec("tempdiag.write('@startuml \\n')");
-           pyInt.exec("tempdiag.write('Alice -> Bob: test 1 \\n')");
-           pyInt.exec("tempdiag.write('Alice -> Bob: test 2 \\n')");
-           pyInt.exec("tempdiag.write('@enduml \\n')");
-       }
+        PythonSequenceDiagramGenerator seqDiagGen = new PythonSequenceDiagramGenerator();
+
+        seqDiagGen.generateSequenceDiagramTextFile(seqDiagPath);
 
        try {
            File seqDiag = new File(seqDiagPath);                        // Open file
