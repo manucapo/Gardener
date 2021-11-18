@@ -5,21 +5,44 @@ import org.python.core.*;
 
 public class PythonSequenceDiagramGenerator implements IPythonSequenceDiagramGenerator {
 
+private String callingClassName;
+private String methodName;
 
-    public PythonSequenceDiagramGenerator(){
+    public PythonSequenceDiagramGenerator(String callingClassName, String methodName){
+
+        setCallingClassName(callingClassName);
+        setMethodClassName(methodName);
         // TODO CONSTRUCTOR
     }
 
     @Override
     public void generateSequenceDiagramTextFile(String path) {
-        try(PythonInterpreter pyInt = new PythonInterpreter()) // instantiate python script interpreter
+        try(PythonInterpreter pyIntp = new PythonInterpreter()) // instantiate python script interpreter
         {
-            pyInt.exec("tempdiag = open('" + path +  "', 'w+')");   // create and write to file
-            pyInt.exec("tempdiag.write('@startuml \\n')");
-            pyInt.exec("tempdiag.write('Alice -> Bob: test 1 \\n')");
-            pyInt.exec("tempdiag.write('Alice -> Bob: test 2 \\n')");
-            pyInt.exec("tempdiag.write('@enduml \\n')");
+            pyIntp.exec("tempdiag = open('" + path +  "', 'w+')");
+            pyIntp.exec("tempdiag.write('@startuml \\n')");
+            pyIntp.exec("tempdiag.write('"+ callingClassName + " -> Bob: "+ methodName + " \\n')");
+            pyIntp.exec("tempdiag.write('@enduml \\n')");
         }
 
+    }
+
+    @Override
+    public boolean setCallingClassName(String name) {
+
+        if(name != null){
+            callingClassName = name;
+            return  true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean setMethodClassName(String name) {
+        if(name != null){
+            methodName = name;
+            return true;
+        }
+        return  false;
     }
 }

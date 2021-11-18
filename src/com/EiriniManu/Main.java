@@ -17,7 +17,7 @@ public class Main {
 
         String seqDiagPath = "Diagrams\\sequenceDiagram.txt";  // relative path to sequence diagram file
 
-        PythonSequenceDiagramGenerator seqDiagGen = new PythonSequenceDiagramGenerator();
+        PythonSequenceDiagramGenerator seqDiagGen = new PythonSequenceDiagramGenerator("callingClass", "methodName");
 
         seqDiagGen.generateSequenceDiagramTextFile(seqDiagPath);
 
