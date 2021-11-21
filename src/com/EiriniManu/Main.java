@@ -1,37 +1,43 @@
 package com.EiriniManu;
 
-import java.io.File;         // import Java File reader
-import java.util.List;
-
-import net.sourceforge.plantuml.GeneratedImage;       // import plantUML file Reader and image generator
-import net.sourceforge.plantuml.SourceFileReader;
-
-
-
-
 
 public class Main {
 
     public static void main(String[] args)
     {
 
+
+
+
+
         String seqDiagPath = "Diagrams\\sequenceDiagram.txt";  // relative path to sequence diagram file
 
         PythonSequenceDiagramGenerator seqDiagGen = new PythonSequenceDiagramGenerator("callingClass", "methodName");
 
-        seqDiagGen.generateSequenceDiagramTextFile(seqDiagPath);
+        seqDiagGen.GenerateSequenceDiagramTextFile(seqDiagPath);
+        seqDiagGen.GenerateSequenceDiagramImage(seqDiagPath);
 
-       try {
-           File seqDiag = new File(seqDiagPath);                        // Open file
-           SourceFileReader seqFileReader = new SourceFileReader(seqDiag);     // instantiate plantUML file parser
-           List<GeneratedImage> imgList = seqFileReader.getGeneratedImages();  // generate UML sequence diagram as png
 
-       }catch (Exception e){                                               // handle exceptions
-           System.out.println("ERROR READING SEQUENCE DIAGRAM FILE");
-           System.out.println(e.toString());
-       }
+
+        TestMethod testM = new TestMethod();
+        Reflector reflector = new Reflector();
+
+        reflector.ReflectOnClass(testM);
+        //reflector.ReflectOnMethod(testM,"applyIntString", String.class);
+
+
+       JavaParser parser = new JavaParser();
+       String fileName = "TestMethod.java";
+       String path = "C:\\Users\\manol\\Desktop\\Softwarentwicklung VF\\gardener\\src";
+       String packageName = "com.EiriniManu";
+       String className = "TestMethod";
+       String methodName = "Test3";
+
+       parser.ParseMethodFromClass(parser.ParseFile(fileName, parser.SetSourceRoot(path,packageName)), className, methodName);
 
     }
+
+
 }
 
 

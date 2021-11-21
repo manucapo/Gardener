@@ -1,7 +1,12 @@
 package com.EiriniManu;
 
+import net.sourceforge.plantuml.GeneratedImage;
+import net.sourceforge.plantuml.SourceFileReader;
 import org.python.util.PythonInterpreter; // import Jython inline Python interpreter.
 import org.python.core.*;
+
+import java.io.File;
+import java.util.List;
 
 public class PythonSequenceDiagramGenerator implements IPythonSequenceDiagramGenerator {
 
@@ -16,8 +21,8 @@ private String methodName;
         // TODO CONSTRUCTOR
     }
 
-    @Override
-    public void generateSequenceDiagramTextFile(String path) {
+
+    public void GenerateSequenceDiagramTextFile(String path) {
         try(PythonInterpreter pyIntp = new PythonInterpreter()) // instantiate python script interpreter
         {
             pyIntp.exec("tempdiag = open('" + path +  "', 'w+')");
@@ -26,6 +31,19 @@ private String methodName;
             pyIntp.exec("tempdiag.write('@enduml \\n')");
         }
 
+    }
+
+    @Override
+    public void GenerateSequenceDiagramImage(String path) {
+        try {
+            File seqDiag = new File(path);                        // Open file
+            SourceFileReader seqFileReader = new SourceFileReader(seqDiag);     // instantiate plantUML file parser
+            List<GeneratedImage> imgList = seqFileReader.getGeneratedImages();  // generate UML sequence diagram as png
+
+        }catch (Exception e){                                               // handle exceptions
+            System.out.println("ERROR READING SEQUENCE DIAGRAM FILE");
+            System.out.println(e.toString());
+        }
     }
 
     @Override
