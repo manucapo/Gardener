@@ -1,11 +1,14 @@
 package com.EiriniManu;
 
 
+import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.BinaryExpr;
+import com.github.javaparser.ast.expr.MemberValuePair;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.stmt.IfStmt;
@@ -13,6 +16,14 @@ import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.visitor.ModifierVisitor;
 import com.github.javaparser.ast.visitor.Visitable;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
+import com.github.javaparser.resolution.declarations.ResolvedParameterDeclaration;
+import com.github.javaparser.resolution.types.ResolvedType;
+import com.github.javaparser.symbolsolver.JavaSymbolSolver;
+import com.github.javaparser.symbolsolver.javaparsermodel.JavaParserFacade;
+import com.github.javaparser.symbolsolver.model.resolution.TypeSolver;
+import com.github.javaparser.symbolsolver.resolution.typesolvers.CombinedTypeSolver;
+import com.github.javaparser.symbolsolver.resolution.typesolvers.JavaParserTypeSolver;
+import com.github.javaparser.symbolsolver.resolution.typesolvers.ReflectionTypeSolver;
 import com.github.javaparser.utils.CodeGenerationUtils;
 import com.github.javaparser.utils.Log;
 import com.github.javaparser.utils.SourceRoot;
@@ -34,7 +45,15 @@ public class JavaParser implements IJavaParser {
 
     public CompilationUnit ParseFile(String fileName, SourceRoot sourceRoot){
         Log.setAdapter(new Log.StandardOutStandardErrorAdapter());
+
+        CombinedTypeSolver combinedTypeSolver = new CombinedTypeSolver();
+        combinedTypeSolver.add(new ReflectionTypeSolver());
+        JavaSymbolSolver symbolSolver = new JavaSymbolSolver(combinedTypeSolver);
+
+        sourceRoot.getParserConfiguration().setSymbolResolver(symbolSolver);
+
         CompilationUnit cu = sourceRoot.parse("", fileName);
+
         Log.info("DONE PARSING");
         /*
         "C:\\Users\\manol\\Desktop\\Softwarentwicklung VF\\gardener\\src"
@@ -74,9 +93,19 @@ public class JavaParser implements IJavaParser {
     }
 
     public void CheckNodeMethod(Node node) {
+        CombinedTypeSolver combinedTypeSolver = new CombinedTypeSolver();
+        combinedTypeSolver.add(new ReflectionTypeSolver());
+        JavaSymbolSolver symbolSolver = new JavaSymbolSolver(combinedTypeSolver);
+
         if (node instanceof MethodCallExpr) {
             System.out.println("--------------------------------");
             System.out.println(node.toString());
+            System.out.println(((MethodCallExpr) node).getTypeArguments());
+
+
+            for (Node chilNode : node.getChildNodes() ) {
+
+            }
             System.out.println("--------------------------------");
 
         }

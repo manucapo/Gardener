@@ -22,7 +22,7 @@ public class Reflector implements IReflector{
     public void ReflectOnMethod(Object o, String methodName, Class<?>... parameterTypes) {
         try {
 
-            Class cls = o.getClass();
+            Class<?> cls = o.getClass();
             Method mtd =  cls.getMethod(methodName,parameterTypes);
 
             System.out.println(" \n");
@@ -32,8 +32,12 @@ public class Reflector implements IReflector{
             System.out.println("DECLARING CLASS -> " + mtd.getDeclaringClass().getName());
             System.out.println("DEFAULT VALUE-> " + mtd.getDefaultValue());
             System.out.println("PARAMETER COUNT -> " + mtd.getParameterCount());
-            System.out.println("PARAMETER TYPE -> " + mtd.getParameterTypes()[0].getName());
-            System.out.println("RETURN TPYE -> " + mtd.getReturnType());
+            System.out.println("PARAMETER TYPE -> ");
+            for (Class<?> param : mtd.getParameterTypes())  {
+                System.out.println(param.getName());
+            }
+
+            System.out.println("RETURN TYPE -> " + mtd.getReturnType());
 
         }catch (Exception e){
             System.out.println("ERROR TESTING METHOD ");

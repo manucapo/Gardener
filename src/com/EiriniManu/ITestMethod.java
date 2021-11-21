@@ -7,6 +7,6 @@ public interface ITestMethod{
 
     public int Test1(int i);
     public int Test2(String s);
-    public int Test3(String s);
+    public int Test3(String s, int i, boolean bool);
 
 }

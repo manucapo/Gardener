@@ -19,7 +19,7 @@ public class TestMethod implements  ITestMethod{
         return 26;
     }
 
-    public int Test3(String s) {
+    public int Test3(String s, int i, boolean bool) {
         this.Test1(2);
         this.Test2("2");
         System.out.println("testprint");

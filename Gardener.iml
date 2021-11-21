@@ -10,5 +10,6 @@
     <orderEntry type="library" name="jython-standalone-2.7.2" level="project" />
     <orderEntry type="library" name="plantuml" level="project" />
     <orderEntry type="library" name="javaparser-core-3.23.1" level="project" />
+    <orderEntry type="library" name="javaparser-symbol-solver-core-3.23.1" level="project" />
   </component>
 </module>

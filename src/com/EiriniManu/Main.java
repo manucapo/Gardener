@@ -23,7 +23,7 @@ public class Main {
         Reflector reflector = new Reflector();
 
         reflector.ReflectOnClass(testM);
-        //reflector.ReflectOnMethod(testM,"applyIntString", String.class);
+        reflector.ReflectOnMethod(testM,"Test3", String.class, int.class, boolean.class);
 
 
        JavaParser parser = new JavaParser();
