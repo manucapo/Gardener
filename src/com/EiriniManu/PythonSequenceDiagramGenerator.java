@@ -41,6 +41,11 @@ private JythonCaller jCaller;
         reflector.ReflectOnMethod(cls,methodName,structure ,params);
     }
 
+    public void generateSequenceDiagram(String path){
+        generateSequenceDiagramTextFile(path);
+        generateSequenceDiagramImage(path);
+
+    }
 
     public void generateSequenceDiagramTextFile(String path) {
 
@@ -48,19 +53,20 @@ private JythonCaller jCaller;
             File file = new File( "C:\\Users\\manol\\Desktop\\Softwarentwicklung VF\\gardener\\src\\com\\EiriniManu\\Script.py"); // HOW TO GET THIS PATH PROPERLY !!!
             InputStream stream = new FileInputStream(file);
 
-             jCaller.createDiagramFile(stream, path);
+            jCaller.createDiagramFile(stream, path, structure);
 
         }catch (Exception e){
             System.out.println("ERROR READING PYTHON SCRIPT");
             System.out.println(e.toString());
         }
+
     }
 
-    @Override
     public void generateSequenceDiagramImage(String path) {
+
         try {
-            File seqDiag = new File(path);                        // Open file
-            SourceFileReader seqFileReader = new SourceFileReader(seqDiag);     // instantiate plantUML file parser
+            File file = new File("Diagrams\\sequenceDiagram.txt");
+            SourceFileReader seqFileReader = new SourceFileReader(file);     // instantiate plantUML file parser
             List<GeneratedImage> imgList = seqFileReader.getGeneratedImages();  // generate UML sequence diagram as png
 
         }catch (Exception e){                                               // handle exceptions

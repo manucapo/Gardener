@@ -2,10 +2,10 @@
 import sys
 import os
 
-def generateFile(path):
+def generateFile(path, implementingClass, methodName):
  tempdiag = open(path, 'w+')
  tempdiag.write('@startuml \n')
- tempdiag.write('structure.getImplementingClassName() -> Bob:  structure.getMethodName() \n')
+ tempdiag.write(implementingClass + ' -> Bob: ' + methodName + '\n')
  tempdiag.write('@enduml \n')
 
 print 'test'

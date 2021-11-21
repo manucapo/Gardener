@@ -26,8 +26,8 @@ public class Main {
 
        parser.ParseMethodFromClass(parser.ParseFile(fileName, parser.SetSourceRoot(path,packageName)), className, methodName);
 
-        seqDiagGen.generateSequenceDiagramTextFile(seqDiagPath);
-        seqDiagGen.generateSequenceDiagramImage(seqDiagPath);
+       seqDiagGen.generateSequenceDiagram(seqDiagPath);
+
     }
 
 
