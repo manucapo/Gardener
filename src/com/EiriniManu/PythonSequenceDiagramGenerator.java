@@ -8,6 +8,7 @@ public class PythonSequenceDiagramGenerator implements IPythonSequenceDiagramGen
 private String callingClassName;
 private String methodName;
 
+
     public PythonSequenceDiagramGenerator(String callingClassName, String methodName){
 
         setCallingClassName(callingClassName);
