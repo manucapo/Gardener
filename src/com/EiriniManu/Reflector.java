@@ -8,18 +8,22 @@ public class Reflector implements IReflector{
         //TODO CONSTRUCTOR
     }
 
-    public void ReflectOnClass(Object o){
-        Class cls = o.getClass();
+    public void ReflectOnClass(Object o, DiagramStructure diagramStructure){
+        Class<?> cls = o.getClass();
         System.out.println("CLASS ------------------------- ");
-        System.out.println("CLASS NAME -> " + getClass().getName());
+        System.out.println("CLASS NAME -> " + cls.getName());
+        diagramStructure.setImplementingClassName(cls.getName());
+
         System.out.println("CLASS METHODS -> ");
+
         for (Method method : cls.getDeclaredMethods()) {
             System.out.println(method.getName());
-
+            diagramStructure.addClassMethodName(method.getName());
         }
+
     }
 
-    public void ReflectOnMethod(Object o, String methodName, Class<?>... parameterTypes) {
+    public void ReflectOnMethod(Object o, String methodName, DiagramStructure diagramStructure , Class<?>... parameterTypes) {
         try {
 
             Class<?> cls = o.getClass();
@@ -35,8 +39,8 @@ public class Reflector implements IReflector{
             System.out.println("PARAMETER TYPE -> ");
             for (Class<?> param : mtd.getParameterTypes())  {
                 System.out.println(param.getName());
+                diagramStructure.addParameterTypeName(param.getName());
             }
-
             System.out.println("RETURN TYPE -> " + mtd.getReturnType());
 
         }catch (Exception e){

@@ -34,8 +34,7 @@ public class JavaParser implements IJavaParser {
     }
 
     public SourceRoot SetSourceRoot(String path, String packageName){
-        SourceRoot sourceRoot = new SourceRoot(CodeGenerationUtils.packageAbsolutePath(path,packageName));
-        return  sourceRoot;
+        return new SourceRoot(CodeGenerationUtils.packageAbsolutePath(path,packageName));
     }
 
     public CompilationUnit ParseFile(String fileName, SourceRoot sourceRoot){

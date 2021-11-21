@@ -3,38 +3,56 @@ package com.EiriniManu;
 import net.sourceforge.plantuml.GeneratedImage;
 import net.sourceforge.plantuml.SourceFileReader;
 import org.python.util.PythonInterpreter; // import Jython inline Python interpreter.
-import org.python.core.*;
 
 import java.io.File;
 import java.util.List;
 
 public class PythonSequenceDiagramGenerator implements IPythonSequenceDiagramGenerator {
 
-private String callingClassName;
-private String methodName;
+private DiagramStructure structure;
+
+private  Reflector reflector;
+
+private JavaParser parser;
 
 
-    public PythonSequenceDiagramGenerator(String callingClassName, String methodName){
+    public PythonSequenceDiagramGenerator(){
 
-        setCallingClassName(callingClassName);
-        setMethodClassName(methodName);
+         structure = new DiagramStructure();
+         reflector = new Reflector();
+         parser = new JavaParser();
         // TODO CONSTRUCTOR
     }
 
+    public PythonSequenceDiagramGenerator(DiagramStructure structure){
 
-    public void GenerateSequenceDiagramTextFile(String path) {
+        this.structure = structure;
+        // TODO CONSTRUCTOR
+    }
+
+    public void updateDiagramStructure(String methodName, Object cls, Class<?>... params){
+        structure.setMethodName(methodName);
+
+        reflector.ReflectOnClass(cls, structure);
+        reflector.ReflectOnMethod(cls,methodName,structure ,params);
+    }
+
+
+    public void generateSequenceDiagramTextFile(String path) {
         try(PythonInterpreter pyIntp = new PythonInterpreter()) // instantiate python script interpreter
         {
             pyIntp.exec("tempdiag = open('" + path +  "', 'w+')");
-            pyIntp.exec("tempdiag.write('@startuml \\n')");
-            pyIntp.exec("tempdiag.write('"+ callingClassName + " -> Bob: "+ methodName + " \\n')");
+            pyIntp.exec("tempdiag.write('@startuml \\n')");      // INIT
+
+
+            pyIntp.exec("tempdiag.write('"+ structure.getImplementingClassName() + " -> Bob: "+ structure.getMethodName()  + " \\n')");
             pyIntp.exec("tempdiag.write('@enduml \\n')");
         }
 
     }
 
     @Override
-    public void GenerateSequenceDiagramImage(String path) {
+    public void generateSequenceDiagramImage(String path) {
         try {
             File seqDiag = new File(path);                        // Open file
             SourceFileReader seqFileReader = new SourceFileReader(seqDiag);     // instantiate plantUML file parser
@@ -46,22 +64,5 @@ private String methodName;
         }
     }
 
-    @Override
-    public boolean setCallingClassName(String name) {
 
-        if(name != null){
-            callingClassName = name;
-            return  true;
-        }
-        return false;
-    }
-
-    @Override
-    public boolean setMethodClassName(String name) {
-        if(name != null){
-            methodName = name;
-            return true;
-        }
-        return  false;
-    }
 }
