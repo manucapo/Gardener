@@ -2,9 +2,10 @@ package com.EiriniManu;
 
 import net.sourceforge.plantuml.GeneratedImage;
 import net.sourceforge.plantuml.SourceFileReader;
-import org.python.util.PythonInterpreter; // import Jython inline Python interpreter.
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.List;
 
 public class PythonSequenceDiagramGenerator implements IPythonSequenceDiagramGenerator {
@@ -15,12 +16,15 @@ private  Reflector reflector;
 
 private JavaParser parser;
 
+private JythonCaller jCaller;
+
 
     public PythonSequenceDiagramGenerator(){
 
          structure = new DiagramStructure();
          reflector = new Reflector();
          parser = new JavaParser();
+         jCaller = new JythonCaller();
         // TODO CONSTRUCTOR
     }
 
@@ -39,16 +43,17 @@ private JavaParser parser;
 
 
     public void generateSequenceDiagramTextFile(String path) {
-        try(PythonInterpreter pyIntp = new PythonInterpreter()) // instantiate python script interpreter
-        {
-            pyIntp.exec("tempdiag = open('" + path +  "', 'w+')");
-            pyIntp.exec("tempdiag.write('@startuml \\n')");      // INIT
 
+        try {
+            File file = new File( "C:\\Users\\manol\\Desktop\\Softwarentwicklung VF\\gardener\\src\\com\\EiriniManu\\Script.py"); // HOW TO GET THIS PATH PROPERLY !!!
+            InputStream stream = new FileInputStream(file);
 
-            pyIntp.exec("tempdiag.write('"+ structure.getImplementingClassName() + " -> Bob: "+ structure.getMethodName()  + " \\n')");
-            pyIntp.exec("tempdiag.write('@enduml \\n')");
+             jCaller.createDiagramFile(stream, path);
+
+        }catch (Exception e){
+            System.out.println("ERROR READING PYTHON SCRIPT");
+            System.out.println(e.toString());
         }
-
     }
 
     @Override

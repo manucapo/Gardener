@@ -10,10 +10,6 @@ public class Main {
 
 
 
-
-
-
-
         TestMethod testM = new TestMethod();
 
         PythonSequenceDiagramGenerator seqDiagGen = new PythonSequenceDiagramGenerator();
