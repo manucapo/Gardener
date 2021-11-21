@@ -11,7 +11,7 @@ import org.python.core.__builtin__;
 
 import java.io.InputStream;
 
-public class JythonCaller {
+public class JythonCaller implements IJythonCaller{
 
     private PythonInterpreter pyIntp;
 
