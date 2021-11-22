@@ -11,7 +11,7 @@ public class Main {
 
         // Some extra metadata entered by the user. (NEED TO FIND A BETTER WAY TO PASS THIS)
        String fileName = "TestMethod.java";
-       String path = "C:\\Users\\manol\\Desktop\\Softwarentwicklung VF\\gardener\\src";
+       String path = "src";                        // Relative path to TestMethod Class
        String packageName = "com.EiriniManu";
        String className = "TestMethod";
        String methodName = "Test3";
