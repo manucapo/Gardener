@@ -1,14 +1,11 @@
 package com.EiriniManu;
 
-
 public class Main {
-
+    
     public static void main(String[] args)
     {
 
-        String seqDiagPath = "Diagrams\\sequenceDiagram.txt";  // relative path to sequence diagram file
-
-
+        String seqDiagPath = "Diagrams\\sequenceDiagram.txt";  // Set desired (relative) path to sequence diagram file
 
         TestMethod testM = new TestMethod();
 
