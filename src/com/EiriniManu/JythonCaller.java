@@ -1,49 +1,42 @@
 package com.EiriniManu;
 
+/*
+    This class represents a helper object that can execute python code from a .py file.
+    It can be used by other classes to handle any task in python
+ */
+
 import org.python.core.PyObject;
 import org.python.util.PythonInterpreter;
-import org.python.core.Py;
-import org.python.core.PyException;
-import org.python.core.PyObject;
 import org.python.core.PyString;
-import org.python.core.__builtin__;
 
 
 import java.io.InputStream;
 
-public class JythonCaller implements IJythonCaller{
+public class JythonCaller implements IJythonCaller {
 
-    private PythonInterpreter pyIntp;
+    private PythonInterpreter pyInterpreter;
 
-    public JythonCaller(){
-        pyIntp = new PythonInterpreter();
+    public JythonCaller() {
+        pyInterpreter = new PythonInterpreter();             // Instantiate the python interpreter class from Jython library
     }
 
-    public void createDiagramFile(InputStream stream, String path, DiagramStructure structure){
+    public void createDiagramFile(InputStream stream, String path, DiagramStructure structure) {
 
+        pyInterpreter.execfile(stream);          // Execute the file with the python interpreter
 
-        String filePath ="C:\\Users\\manol\\Desktop\\Softwarentwicklung VF\\gardener\\src\\com\\EiriniManu\\Script.py";
-        String scriptName = "Script";
-
-        pyIntp.execfile (stream);
-
-        String funcName = "generateFile";
-        PyObject func = pyIntp.get(funcName);
-
+        String functionName = "generateFile";              // Used to search for a function with this name in the Python script
+        PyObject pyFunction = pyInterpreter.get(functionName);   // get the function as a jython object
 
         try {
-            if (func == null){
+            if (pyFunction == null) {
                 throw new Exception("Could not find Python function");
             } else {
-                func.__call__(new PyString(path), new PyString(structure.getImplementingClassName()), new PyString(structure.getMethodName()));
+                pyFunction.__call__(new PyString(path), new PyString(structure.getImplementingClassName()), new PyString(structure.getMethodName()));  // Call the function in the python string with parameters.
             }
-
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e.toString());
             System.out.println("ERROR CREATING DIAGRAM PLANTUML FILE");
         }
-
-        pyIntp.close();
-
+        pyInterpreter.cleanup();       // Cleanup any open python interpreter threads/files to make sure file is written to and closed before next step
     }
 }

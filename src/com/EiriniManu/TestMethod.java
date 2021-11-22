@@ -1,7 +1,8 @@
 package com.EiriniManu;
 
-
-import java.lang.reflect.Method;
+/*
+    This class represents an object that can expose some methods to test the program with.
+*/
 
 public class TestMethod implements  ITestMethod{
 
@@ -12,7 +13,6 @@ public class TestMethod implements  ITestMethod{
     public int Test1(int i) {
         return i;
     }
-
 
     public int Test2(String s) {
         this.Test1(2);

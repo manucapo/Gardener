@@ -8,6 +8,6 @@ def generateFile(path, implementingClass, methodName):
  tempdiag.write(' [o-> '+implementingClass+': ' + methodName + '\n')
  tempdiag.write('@enduml \n')
 
-print 'test'
+print 'Python Script Done Running'
 
 

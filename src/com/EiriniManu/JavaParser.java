@@ -1,31 +1,20 @@
 package com.EiriniManu;
 
+/*
+    This class represents an object that can create an AST (abstract symbol tree) from java source code and pass the resulting tree for information.
+    This is the second layer of information extraction in our process.
+*/
 
-import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Node;
-import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
-import com.github.javaparser.ast.expr.BinaryExpr;
-import com.github.javaparser.ast.expr.MemberValuePair;
 import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.expr.SimpleName;
-import com.github.javaparser.ast.stmt.IfStmt;
-import com.github.javaparser.ast.stmt.Statement;
-import com.github.javaparser.ast.visitor.ModifierVisitor;
-import com.github.javaparser.ast.visitor.Visitable;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
-import com.github.javaparser.resolution.declarations.ResolvedParameterDeclaration;
-import com.github.javaparser.resolution.types.ResolvedType;
 import com.github.javaparser.utils.CodeGenerationUtils;
 import com.github.javaparser.utils.Log;
 import com.github.javaparser.utils.SourceRoot;
-
-import java.nio.file.Paths;
-
-
 
 public class JavaParser implements IJavaParser {
 
@@ -33,65 +22,52 @@ public class JavaParser implements IJavaParser {
         //TODO CONSTRUCTOR
     }
 
-    public SourceRoot SetSourceRoot(String path, String packageName){
-        return new SourceRoot(CodeGenerationUtils.packageAbsolutePath(path,packageName));
+    public SourceRoot SetSourceRoot(String path, String packageName) {                           // Set a Root path for the source code. Needed by the parser.
+        return new SourceRoot(CodeGenerationUtils.packageAbsolutePath(path, packageName));
     }
 
-    public CompilationUnit ParseFile(String fileName, SourceRoot sourceRoot){
-        Log.setAdapter(new Log.StandardOutStandardErrorAdapter());
-
-        CompilationUnit cu = sourceRoot.parse("", fileName);
-
+    public CompilationUnit ParseFile(String fileName, SourceRoot sourceRoot) {                    // Parse the code and return the AST
+        Log.setAdapter(new Log.StandardOutStandardErrorAdapter());                     // Set the parser to log errors to standard out.
+        CompilationUnit cu = sourceRoot.parse("", fileName);               // parse the file with a corresponding name in the root path.
         Log.info("DONE PARSING");
-
-
-       // sourceRoot.saveAll(Paths.get("C:\\Users\\manol\\Desktop\\Softwarentwicklung VF\\PARSED"));
-
         return cu;
     }
 
     public void ParseMethodFromClass(CompilationUnit cu, String className, String methodName) {
         try {
+            ClassOrInterfaceDeclaration clsX = new ClassOrInterfaceDeclaration();                 // Holder variable for the class declaration node.
 
-            ClassOrInterfaceDeclaration clsX = new ClassOrInterfaceDeclaration();
-            
-            if(cu.getClassByName(className).isPresent()) {
-                clsX = cu.getClassByName(className).get();
+            if (cu.getClassByName(className).isPresent()) {                                      // Check if class with corresponding name exists. :
+                clsX = cu.getClassByName(className).get();                                       // if yes hold the class declaration node
             }
 
-
-
-            for (MethodDeclaration method : clsX.getMethods()) {
-
-
-                if (method.getName().toString().equals(methodName)) {
+            for (MethodDeclaration method : clsX.getMethods()) {                                 // for every method declaration node in the class :
+                if (method.getName().toString().equals(methodName)) {                            // Find method with given name
                     System.out.println(method.getName().toString());
-                    method.walk(Node.TreeTraversal.PREORDER, this::CheckNodeMethod);
+                    method.walk(Node.TreeTraversal.PREORDER, this::CheckIfMethodCallNode);             // Walk the Subtree of the method node. The tree is traversed in preorder to find the methods in the order they appear in the source code
 
-                    // method.accept(new MethodVisitor(), null); ALTERNATE METHOD TO CHECK NODES
+                    // method.accept(new MethodVisitor(), null);                                     ALTERNATE METHOD TO CHECK NODES
                 }
             }
-
-
         } catch (Exception e) {
             System.out.println("ERROR PARSING JAVA FILE");
             System.out.println(e.toString());
         }
     }
 
-    public void CheckNodeMethod(Node node) {
-
+    public void CheckIfMethodCallNode(Node node) {                 //  Check if node is a Method Call.
         if (node instanceof MethodCallExpr) {
             System.out.println("--------------------------------");
             System.out.println(node.toString());
 
-            node.accept(new ParamVisitor(), null);
+            // node.accept(new ParamVisitor(), null);               ALTERNATE METHOD TO CHECK NODES
             System.out.println("--------------------------------");
-
         }
     }
 
-    static class MethodVisitor extends VoidVisitorAdapter<Void> {
+    // The Methods below are part of the JavaParser API and can be used to "visit" and operate on the nodes of the AST.  https://www.tutorialspoint.com/design_pattern/visitor_pattern.htm
+
+    static class MethodVisitor extends VoidVisitorAdapter<Void> {    // Visitor that checks MethodCall nodes.
 
         @Override
         public void visit(MethodCallExpr n, Void arg) {
@@ -100,13 +76,14 @@ public class JavaParser implements IJavaParser {
             super.visit(n, arg);
         }
     }
-    static class ParamVisitor extends VoidVisitorAdapter<Void> {
+
+    static class ParamVisitor extends VoidVisitorAdapter<Void> {       // Visitor that checks Parameters
 
         @Override
         public void visit(Parameter n, Void arg) {
-         //   if (n.)
-           // System.out.println(n.getName());
-           // super.visit(n, arg);
+            //   if (n.)
+            // System.out.println(n.getName());
+            // super.visit(n, arg);
         }
     }
 

@@ -6,7 +6,7 @@ public class Main {
     {
         String pathToSequenceDiagram = "Diagrams\\sequenceDiagram.txt";                                            // Choose desired (relative) path to sequence diagram file
         TestMethod testMethod = new TestMethod();                                                                  // Instantiate a class that provides some simple methods to test the program with.
-        PythonSequenceDiagramGenerator sequenceDiagramGenerator = new PythonSequenceDiagramGenerator();            // Instantiate a class that can create a plantUML sequence diagram
+        SequenceDiagramGenerator sequenceDiagramGenerator = new SequenceDiagramGenerator();            // Instantiate a class that can create a plantUML sequence diagram
         JavaParser parser = new JavaParser();                                                                      // Instantiate a class that can parse java source code to generate an AST (Abstract Syntax Tree)
 
         // Some extra metadata entered by the user. (NEED TO FIND A BETTER WAY TO PASS THIS)
@@ -18,7 +18,7 @@ public class Main {
 
        //OPERATION STEPS
 
-       // 1) Parse the given java class for information.
+       // 1) Parse the given java class for information on a method
        parser.ParseMethodFromClass(parser.ParseFile(fileName, parser.SetSourceRoot(path,packageName)), className, methodName);
 
        // 2) Update the information structure that contains metadata on the method the user wants to display as a diagram

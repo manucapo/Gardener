@@ -1,5 +1,11 @@
 package com.EiriniManu;
 
+/*
+    This class represents an object that can handle the creation of a plantUML file from the information stored in the Diagram Structure data type.
+    Currently, the Actual File generation is handled by a python Script through the JyhtonCaller helper class.
+    This class feeds the python script the necessary information
+ */
+
 import net.sourceforge.plantuml.GeneratedImage;
 import net.sourceforge.plantuml.SourceFileReader;
 
@@ -8,7 +14,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.List;
 
-public class PythonSequenceDiagramGenerator implements IPythonSequenceDiagramGenerator {
+public class SequenceDiagramGenerator implements ISequenceDiagramGenerator {
 
 private DiagramStructure structure;
 
@@ -19,7 +25,7 @@ private JavaParser parser;
 private JythonCaller jCaller;
 
 
-    public PythonSequenceDiagramGenerator(){
+    public SequenceDiagramGenerator(){
 
          structure = new DiagramStructure();
          reflector = new Reflector();
@@ -28,7 +34,7 @@ private JythonCaller jCaller;
         // TODO CONSTRUCTOR
     }
 
-    public PythonSequenceDiagramGenerator(DiagramStructure structure){
+    public SequenceDiagramGenerator(DiagramStructure structure){
 
         this.structure = structure;
         // TODO CONSTRUCTOR
