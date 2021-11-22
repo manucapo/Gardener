@@ -20,7 +20,7 @@ public class JythonCaller implements IJythonCaller {
         pyInterpreter = new PythonInterpreter();             // Instantiate the python interpreter class from Jython library
     }
 
-    public void createDiagramFile(InputStream stream, String path, DiagramStructure structure) {
+    public void createDiagramFile(InputStream stream, String path, DiagramStructure structure) {  // Wrapper function for the python script function call
 
         pyInterpreter.execfile(stream);          // Execute the file with the python interpreter
 
