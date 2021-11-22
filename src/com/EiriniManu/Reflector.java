@@ -1,5 +1,10 @@
 package com.EiriniManu;
 
+/*
+    This class represents an object that can "reflect" on other java classes using the Java Reflection API (https://www.oracle.com/technical-resources/articles/java/javareflection.html)
+    This allows us to quickly obtain some contextual information on the method we
+*/
+
 import java.lang.reflect.Method;
 
 public class Reflector implements IReflector{

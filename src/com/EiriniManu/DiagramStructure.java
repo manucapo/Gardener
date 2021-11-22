@@ -1,33 +1,33 @@
 package com.EiriniManu;
 
+/*
+    This class represents a data structure that contains all information needed by the plantUML diagram to generate the desired UML sequence diagram
+    Any information extracted from a method should be reflected on this "structure".
+    Add information here as necessary. Keeping the information in Strings is a good idea because the information will eventually be mapped to
+    Strings in a text file.
+ */
+
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
-public class DiagramStructure implements IDiagramStructure {
-
-
-    private String implementingClassName;
-
-    private String callingClassName;
-
-    private List<String> classMethodNames;
-
-    private String methodName;
-
-    private List<String> parameterTypeNames;
-
-    public DiagramStructure(){
+public class DiagramStructure {
 
 
-        implementingClassName = "NULL";
+    private String implementingClassName;         // Name of class where method is implemented
+    private String callingClassName;              // Name of class that calls a method (must it be given by user ?)
+    private List<String> classMethodNames;        // A list of names of every method implemented in the implementing class
+    private String methodName;                    // The name of the method the user is interested in
+    private List<String> parameterTypeNames;      //  A list of names of every parameter TYPE that belong to the method the user is interested in
+
+    public DiagramStructure() {                    // Default constructor. Initializes the class to "safe" values.
+        implementingClassName = "NULL";           // The string "NULL" was chosen as default as a class or method could never be called "NULL". Allowing error detection
         callingClassName = "NULL";
-        classMethodNames = new Vector<>();
+        classMethodNames = new ArrayList<>();     // Are ArrayLists the best data structure for our lists of Strings?
         methodName = "NULL";
-        parameterTypeNames = new Vector<>();
-
+        parameterTypeNames = new ArrayList<>();
     }
 
-
+    // Getters and setters
     public String getImplementingClassName() {
         return implementingClassName;
     }
@@ -48,6 +48,7 @@ public class DiagramStructure implements IDiagramStructure {
         classMethodNames.add(name);
     }
 
+
     public void setClassMethodNames(List<String> classMethodNames) {
         this.classMethodNames = classMethodNames;
     }
@@ -66,5 +67,9 @@ public class DiagramStructure implements IDiagramStructure {
 
     public void addParameterTypeName(String name) {
         this.parameterTypeNames.add(name);
+    }
+
+    public void setParameterTypeName(List<String> parameterTypeNames) {
+        this.parameterTypeNames = (parameterTypeNames);
     }
 }
