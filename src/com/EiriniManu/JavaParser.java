@@ -45,7 +45,6 @@ public class JavaParser implements IJavaParser {
                 if (method.getName().toString().equals(methodName)) {                            // Find method with given name
                     System.out.println(method.getName().toString());
                     method.walk(Node.TreeTraversal.PREORDER, this::CheckIfMethodCallNode);             // Walk the Subtree of the method node. The tree is traversed in preorder to find the methods in the order they appear in the source code
-
                     // method.accept(new MethodVisitor(), null);                                     ALTERNATE METHOD TO CHECK NODES
                 }
             }
@@ -59,31 +58,26 @@ public class JavaParser implements IJavaParser {
         if (node instanceof MethodCallExpr) {
             System.out.println("--------------------------------");
             System.out.println(node.toString());
-
             // node.accept(new ParamVisitor(), null);               ALTERNATE METHOD TO CHECK NODES
             System.out.println("--------------------------------");
         }
     }
 
-    // The Methods below are part of the JavaParser API and can be used to "visit" and operate on the nodes of the AST.  https://www.tutorialspoint.com/design_pattern/visitor_pattern.htm
+    // The Classes below are part of the JavaParser API and can be used to "visit" and operate on the nodes of the AST.  https://www.tutorialspoint.com/design_pattern/visitor_pattern.htm
 
-    static class MethodVisitor extends VoidVisitorAdapter<Void> {    // Visitor that checks MethodCall nodes.
-
+    static class MethodVisitor extends VoidVisitorAdapter<Void> {    // Visitor class that checks MethodCall nodes.
         @Override
         public void visit(MethodCallExpr n, Void arg) {
-
             System.out.println(n.getName());
             super.visit(n, arg);
         }
     }
 
-    static class ParamVisitor extends VoidVisitorAdapter<Void> {       // Visitor that checks Parameters
-
+    static class ParamVisitor extends VoidVisitorAdapter<Void> {       // Visitor class that checks Parameters
         @Override
         public void visit(Parameter n, Void arg) {
-            //   if (n.)
-            // System.out.println(n.getName());
-            // super.visit(n, arg);
+             System.out.println(n.getName());
+             super.visit(n, arg);
         }
     }
 
