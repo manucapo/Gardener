@@ -27,6 +27,7 @@ public class TestMethod implements  ITestMethod{
         }  else {
             System.out.println("else testprint");
         }
+        Math.abs(2);
         return 26;
     }
 

@@ -1,7 +1,25 @@
 @startuml 
- [o-> com.EiriniManu.TestMethod: Test3
+[o-> com.EiriniManu.TestMethod: Test3
+activate com.EiriniManu.TestMethod
 com.EiriniManu.TestMethod -> com.EiriniManu.TestMethod: Test1
+activate com.EiriniManu.TestMethod
+com.EiriniManu.TestMethod-->com.EiriniManu.TestMethod
+deactivate com.EiriniManu.TestMethod
 com.EiriniManu.TestMethod -> com.EiriniManu.TestMethod: Test2
+activate com.EiriniManu.TestMethod
+com.EiriniManu.TestMethod-->com.EiriniManu.TestMethod
+deactivate com.EiriniManu.TestMethod
 com.EiriniManu.TestMethod -> System: println
+activate System
+System-->com.EiriniManu.TestMethod
+deactivate System
 com.EiriniManu.TestMethod -> System: println
+activate System
+System-->com.EiriniManu.TestMethod
+deactivate System
+com.EiriniManu.TestMethod -> Math: abs
+activate Math
+Math-->com.EiriniManu.TestMethod
+deactivate Math
+deactivate com.EiriniManu.TestMethod
 @enduml 
