@@ -12,11 +12,14 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithExpression;
+import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import com.github.javaparser.utils.CodeGenerationUtils;
 import com.github.javaparser.utils.Log;
 import com.github.javaparser.utils.SourceRoot;
 import jdk.nashorn.internal.runtime.regexp.joni.constants.NodeType;
+
+import java.util.Optional;
 
 public class JavaParser implements IJavaParser {
 
@@ -48,11 +51,8 @@ public class JavaParser implements IJavaParser {
                     System.out.println(method.getName().toString());
 
 
-                    for (Node node :method.findAll(MethodCallExpr.class,Node.TreeTraversal.PREORDER )) {
-                        checkMethodCallNode(node, diagramStructure);
-                    }
-                    //  method.walk(Node.TreeTraversal.PREORDER, this::CheckIfMethodCallNode);             // Walk the Subtree of the method node. The tree is traversed in preorder to find the methods in the order they appear in the source code
-                    // method.accept(new MethodVisitor(), null);                                     ALTERNATE METHOD TO CHECK NODES
+                    for (Node node : method.findAll(MethodCallExpr.class,Node.TreeTraversal.PREORDER )) {
+                        checkMethodCallNode(node, diagramStructure);}
                 }
             }
         } catch (Exception e) {
@@ -65,7 +65,13 @@ public class JavaParser implements IJavaParser {
         if (node instanceof MethodCallExpr) {
             System.out.println("--------------------------------");
             System.out.println(node.toString());
-            // node.accept(new ParamVisitor(), null);               ALTERNATE METHOD TO CHECK NODES
+            structure.addMethodCall(node.toString());
+
+            if (!node.findAncestor(IfStmt.class).equals(Optional.empty()))
+            {
+              // System.out.println( node.findAncestor(IfStmt.class).get().getElseStmt());
+                System.out.println("THIS MEHTOD IS INSIDE AN IF BLOCK");
+            }
             System.out.println("--------------------------------");
         }
     }

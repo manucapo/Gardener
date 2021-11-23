@@ -19,6 +19,7 @@ public class DiagramStructure {
     private String methodName;                    // The name of the method the user is interested in
     private List<String> parameterTypeNames;      //  A list of names of every parameter TYPE that belong to the method the user is interested in
     private List<String> methodCalls;
+    private List<String> methodCallTargets;
 
     public DiagramStructure() {                    // Default constructor. Initializes the class to "safe" values.
         implementingClassName = "NULL";           // The string "NULL" was chosen as default as a class or method could never be called "NULL". Allowing error detection
@@ -26,6 +27,8 @@ public class DiagramStructure {
         classMethodNames = new ArrayList<>();     // Are ArrayLists the best data structure for our lists of Strings?
         methodName = "NULL";
         parameterTypeNames = new ArrayList<>();
+        methodCalls = new ArrayList<>();
+        methodCallTargets = new ArrayList<>();
     }
 
     // Getters and setters
@@ -83,6 +86,14 @@ public class DiagramStructure {
     }
 
     public void addMethodCall(String methodCall) {
-        this.methodCalls.add(methodCall);
+        String[] splitArray1 = methodCall.split("\\(", 0);        // split method call until the first ( bracket
+        String callWithParametersRemoved = splitArray1[0];                   // the string before the ( bracket should be the call without parameters.
+        String[] splitArray2 =  callWithParametersRemoved.split("\\."); // split the call without parameters by . dot
+        this.methodCalls.add(splitArray2[splitArray2.length -1]);             // the last string in the array should be the actual call
+        this.methodCallTargets.add(splitArray2[0]);                           // the first string in the array should be the target class
+    }
+
+    public List<String> getMethodCallTargets(){
+        return methodCallTargets;
     }
 }

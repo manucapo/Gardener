@@ -22,7 +22,11 @@ public class TestMethod implements  ITestMethod{
     public int Test3(String s, int i, boolean bool) {
         this.Test1(2);
         this.Test2("2");
-        System.out.println("testprint");
+        if (i == 2) {
+            System.out.println("if testprint");
+        }  else {
+            System.out.println("else testprint");
+        }
         return 26;
     }
 

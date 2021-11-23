@@ -1,3 +1,7 @@
 @startuml 
  [o-> com.EiriniManu.TestMethod: Test3
+com.EiriniManu.TestMethod -> com.EiriniManu.TestMethod: Test1
+com.EiriniManu.TestMethod -> com.EiriniManu.TestMethod: Test2
+com.EiriniManu.TestMethod -> System: println
+com.EiriniManu.TestMethod -> System: println
 @enduml 
