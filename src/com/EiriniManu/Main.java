@@ -1,41 +1,31 @@
 package com.EiriniManu;
 
-import java.io.File;         // import Java File reader
-import java.util.List;
-
-import net.sourceforge.plantuml.GeneratedImage;       // import plantUML file Reader and image generator
-import net.sourceforge.plantuml.SourceFileReader;
-
-
-import org.python.util.PythonInterpreter; // import Jython inline Python interpreter.
-import org.python.core.*;
-
-
 public class Main {
-
+    
     public static void main(String[] args)
     {
+        String pathToSequenceDiagram = "Diagrams\\sequenceDiagram.txt";                                            // Choose desired (relative) path to sequence diagram file
+        TestMethod testMethod = new TestMethod();                                                                  // Instantiate a class that provides some simple methods to test the program with.
+        SequenceDiagramGenerator sequenceDiagramGenerator = new SequenceDiagramGenerator();            // Instantiate a class that can create a plantUML sequence diagram
+        JavaParser parser = new JavaParser();                                                                      // Instantiate a class that can parse java source code to generate an AST (Abstract Syntax Tree)
 
-        String seqDiagPath = "Diagrams\\sequenceDiagram.txt";  // relative path to sequence diagram file
+        // Some extra metadata entered by the user. (NEED TO FIND A BETTER WAY TO PASS THIS)
+       String fileName = "TestMethod.java";
+       String path = "src";                        // Relative path to TestMethod Class
+       String packageName = "com.EiriniManu";
+       String className = "TestMethod";
+       String methodName = "Test3";
 
-       try(PythonInterpreter pyInt = new PythonInterpreter()) // instantiate python script interpreter
-       {
-           pyInt.exec("tempdiag = open('" + seqDiagPath +  "', 'w+')");   // create and write to file
-           pyInt.exec("tempdiag.write('@startuml \\n')");
-           pyInt.exec("tempdiag.write('Alice -> Bob: test 1 \\n')");
-           pyInt.exec("tempdiag.write('Alice -> Bob: test 2 \\n')");
-           pyInt.exec("tempdiag.write('@enduml \\n')");
-       }
+       //OPERATION STEPS
 
-       try {
-           File seqDiag = new File(seqDiagPath);                        // Open file
-           SourceFileReader seqFileReader = new SourceFileReader(seqDiag);     // instantiate plantUML file parser
-           List<GeneratedImage> imgList = seqFileReader.getGeneratedImages();  // generate UML sequence diagram as png
+       // 1) Parse the given java class for information on a method
+       parser.ParseMethodFromClass(parser.ParseFile(fileName, parser.SetSourceRoot(path,packageName)), className, methodName);
 
-       }catch (Exception e){                                               // handle exceptions
-           System.out.println("ERROR READING SEQUENCE DIAGRAM FILE");
-           System.out.println(e.toString());
-       }
+       // 2) Update the information structure that contains metadata on the method the user wants to display as a diagram
+        sequenceDiagramGenerator.updateDiagramStructure("Test3", testMethod, String.class, int.class, boolean.class);
+
+        // 3) Generate plantUML sequence diagram using the updated information structure.
+        sequenceDiagramGenerator.generateSequenceDiagram(pathToSequenceDiagram);
 
     }
 }

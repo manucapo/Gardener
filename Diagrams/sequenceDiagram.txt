@@ -1,4 +1,3 @@
 @startuml 
-Alice -> Bob: test 1 
-Alice -> Bob: test 2 
+ [o-> com.EiriniManu.TestMethod: Test3
 @enduml 
