@@ -19,10 +19,10 @@ public class Main {
        //OPERATION STEPS
 
        // 1) Parse the given java class for information on a method
-       parser.ParseMethodFromClass(parser.ParseFile(fileName, parser.SetSourceRoot(path,packageName)), className, methodName);
+      // parser.ParseMethodFromClass(parser.ParseFile(fileName, parser.SetSourceRoot(path,packageName)), className, methodName);
 
        // 2) Update the information structure that contains metadata on the method the user wants to display as a diagram
-        sequenceDiagramGenerator.updateDiagramStructure("Test3", testMethod, String.class, int.class, boolean.class);
+        sequenceDiagramGenerator.updateDiagramStructure(methodName , testMethod,className ,fileName,path ,packageName , String.class, int.class, boolean.class);
 
         // 3) Generate plantUML sequence diagram using the updated information structure.
         sequenceDiagramGenerator.generateSequenceDiagram(pathToSequenceDiagram);

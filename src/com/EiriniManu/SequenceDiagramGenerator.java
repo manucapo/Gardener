@@ -8,6 +8,7 @@ package com.EiriniManu;
 
 import net.sourceforge.plantuml.GeneratedImage;
 import net.sourceforge.plantuml.SourceFileReader;
+import org.python.antlr.ast.Str;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -36,10 +37,13 @@ public class SequenceDiagramGenerator implements ISequenceDiagramGenerator {
         // TODO CONSTRUCTOR
     }
 
-    public void updateDiagramStructure(String methodName, Object cls, Class<?>... params){            // Update structure with information gathered by reflector and parser
+    public void updateDiagramStructure(String methodName, Object cls, String className , String classfileName, String classFilePath, String packageName, Class<?>... params){            // Update structure with information gathered by reflector and parser
         structure.setMethodName(methodName);
         reflector.ReflectOnClass(cls, structure);
         reflector.ReflectOnMethod(cls,methodName,structure ,params);
+
+        parser.ParseMethodFromClass(parser.ParseFile(classfileName, parser.SetSourceRoot(classFilePath,packageName)), className, methodName, structure);
+
     }
 
     public void generateSequenceDiagram(String path){                  // Wrapper function for the two-steps required for creating a plantUML diagram image.

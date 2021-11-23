@@ -11,10 +11,12 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.nodeTypes.NodeWithExpression;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import com.github.javaparser.utils.CodeGenerationUtils;
 import com.github.javaparser.utils.Log;
 import com.github.javaparser.utils.SourceRoot;
+import jdk.nashorn.internal.runtime.regexp.joni.constants.NodeType;
 
 public class JavaParser implements IJavaParser {
 
@@ -33,7 +35,7 @@ public class JavaParser implements IJavaParser {
         return cu;
     }
 
-    public void ParseMethodFromClass(CompilationUnit cu, String className, String methodName) {
+    public void ParseMethodFromClass(CompilationUnit cu, String className, String methodName, DiagramStructure diagramStructure) {
         try {
             ClassOrInterfaceDeclaration clsX = new ClassOrInterfaceDeclaration();                 // Holder variable for the class declaration node.
 
@@ -44,7 +46,12 @@ public class JavaParser implements IJavaParser {
             for (MethodDeclaration method : clsX.getMethods()) {                                 // for every method declaration node in the class :
                 if (method.getName().toString().equals(methodName)) {                            // Find method with given name
                     System.out.println(method.getName().toString());
-                    method.walk(Node.TreeTraversal.PREORDER, this::CheckIfMethodCallNode);             // Walk the Subtree of the method node. The tree is traversed in preorder to find the methods in the order they appear in the source code
+
+
+                    for (Node node :method.findAll(MethodCallExpr.class,Node.TreeTraversal.PREORDER )) {
+                        checkMethodCallNode(node, diagramStructure);
+                    }
+                    //  method.walk(Node.TreeTraversal.PREORDER, this::CheckIfMethodCallNode);             // Walk the Subtree of the method node. The tree is traversed in preorder to find the methods in the order they appear in the source code
                     // method.accept(new MethodVisitor(), null);                                     ALTERNATE METHOD TO CHECK NODES
                 }
             }
@@ -54,7 +61,7 @@ public class JavaParser implements IJavaParser {
         }
     }
 
-    public void CheckIfMethodCallNode(Node node) {                 //  Check if node is a Method Call.
+    public void checkMethodCallNode(Node node, DiagramStructure structure) {                 //  Check if node is a Method Call.
         if (node instanceof MethodCallExpr) {
             System.out.println("--------------------------------");
             System.out.println(node.toString());
