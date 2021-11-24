@@ -17,18 +17,25 @@ public class DiagramStructure {
     private String callingClassName;              // Name of class that calls a method (must it be given by user ?)
     private List<String> classMethodNames;        // A list of names of every method implemented in the implementing class
     private String methodName;                    // The name of the method the user is interested in
-    private List<String> parameterTypeNames;      //  A list of names of every parameter TYPE that belong to the method the user is interested in
-    private List<String> methodCalls;
-    private List<String> methodCallTargets;
+    private List<String> parameterType;      //  A list of names of every parameter TYPE that belong to the method the user is interested in
+    private List<String> parameterNames;      // A list of names of every parameter that belongs to the method
+    private List<String> methodCalls;             //  A list of methodCalls made by the method  ( 1 layer of calls atm)
+    private List<String> methodCallTargets;       // The target classes of the method calls
+    private List<String> variableDeclarations;     //  A list of variable declarations made by the method  ( 1 layer of calls atm)
+    private List<String> variableDeclarationTypes; //  The types of variable declarations made by the method  ( 1 layer of calls atm)
 
     public DiagramStructure() {                    // Default constructor. Initializes the class to "safe" values.
         implementingClassName = "NULL";           // The string "NULL" was chosen as default as a class or method could never be called "NULL". Allowing error detection
         callingClassName = "NULL";
         classMethodNames = new ArrayList<>();     // Are ArrayLists the best data structure for our lists of Strings?
         methodName = "NULL";
-        parameterTypeNames = new ArrayList<>();
+        parameterType = new ArrayList<>();
         methodCalls = new ArrayList<>();
         methodCallTargets = new ArrayList<>();
+        variableDeclarations = new ArrayList<>();
+        variableDeclarationTypes = new ArrayList<>();
+        parameterNames = new ArrayList<>();
+        parameterType = new ArrayList<>();
     }
 
     // Getters and setters
@@ -57,6 +64,10 @@ public class DiagramStructure {
         this.classMethodNames = classMethodNames;
     }
 
+    public List<String> getClassMethodNames(){
+        return classMethodNames;
+    }
+
     public String getMethodName() {
         return methodName;
     }
@@ -65,16 +76,29 @@ public class DiagramStructure {
         this.methodName = methodName;
     }
 
-    public List<String> getParameterTypeNames() {
-        return parameterTypeNames;
+    public List<String> getParameterType() {
+        return parameterType;
     }
 
-    public void addParameterTypeName(String name) {
-        this.parameterTypeNames.add(name);
+    public void addParameterType(String name) {
+        this.parameterType.add(name);
     }
 
-    public void setParameterTypeName(List<String> parameterTypeNames) {
-        this.parameterTypeNames = (parameterTypeNames);
+    public void setParameterType(List<String> parameterTypes) {
+        this.parameterType = (parameterTypes);
+    }
+
+
+    public List<String> getParameterNames() {
+        return parameterNames;
+    }
+
+    public void setParameterNames(List<String> parameterNames) {
+        this.parameterNames = parameterNames;
+    }
+
+    public void addParameterName(String parameterName) {
+        this.parameterNames.add(parameterName);
     }
 
     public List<String> getMethodCalls() {
@@ -86,14 +110,40 @@ public class DiagramStructure {
     }
 
     public void addMethodCall(String methodCall) {
-        String[] splitArray1 = methodCall.split("\\(", 0);        // split method call until the first ( bracket
-        String callWithParametersRemoved = splitArray1[0];                   // the string before the ( bracket should be the call without parameters.
-        String[] splitArray2 =  callWithParametersRemoved.split("\\."); // split the call without parameters by . dot
-        this.methodCalls.add(splitArray2[splitArray2.length -1]);             // the last string in the array should be the actual call
-        this.methodCallTargets.add(splitArray2[0]);                           // the first string in the array should be the target class
+        this.methodCalls.add(methodCall);             // the last string in the array should be the actual call
     }
 
     public List<String> getMethodCallTargets(){
         return methodCallTargets;
     }
+
+    public void addMethodCallTarget(String methodCallTarget) {
+        this.methodCallTargets.add(methodCallTarget);
+    }
+
+    public List<String> getVariableDeclarations() {
+        return variableDeclarations;
+    }
+
+    public void setVariableDeclarations(List<String> variableDeclarations) {
+        this.variableDeclarations = variableDeclarations;
+    }
+
+    public void addVariableDeclarations(String variableDeclaration) {
+        this.variableDeclarations.add(variableDeclaration);
+    }
+
+    public List<String> getVariableDeclarationTypes() {
+        return variableDeclarationTypes;
+    }
+
+    public void setVariableDeclarationTypes(List<String> variableDeclarationTypes) {
+        this.variableDeclarationTypes = variableDeclarationTypes;
+    }
+
+    public void addVariableDeclarationTypes(String variableDeclarationType) {
+        this.variableDeclarationTypes.add(variableDeclarationType);
+    }
+
+
 }

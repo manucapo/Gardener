@@ -7,6 +7,7 @@ package com.EiriniManu;
 */
 
 import java.lang.reflect.Method;           // Import Java Reflection API
+import java.lang.reflect.Parameter;
 
 public class Reflector implements IReflector {
 
@@ -26,7 +27,6 @@ public class Reflector implements IReflector {
             System.out.println(method.getName());                             // get method name
             diagramStructure.addClassMethodName(method.getName());            // update diagram structure
         }
-
     }
 
     public void ReflectOnMethod(Object obj, String methodName, DiagramStructure diagramStructure, Class<?>... parameterTypes) { // Get information on a java method implemented in class by name
@@ -43,10 +43,9 @@ public class Reflector implements IReflector {
             System.out.println("DEFAULT VALUE-> " + mtd.getDefaultValue());                  // get default value
             System.out.println("PARAMETER COUNT -> " + mtd.getParameterCount());             // get parameter count
 
-            System.out.println("PARAMETER TYPE -> ");
+            System.out.println("PARAMETER TYPE -> ");                                        // we can get this from java parser.
             for (Class<?> param : mtd.getParameterTypes()) {                                // for each parameter type in list
-                System.out.println(param.getName());                                         // get name of type
-                diagramStructure.addParameterTypeName(param.getName());                      // update diagram structure information
+                System.out.println(param.getSimpleName());                                         // get name of type
             }
             System.out.println("RETURN TYPE -> " + mtd.getReturnType());                      // get return type
 
