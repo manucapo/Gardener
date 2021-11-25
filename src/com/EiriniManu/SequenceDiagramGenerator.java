@@ -8,7 +8,6 @@ package com.EiriniManu;
 
 import net.sourceforge.plantuml.GeneratedImage;
 import net.sourceforge.plantuml.SourceFileReader;
-import org.python.antlr.ast.Str;
 
 import java.io.File;
 import java.io.FileInputStream;

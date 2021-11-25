@@ -26,6 +26,7 @@ public class Reflector implements IReflector {
         for (Method method : cls.getDeclaredMethods()) {                      // for every Method declared in the class
             System.out.println(method.getName());                             // get method name
             diagramStructure.addClassMethodName(method.getName());            // update diagram structure
+            diagramStructure.addClassMethodReturnType(method.getReturnType().getSimpleName());
         }
     }
 

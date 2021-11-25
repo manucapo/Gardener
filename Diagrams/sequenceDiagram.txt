@@ -29,13 +29,13 @@ com.EiriniManu.TestMethod -> Math: abs
 activate Math
 Math-->com.EiriniManu.TestMethod
 deactivate Math
-com.EiriniManu.TestMethod -> com.EiriniManu.TestMethod: split
-activate com.EiriniManu.TestMethod
-com.EiriniManu.TestMethod-->com.EiriniManu.TestMethod
-deactivate com.EiriniManu.TestMethod
 com.EiriniManu.TestMethod -> com.EiriniManu.TestMethod: test4
 activate com.EiriniManu.TestMethod
 com.EiriniManu.TestMethod-->com.EiriniManu.TestMethod
 deactivate com.EiriniManu.TestMethod
+com.EiriniManu.TestMethod -> String: split
+activate String
+String-->com.EiriniManu.TestMethod
+deactivate String
 deactivate com.EiriniManu.TestMethod
 @enduml 

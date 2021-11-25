@@ -16,6 +16,7 @@ public class DiagramStructure {
     private String implementingClassName;         // Name of class where method is implemented
     private String callingClassName;              // Name of class that calls a method (must it be given by user ?)
     private List<String> classMethodNames;        // A list of names of every method implemented in the implementing class
+    private List<String> classMethodReturnTypes;        // A list of names of every method return type  in the implementing class
     private String methodName;                    // The name of the method the user is interested in
     private List<String> parameterType;      //  A list of names of every parameter TYPE that belong to the method the user is interested in
     private List<String> parameterNames;      // A list of names of every parameter that belongs to the method
@@ -28,6 +29,7 @@ public class DiagramStructure {
         implementingClassName = "NULL";           // The string "NULL" was chosen as default as a class or method could never be called "NULL". Allowing error detection
         callingClassName = "NULL";
         classMethodNames = new ArrayList<>();     // Are ArrayLists the best data structure for our lists of Strings?
+        classMethodReturnTypes = new ArrayList<>();
         methodName = "NULL";
         parameterType = new ArrayList<>();
         methodCalls = new ArrayList<>();
@@ -143,6 +145,19 @@ public class DiagramStructure {
 
     public void addVariableDeclarationTypes(String variableDeclarationType) {
         this.variableDeclarationTypes.add(variableDeclarationType);
+    }
+
+
+    public List<String> getClassMethodReturnTypes() {
+        return classMethodReturnTypes;
+    }
+
+    public void setClassMethodReturnType(List<String> classMethodReturnType) {
+        this.classMethodReturnTypes = classMethodReturnType;
+    }
+
+    public void addClassMethodReturnType(String classMethodReturnType) {
+        this.classMethodReturnTypes.add(classMethodReturnType);
     }
 
 

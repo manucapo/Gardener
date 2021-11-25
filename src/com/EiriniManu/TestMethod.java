@@ -30,7 +30,6 @@ public class TestMethod implements  ITestMethod{
         String f = "TEST F";
         s.split("\\.");   // BUG  METHOD TARGET IS s SHOULD BE String ( OR THIS CLASS ? ) ( FIXED NEEDS TEST)
         f.split("\\.");  // BUG  METHOD TARGET IS s SHOULD BE String ( OR THIS CLASS ? )  ( FIXED NEEDS TEST)
-
         Math.abs(2);
         test4("a").split("\\.");  // BUG METHOD IS test4 AND split SHOULD BE SPLIT (detecting two method calls)
       //  test4("a.").split("\\.");  // BUG METHOD IS test4 SHOULD BE SPLIT
