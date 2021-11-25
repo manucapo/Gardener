@@ -33,9 +33,33 @@ com.EiriniManu.TestMethod -> com.EiriniManu.TestMethod: test4
 activate com.EiriniManu.TestMethod
 com.EiriniManu.TestMethod-->com.EiriniManu.TestMethod
 deactivate com.EiriniManu.TestMethod
+com.EiriniManu.TestMethod -> String: split[0]
+activate String
+String-->com.EiriniManu.TestMethod
+deactivate String
+com.EiriniManu.TestMethod ->  : split
+activate  
+ -->com.EiriniManu.TestMethod
+deactivate  
+com.EiriniManu.TestMethod -> com.EiriniManu.TestMethod: test4
+activate com.EiriniManu.TestMethod
+com.EiriniManu.TestMethod-->com.EiriniManu.TestMethod
+deactivate com.EiriniManu.TestMethod
 com.EiriniManu.TestMethod -> String: split
 activate String
 String-->com.EiriniManu.TestMethod
 deactivate String
+com.EiriniManu.TestMethod -> com.EiriniManu.TestMethod: test4
+activate com.EiriniManu.TestMethod
+com.EiriniManu.TestMethod-->com.EiriniManu.TestMethod
+deactivate com.EiriniManu.TestMethod
+com.EiriniManu.TestMethod -> String: split
+activate String
+String-->com.EiriniManu.TestMethod
+deactivate String
+com.EiriniManu.TestMethod ->  : clone
+activate  
+ -->com.EiriniManu.TestMethod
+deactivate  
 deactivate com.EiriniManu.TestMethod
 @enduml 

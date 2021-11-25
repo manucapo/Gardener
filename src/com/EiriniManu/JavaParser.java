@@ -119,7 +119,7 @@ public class JavaParser implements IJavaParser {
             }
             System.out.println("--------------------------------");
         } else {
-            subMethodCounter =- 1;        // decrement submethod counter
+            subMethodCounter--;        // decrement submethod counter
         }
 
     }
@@ -139,6 +139,7 @@ public class JavaParser implements IJavaParser {
 
 
         for (int i = 1; i <= subMethodCounter; i++ ) {
+            System.out.println(subMethodCounter);
             System.out.println("XXXXXXXXXX -- "+ splitArray[i-1] + "."  + splitArray[i]);
             structure.addMethodCall(splitArray[i]);
 
@@ -181,6 +182,8 @@ public class JavaParser implements IJavaParser {
                 structure.addMethodCallTarget(structure.getVariableDeclarationTypes().get(variableIndex));
             } else if (foundParameter) {
                 structure.addMethodCallTarget(structure.getParameterType().get(parameterIndex));
+            } else {
+                structure.addMethodCallTarget(" ");
             }
 
 
