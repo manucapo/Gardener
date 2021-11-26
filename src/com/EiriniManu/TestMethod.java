@@ -39,7 +39,7 @@ public class TestMethod implements  ITestMethod{
         test4("a").split("\\.");
         test4("a").split("\\.");
         test4("a").split("\\.").clone();          // bug missing clone
-        System.out.println(s.toString());  // BUG DETECTING SYSTEM AS METHOD NAME
+     //   System.out.println(s.toString());  // BUG DETECTING SYSTEM AS METHOD NAME
         return 26;
     }
 

@@ -21,20 +21,14 @@ public class SequenceDiagramGenerator implements ISequenceDiagramGenerator {
     private JythonCaller jCaller;
 
 
-    public SequenceDiagramGenerator(){                // Default constructor.
+    public SequenceDiagramGenerator(JavaParser parser){                // Default constructor.
          structure = new DiagramStructure();
          reflector = new Reflector();
-         parser = new JavaParser();
+         this.parser = parser;
          jCaller = new JythonCaller();
         // TODO CONSTRUCTOR
     }
 
-    public SequenceDiagramGenerator(DiagramStructure structure){         // Separate constructor. In case a pre-existing diagram structure should be used
-        reflector = new Reflector();
-        parser = new JavaParser();
-        jCaller = new JythonCaller();        this.structure = structure;
-        // TODO CONSTRUCTOR
-    }
 
     public void updateDiagramStructure(String methodName, Object cls, String className , String classfileName, String classFilePath, String packageName, Class<?>... params){            // Update structure with information gathered by reflector and parser
         structure.setMethodName(methodName);

@@ -19,14 +19,18 @@ import com.github.javaparser.utils.SourceRoot;
 
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class JavaParser implements IJavaParser {
 
     private int subMethodCounter;
+    private List<String> packageDependencies;
 
     public JavaParser() {
-         subMethodCounter = 0;
+        subMethodCounter = 0;
+        packageDependencies = new ArrayList<>();
     }
 
     public SourceRoot SetSourceRoot(String path, String packageName) {                           // Set a Root path for the source code. Needed by the parser.
@@ -42,27 +46,27 @@ public class JavaParser implements IJavaParser {
 
     public void ParseMethodFromClass(CompilationUnit cu, String className, String methodName, DiagramStructure diagramStructure) {
 
-            ClassOrInterfaceDeclaration clsX = new ClassOrInterfaceDeclaration();                 // Holder variable for the class declaration node.
+        ClassOrInterfaceDeclaration clsX = new ClassOrInterfaceDeclaration();                 // Holder variable for the class declaration node.
 
-            if (cu.getClassByName(className).isPresent()) {                                      // Check if class with corresponding name exists. :
-                clsX = cu.getClassByName(className).get();                                       // if yes hold the class declaration node
-            }
+        if (cu.getClassByName(className).isPresent()) {                                      // Check if class with corresponding name exists. :
+            clsX = cu.getClassByName(className).get();                                       // if yes hold the class declaration node
+        }
 
-            for (MethodDeclaration method : clsX.getMethods()) {                                 // for every method declaration node in the class :
-                if (method.getName().toString().equals(methodName)) {                            // Find method with given name
+        for (MethodDeclaration method : clsX.getMethods()) {                                 // for every method declaration node in the class :
+            if (method.getName().toString().equals(methodName)) {                            // Find method with given name
 
-                    for (Parameter node : method.getParameters()) {
-                        checkParameterNode(node, diagramStructure);
-                    }
+                for (Parameter node : method.getParameters()) {
+                    checkParameterNode(node, diagramStructure);
+                }
 
-                    for (Node node : method.findAll(VariableDeclarationExpr.class, Node.TreeTraversal.PREORDER)) {  // extract information on variables inside method
-                        checkVariableNode(node, diagramStructure);
-                    }
-                    for (Node node : method.findAll(MethodCallExpr.class, Node.TreeTraversal.PREORDER)) { // extract information on method calls inside method
-                        checkMethodCallNode(node, diagramStructure, cu);
-                    }
+                for (Node node : method.findAll(VariableDeclarationExpr.class, Node.TreeTraversal.PREORDER)) {  // extract information on variables inside method
+                    checkVariableNode(node, diagramStructure);
+                }
+                for (Node node : method.findAll(MethodCallExpr.class, Node.TreeTraversal.PREORDER)) { // extract information on method calls inside method
+                    checkMethodCallNode(node, diagramStructure, cu);
                 }
             }
+        }
     }
 
     public void checkParameterNode(Node node, DiagramStructure structure) {
@@ -112,20 +116,22 @@ public class JavaParser implements IJavaParser {
 
     }
 
-    public void parseNestedMethodCall(String nestedMethodCall ,int subMethodCounter, DiagramStructure structure){
+    public void parseNestedMethodCall(String nestedMethodCall, int subMethodCounter, DiagramStructure structure) {
 
         boolean containsParameters = true;
         while (containsParameters) {
             nestedMethodCall = nestedMethodCall.replaceAll("\\([^()]*\\)", "");  // remove parameters  GOTTA CHECK THIS FOR NESTED BRACKETS
 
-            if(nestedMethodCall.contains("(") || nestedMethodCall.contains(")")){
+            if (nestedMethodCall.contains("(") || nestedMethodCall.contains(")")) {
                 nestedMethodCall = nestedMethodCall.replaceAll("\\([^()]*\\)", "");  // remove parameters  GOTTA CHECK THIS FOR NESTED BRACKETS
-            } else {containsParameters = false;}
+            } else {
+                containsParameters = false;
+            }
         }
         System.out.println("AFTER " + nestedMethodCall);
         String[] splitArray = nestedMethodCall.split("\\."); // split the call without parameters by . dot
 
-        for (String string : splitArray ) {
+        for (String string : splitArray) {
             System.out.println(string);
 
         }
@@ -133,15 +139,15 @@ public class JavaParser implements IJavaParser {
         parseMethodCallString(splitArray[0], structure);
         String lastClassName = "";
 
-        for (int i = 1; i < subMethodCounter; i++ ) {
+        for (int i = 1; i <= subMethodCounter; i++) {
             System.out.println(subMethodCounter);
-         //   System.out.println("XXXXXXXXXX -- "+ splitArray[i-1] + "."  + splitArray[i]);
+            //   System.out.println("XXXXXXXXXX -- "+ splitArray[i-1] + "."  + splitArray[i]);
             structure.addMethodCall(splitArray[i]);
 
             boolean foundClassMethod = false;
             int methodIndex = 0;
             for (String classMethod : structure.getClassMethodNames()) {
-                if (classMethod.equals(splitArray[i-1])) {
+                if (classMethod.equals(splitArray[i - 1])) {
                     System.out.println("THIS IS A CLASS METHOD");
                     foundClassMethod = true;
                     break;
@@ -152,7 +158,7 @@ public class JavaParser implements IJavaParser {
             int variableIndex = 0;
 
             for (String classMethod : structure.getVariableDeclarations()) {
-                if (classMethod.equals(splitArray[i-1])) {
+                if (classMethod.equals(splitArray[i - 1])) {
                     System.out.println("THIS IS A VARIABLE");
                     foundVariable = true;
                     break;
@@ -163,7 +169,7 @@ public class JavaParser implements IJavaParser {
             boolean foundParameter = false;
             int parameterIndex = 0;
             for (String methodParameter : structure.getParameterNames()) {
-                if (methodParameter.equals(splitArray[i-1])) {
+                if (methodParameter.equals(splitArray[i - 1])) {
                     System.out.println("THIS IS A PARAMETER");
                     foundParameter = true;
                     break;
@@ -175,9 +181,9 @@ public class JavaParser implements IJavaParser {
             int classFieldIndex = 0;
 
             for (String classField : structure.getClassFieldNames()) {
-                if (classField.equals(splitArray[i-1])) {
+                if (classField.equals(splitArray[i - 1])) {
                     System.out.println("THIS IS A CLASS FIELD");
-                    foundClassField= true;
+                    foundClassField = true;
                     break;
                 }
                 classFieldIndex++;
@@ -193,23 +199,34 @@ public class JavaParser implements IJavaParser {
             } else if (foundParameter) {
                 lastClassName = structure.getParameterType().get(parameterIndex);
                 structure.addMethodCallTarget(lastClassName);
-            } else if (foundClassField){
+            } else if (foundClassField) {
                 lastClassName = structure.getClassFieldTypes().get(classFieldIndex);
                 structure.addMethodCallTarget(lastClassName);
             } else {                                                                     // if all else fails try to find method in class in package
-                try {
-                   // Class<?> lastClass = Class.forName("java.lang." + lastClassName);     // MUST CHECK FOR ALL PACKAGES
-                //    System.out.println("com.EiriniManu." + lastClassName);
-                    Class<?> lastClass = Class.forName("com.EiriniManu." + lastClassName);
+
+                boolean classFound = false;
+                Class<?> lastClass = null;
+                for (String pkg : packageDependencies) {
+
+                    try {
+                        lastClass = Class.forName(pkg + lastClassName);     // MUST CHECK FOR ALL PACKAGES
+                        classFound = true;
+                        break;
+                    } catch (Exception e) {
+                        System.out.println("CHECKING NEXT PACKAGE");
+                    }
+
+                }
+                if (classFound) {
                     for (Method method : lastClass.getMethods()) {
-                        if (method.getName().equals(splitArray[i-1])){
+                        if (method.getName().equals(splitArray[i - 1])) {
                             structure.addMethodCallTarget(method.getReturnType().getSimpleName());
                         }
                     }
-                } catch (ClassNotFoundException e) {
-                    System.out.println(e.toString());
+                } else {
                     System.out.println("COULD NOT RESOLVE ANY CLASSES");
-                    structure.addMethodCallTarget("cantfindmethodERROR");
+                    structure.addMethodCallTarget("cantfindmethodtargetERROR");
+
                 }
             }
         }
@@ -258,7 +275,7 @@ public class JavaParser implements IJavaParser {
             System.out.println("CLASS FIELD FINDING AT " + classField);
             if (classField.equals(splitArray2[0])) {
                 System.out.println("THIS IS A CLASS FIELD");
-                foundClassField= true;
+                foundClassField = true;
                 break;
             }
             classFieldIndex++;
@@ -271,10 +288,9 @@ public class JavaParser implements IJavaParser {
             structure.addMethodCallTarget(structure.getVariableDeclarationTypes().get(variableIndex));
         } else if (foundParameter) {
             structure.addMethodCallTarget(structure.getParameterType().get(parameterIndex));
-        } else if (foundClassField){
+        } else if (foundClassField) {
             structure.addMethodCallTarget(structure.getClassFieldTypes().get(classFieldIndex));
-        }
-        else {
+        } else {
             structure.addMethodCallTarget(splitArray2[0]);
         }
 
@@ -296,6 +312,21 @@ public class JavaParser implements IJavaParser {
             System.out.println(n.getName());
             super.visit(n, arg);
         }
+    }
+
+    // GETTERS AND SETTERS
+
+
+    public List<String> getPackageDependencies() {
+        return packageDependencies;
+    }
+
+    public void setPackageDependencies(List<String> packageDependencies) {
+        this.packageDependencies = packageDependencies;
+    }
+
+    public void addPackageDependencies(String packageDependency) {
+        this.packageDependencies.add(packageDependency);
     }
 
 }
