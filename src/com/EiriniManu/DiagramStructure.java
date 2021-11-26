@@ -17,6 +17,8 @@ public class DiagramStructure {
     private String callingClassName;              // Name of class that calls a method (must it be given by user ?)
     private List<String> classMethodNames;        // A list of names of every method implemented in the implementing class
     private List<String> classMethodReturnTypes;        // A list of names of every method return type  in the implementing class
+    private List<String> classFieldNames;              // A list of names of every declared field  in the implementing class
+    private List<String> classFieldTypes;            // A list of names of every declared field TYPE in the implementing class
     private String methodName;                    // The name of the method the user is interested in
     private List<String> parameterType;      //  A list of names of every parameter TYPE that belong to the method the user is interested in
     private List<String> parameterNames;      // A list of names of every parameter that belongs to the method
@@ -38,6 +40,8 @@ public class DiagramStructure {
         variableDeclarationTypes = new ArrayList<>();
         parameterNames = new ArrayList<>();
         parameterType = new ArrayList<>();
+        classFieldNames = new ArrayList<>();
+        classFieldTypes = new ArrayList<>();
     }
 
     // Getters and setters
@@ -161,4 +165,27 @@ public class DiagramStructure {
     }
 
 
+    public List<String> getClassFieldNames() {
+        return classFieldNames;
+    }
+
+    public void setClassFieldNames(List<String> classFieldNames) {
+        this.classFieldNames = classFieldNames;
+    }
+
+    public void addClassFieldNames(String classFieldName) {
+        this.classFieldNames.add(classFieldName);
+    }
+
+    public List<String> getClassFieldTypes() {
+        return classFieldTypes;
+    }
+
+    public void setClassFieldTypes(List<String> classFieldTypes) {
+        this.classFieldTypes = classFieldTypes;
+    }
+
+    public void addGetClassFieldTypes(String getClassFieldType) {
+        this.classFieldTypes.add(getClassFieldType);
+    }
 }

@@ -1,65 +1,61 @@
 @startuml 
-[o-> com.EiriniManu.TestMethod: Test3
-activate com.EiriniManu.TestMethod
-com.EiriniManu.TestMethod -> com.EiriniManu.TestMethod: Test1
-activate com.EiriniManu.TestMethod
-com.EiriniManu.TestMethod-->com.EiriniManu.TestMethod
-deactivate com.EiriniManu.TestMethod
-com.EiriniManu.TestMethod -> com.EiriniManu.TestMethod: Test2
-activate com.EiriniManu.TestMethod
-com.EiriniManu.TestMethod-->com.EiriniManu.TestMethod
-deactivate com.EiriniManu.TestMethod
-com.EiriniManu.TestMethod -> System: println
+[o-> TestMethod: Test3
+activate TestMethod
+TestMethod -> TestMethod: Test1
+activate TestMethod
+TestMethod-->TestMethod
+deactivate TestMethod
+TestMethod -> TestMethod: Test2
+activate TestMethod
+TestMethod-->TestMethod
+deactivate TestMethod
+TestMethod -> System: println
 activate System
-System-->com.EiriniManu.TestMethod
+System-->TestMethod
 deactivate System
-com.EiriniManu.TestMethod -> System: println
+TestMethod -> System: println
 activate System
-System-->com.EiriniManu.TestMethod
+System-->TestMethod
 deactivate System
-com.EiriniManu.TestMethod -> String: split
+TestMethod -> String: split
 activate String
-String-->com.EiriniManu.TestMethod
+String-->TestMethod
 deactivate String
-com.EiriniManu.TestMethod -> String: split
+TestMethod -> String: split
 activate String
-String-->com.EiriniManu.TestMethod
+String-->TestMethod
 deactivate String
-com.EiriniManu.TestMethod -> Math: abs
+TestMethod -> Math: abs
 activate Math
-Math-->com.EiriniManu.TestMethod
+Math-->TestMethod
 deactivate Math
-com.EiriniManu.TestMethod -> com.EiriniManu.TestMethod: test4
-activate com.EiriniManu.TestMethod
-com.EiriniManu.TestMethod-->com.EiriniManu.TestMethod
-deactivate com.EiriniManu.TestMethod
-com.EiriniManu.TestMethod -> String: split[0]
+TestMethod -> __Array__: clone
+activate __Array__
+__Array__-->TestMethod
+deactivate __Array__
+TestMethod -> TestMethod: test4
+activate TestMethod
+TestMethod-->TestMethod
+deactivate TestMethod
+TestMethod -> TestMethod: test4
+activate TestMethod
+TestMethod-->TestMethod
+deactivate TestMethod
+TestMethod -> TestMethod: test4
+activate TestMethod
+TestMethod-->TestMethod
+deactivate TestMethod
+TestMethod -> TestMethod: test4
+activate TestMethod
+TestMethod-->TestMethod
+deactivate TestMethod
+TestMethod -> String: split
 activate String
-String-->com.EiriniManu.TestMethod
+String-->TestMethod
 deactivate String
-com.EiriniManu.TestMethod ->  : split
-activate  
- -->com.EiriniManu.TestMethod
-deactivate  
-com.EiriniManu.TestMethod -> com.EiriniManu.TestMethod: test4
-activate com.EiriniManu.TestMethod
-com.EiriniManu.TestMethod-->com.EiriniManu.TestMethod
-deactivate com.EiriniManu.TestMethod
-com.EiriniManu.TestMethod -> String: split
-activate String
-String-->com.EiriniManu.TestMethod
-deactivate String
-com.EiriniManu.TestMethod -> com.EiriniManu.TestMethod: test4
-activate com.EiriniManu.TestMethod
-com.EiriniManu.TestMethod-->com.EiriniManu.TestMethod
-deactivate com.EiriniManu.TestMethod
-com.EiriniManu.TestMethod -> String: split
-activate String
-String-->com.EiriniManu.TestMethod
-deactivate String
-com.EiriniManu.TestMethod ->  : clone
-activate  
- -->com.EiriniManu.TestMethod
-deactivate  
-deactivate com.EiriniManu.TestMethod
+TestMethod -> System: System
+activate System
+System-->TestMethod
+deactivate System
+deactivate TestMethod
 @enduml 

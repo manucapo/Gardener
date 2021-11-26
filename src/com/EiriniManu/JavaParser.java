@@ -13,20 +13,12 @@ import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
-import com.github.javaparser.symbolsolver.resolution.typesolvers.JarTypeSolver;
 import com.github.javaparser.utils.CodeGenerationUtils;
 import com.github.javaparser.utils.Log;
 import com.github.javaparser.utils.SourceRoot;
 
 
-import com.github.javaparser.symbolsolver.javaparsermodel.JavaParserFacade;
-import com.github.javaparser.symbolsolver.model.resolution.TypeSolver;
-import com.github.javaparser.symbolsolver.resolution.typesolvers.CombinedTypeSolver;
-import com.github.javaparser.symbolsolver.resolution.typesolvers.JavaParserTypeSolver;
-import com.github.javaparser.symbolsolver.resolution.typesolvers.ReflectionTypeSolver;
-
-import java.io.File;
-import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.Optional;
 
 public class JavaParser implements IJavaParser {
@@ -49,7 +41,7 @@ public class JavaParser implements IJavaParser {
     }
 
     public void ParseMethodFromClass(CompilationUnit cu, String className, String methodName, DiagramStructure diagramStructure) {
-        try {
+
             ClassOrInterfaceDeclaration clsX = new ClassOrInterfaceDeclaration();                 // Holder variable for the class declaration node.
 
             if (cu.getClassByName(className).isPresent()) {                                      // Check if class with corresponding name exists. :
@@ -71,10 +63,6 @@ public class JavaParser implements IJavaParser {
                     }
                 }
             }
-        } catch (Exception e) {
-            System.out.println("ERROR PARSING JAVA FILE");
-            System.out.println(e.toString());
-        }
     }
 
     public void checkParameterNode(Node node, DiagramStructure structure) {
@@ -126,9 +114,16 @@ public class JavaParser implements IJavaParser {
 
     public void parseNestedMethodCall(String nestedMethodCall ,int subMethodCounter, DiagramStructure structure){
 
-            System.out.println("XXXXXXXXXXXXXXXXXXXX " + nestedMethodCall);
+        boolean containsParameters = true;
+        while (containsParameters) {
             nestedMethodCall = nestedMethodCall.replaceAll("\\([^()]*\\)", "");  // remove parameters  GOTTA CHECK THIS FOR NESTED BRACKETS
-            String[] splitArray = nestedMethodCall.split("\\."); // split the call without parameters by . dot
+
+            if(nestedMethodCall.contains("(") || nestedMethodCall.contains(")")){
+                nestedMethodCall = nestedMethodCall.replaceAll("\\([^()]*\\)", "");  // remove parameters  GOTTA CHECK THIS FOR NESTED BRACKETS
+            } else {containsParameters = false;}
+        }
+        System.out.println("AFTER " + nestedMethodCall);
+        String[] splitArray = nestedMethodCall.split("\\."); // split the call without parameters by . dot
 
         for (String string : splitArray ) {
             System.out.println(string);
@@ -136,11 +131,11 @@ public class JavaParser implements IJavaParser {
         }
 
         parseMethodCallString(splitArray[0], structure);
+        String lastClassName = "";
 
-
-        for (int i = 1; i <= subMethodCounter; i++ ) {
+        for (int i = 1; i < subMethodCounter; i++ ) {
             System.out.println(subMethodCounter);
-            System.out.println("XXXXXXXXXX -- "+ splitArray[i-1] + "."  + splitArray[i]);
+         //   System.out.println("XXXXXXXXXX -- "+ splitArray[i-1] + "."  + splitArray[i]);
             structure.addMethodCall(splitArray[i]);
 
             boolean foundClassMethod = false;
@@ -176,17 +171,47 @@ public class JavaParser implements IJavaParser {
                 parameterIndex++;
             }
 
-            if (foundClassMethod) {
-                structure.addMethodCallTarget(structure.getClassMethodReturnTypes().get(methodIndex));
-            } else if (foundVariable) {
-                structure.addMethodCallTarget(structure.getVariableDeclarationTypes().get(variableIndex));
-            } else if (foundParameter) {
-                structure.addMethodCallTarget(structure.getParameterType().get(parameterIndex));
-            } else {
-                structure.addMethodCallTarget(" ");
+            boolean foundClassField = false;
+            int classFieldIndex = 0;
+
+            for (String classField : structure.getClassFieldNames()) {
+                if (classField.equals(splitArray[i-1])) {
+                    System.out.println("THIS IS A CLASS FIELD");
+                    foundClassField= true;
+                    break;
+                }
+                classFieldIndex++;
             }
 
+            if (foundClassMethod) {
+                lastClassName = structure.getClassMethodReturnTypes().get(methodIndex);
+                structure.addMethodCallTarget(lastClassName);
 
+            } else if (foundVariable) {
+                lastClassName = structure.getVariableDeclarationTypes().get(variableIndex);
+                structure.addMethodCallTarget(lastClassName);
+            } else if (foundParameter) {
+                lastClassName = structure.getParameterType().get(parameterIndex);
+                structure.addMethodCallTarget(lastClassName);
+            } else if (foundClassField){
+                lastClassName = structure.getClassFieldTypes().get(classFieldIndex);
+                structure.addMethodCallTarget(lastClassName);
+            } else {                                                                     // if all else fails try to find method in class in package
+                try {
+                   // Class<?> lastClass = Class.forName("java.lang." + lastClassName);     // MUST CHECK FOR ALL PACKAGES
+                //    System.out.println("com.EiriniManu." + lastClassName);
+                    Class<?> lastClass = Class.forName("com.EiriniManu." + lastClassName);
+                    for (Method method : lastClass.getMethods()) {
+                        if (method.getName().equals(splitArray[i-1])){
+                            structure.addMethodCallTarget(method.getReturnType().getSimpleName());
+                        }
+                    }
+                } catch (ClassNotFoundException e) {
+                    System.out.println(e.toString());
+                    System.out.println("COULD NOT RESOLVE ANY CLASSES");
+                    structure.addMethodCallTarget("cantfindmethodERROR");
+                }
+            }
         }
 
     }
@@ -227,13 +252,29 @@ public class JavaParser implements IJavaParser {
             parameterIndex++;
         }
 
+        boolean foundClassField = false;
+        int classFieldIndex = 0;
+        for (String classField : structure.getClassFieldNames()) {
+            System.out.println("CLASS FIELD FINDING AT " + classField);
+            if (classField.equals(splitArray2[0])) {
+                System.out.println("THIS IS A CLASS FIELD");
+                foundClassField= true;
+                break;
+            }
+            classFieldIndex++;
+        }
+
+
         if (foundClassMethod) {
             structure.addMethodCallTarget("this");
         } else if (foundVariable) {
             structure.addMethodCallTarget(structure.getVariableDeclarationTypes().get(variableIndex));
         } else if (foundParameter) {
             structure.addMethodCallTarget(structure.getParameterType().get(parameterIndex));
-        } else {
+        } else if (foundClassField){
+            structure.addMethodCallTarget(structure.getClassFieldTypes().get(classFieldIndex));
+        }
+        else {
             structure.addMethodCallTarget(splitArray2[0]);
         }
 

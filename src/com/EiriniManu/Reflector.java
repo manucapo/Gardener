@@ -6,6 +6,7 @@ package com.EiriniManu;
     This is the first layer of information extraction in our process.
 */
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;           // Import Java Reflection API
 import java.lang.reflect.Parameter;
 
@@ -18,8 +19,8 @@ public class Reflector implements IReflector {
     public void ReflectOnClass(Object obj, DiagramStructure diagramStructure) {   // Get information on a java class and update diagram structure
         Class<?> cls = obj.getClass();                                           // get class
         System.out.println("CLASS ------------------------- ");
-        System.out.println("CLASS NAME -> " + cls.getName());                  // get class name
-        diagramStructure.setImplementingClassName(cls.getName());              // update diagram structure
+        System.out.println("CLASS NAME -> " + cls.getSimpleName());                  // get class name
+        diagramStructure.setImplementingClassName(cls.getSimpleName());              // update diagram structure
 
         System.out.println("CLASS METHODS -> ");
 
@@ -27,6 +28,12 @@ public class Reflector implements IReflector {
             System.out.println(method.getName());                             // get method name
             diagramStructure.addClassMethodName(method.getName());            // update diagram structure
             diagramStructure.addClassMethodReturnType(method.getReturnType().getSimpleName());
+        }
+        System.out.println("CLASS FIELDS -> ");
+
+        for (Field field : cls.getDeclaredFields()) {
+            diagramStructure.addClassFieldNames(field.getName());
+            diagramStructure.addGetClassFieldTypes(field.getType().getSimpleName());
         }
     }
 

@@ -28,12 +28,18 @@ public class TestMethod implements  ITestMethod{
             System.out.println("else testprint");
         }
         String f = "TEST F";
+        String[] x = {"hes", "test"};
         s.split("\\.");
         f.split("\\.");
+        x.clone();
         Math.abs(2);
-        test4("a").split("\\.")[0].split("\\.");
+
+
         test4("a").split("\\.");
-        test4("a").split("\\.").clone(); // BUG METHOD IS test4 AND split SHOULD BE SPLIT (detecting three method calls)
+        test4("a").split("\\.");
+        test4("a").split("\\.");
+        test4("a").split("\\.").clone();          // bug missing clone
+        System.out.println(s.toString());  // BUG DETECTING SYSTEM AS METHOD NAME
         return 26;
     }
 

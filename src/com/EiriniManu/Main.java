@@ -1,5 +1,7 @@
 package com.EiriniManu;
 
+import java.io.InputStream;
+
 public class Main {
     
     public static void main(String[] args)
@@ -9,6 +11,7 @@ public class Main {
         SequenceDiagramGenerator sequenceDiagramGenerator = new SequenceDiagramGenerator();            // Instantiate a class that can create a plantUML sequence diagram
         JavaParser parser = new JavaParser();                                                                      // Instantiate a class that can parse java source code to generate an AST (Abstract Syntax Tree)
 
+
         // Some extra metadata entered by the user. (NEED TO FIND A BETTER WAY TO PASS THIS)
        String fileName = "TestMethod.java";
        String path = "src";                        // Relative path to TestMethod Class
@@ -17,7 +20,7 @@ public class Main {
        String methodName = "Test3";
 
 
-
+        // String methodName, Object cls, String className , String classfileName, String classFilePath, String packageName, Class<?>... params
        //OPERATION STEPS
 
        // 1) Update the information structure that contains metadata on the method the user wants to display as a diagram
