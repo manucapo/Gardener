@@ -10,18 +10,18 @@ public class TestMethod implements  ITestMethod{
         // TODO CONSTRUCTOR
     }
 
-    public int Test1(int i) {
+    public int test1(int i) {
         return i;
     }
 
-    public int Test2(String s) {
-        this.Test1(2);
+    public int test2(String s) {
+        this.test1(2);
         return 26;
     }
 
-    public int Test3(String s, int i, boolean bool) {
-        this.Test1(2);
-        Test2("2");
+    public int test3(String s, int i, boolean bool) {
+        this.test1(2);
+        test2("2");
         if (i == 2) {
             System.out.println("if testprint");
         }  else {
@@ -39,11 +39,17 @@ public class TestMethod implements  ITestMethod{
         test4("a").split("\\.");
         test4("a").split("\\.");
         test4("a").split("\\.").clone();          // bug missing clone
-     //   System.out.println(s.toString());  // BUG DETECTING SYSTEM AS METHOD NAME
+        Math.abs(2);
+        // test4("a").split("\\.").clone();          // bug on second run
+
+       // System.out.println(s.toString());  // BUG DETECTING SYSTEM AS METHOD NAME
         return 26;
     }
 
     public String test4(String s){
+
+        test4("a").split("\\.").clone();          // bug missing clone
+        Math.abs(2);
         return "test4";
     }
 

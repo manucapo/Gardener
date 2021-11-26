@@ -9,7 +9,7 @@ public class Main {
         String pathToSequenceDiagram = "Diagrams\\sequenceDiagram.txt";                                            // Choose desired (relative) path to sequence diagram file
         TestMethod testMethod = new TestMethod();                                                                  // Instantiate a class that provides some simple methods to test the program with.
         JavaParser parser = new JavaParser();                                                                      // Instantiate a class that can parse java source code to generate an AST (Abstract Syntax Tree)
-        parser.addPackageDependencies("com.EiriniManu.");                                        // Add packages to check
+        parser.addPackageDependencies("com.EiriniManu.");                                        // Add packages to help resolve classes
         parser.addPackageDependencies("java.lang.");
         SequenceDiagramGenerator sequenceDiagramGenerator = new SequenceDiagramGenerator(parser);            // Instantiate a class that can create a plantUML sequence diagram
 
@@ -21,7 +21,7 @@ public class Main {
        String path = "src";                        // Relative path to TestMethod Class
        String packageName = "com.EiriniManu";
        String className = "TestMethod";
-       String methodName = "Test3";
+       String methodName = "test4";
 
 
         // String methodName, Object cls, String className , String classfileName, String classFilePath, String packageName, Class<?>... params

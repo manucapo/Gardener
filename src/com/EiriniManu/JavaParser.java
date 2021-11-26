@@ -203,7 +203,6 @@ public class JavaParser implements IJavaParser {
                 lastClassName = structure.getClassFieldTypes().get(classFieldIndex);
                 structure.addMethodCallTarget(lastClassName);
             } else {                                                                     // if all else fails try to find method in class in package
-
                 boolean classFound = false;
                 Class<?> lastClass = null;
                 for (String pkg : packageDependencies) {
@@ -221,6 +220,7 @@ public class JavaParser implements IJavaParser {
                     for (Method method : lastClass.getMethods()) {
                         if (method.getName().equals(splitArray[i - 1])) {
                             structure.addMethodCallTarget(method.getReturnType().getSimpleName());
+                            break;
                         }
                     }
                 } else {
@@ -291,6 +291,7 @@ public class JavaParser implements IJavaParser {
         } else if (foundClassField) {
             structure.addMethodCallTarget(structure.getClassFieldTypes().get(classFieldIndex));
         } else {
+            System.out.println("KKKKKKKKKKKKK" + splitArray2[0]);
             structure.addMethodCallTarget(splitArray2[0]);
         }
 
