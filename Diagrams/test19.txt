@@ -22,9 +22,6 @@ TestMethod -> N: toString
 activate N
 N-->TestMethod
 deactivate N
-TestMethod -> LOSTMESSAGE: equals
-activate LOSTMESSAGE
-LOSTMESSAGE-->TestMethod
-deactivate LOSTMESSAGE
+TestMethod ->x] : equals
 return 
 @enduml 

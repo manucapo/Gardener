@@ -277,7 +277,7 @@ public class JavaParser implements IJavaParser {
                 if (classFound && ! targetFound) {
                     for (Method method : lastClass.getDeclaredMethods()) {             // CHECK DECLARED METHODS
                         if (method.getName().equals(methodNameStack.get(i+1))) {
-                            if (method.getReturnType().getSimpleName().replaceAll("<.*>", " ").equals("List") || method.getReturnType().getSimpleName().replaceAll("<.*>", " ").equals("Optional")){  // try to resolve list type
+                            if (method.getReturnType().getSimpleName().replaceAll("<.*>", " ").equals("List") || method.getReturnType().getSimpleName().replaceAll("<.*>", " ").equals("Optional")){  // try to resolve some generic types
                                 Type type = method.getGenericReturnType();
 
                                 if(type instanceof  ParameterizedType){
@@ -305,7 +305,7 @@ public class JavaParser implements IJavaParser {
                         for (Method method : lastClass.getMethods()) {
                             if (method.getName().equals(methodNameStack.get(i+1))) {
 
-                                if (method.getReturnType().getSimpleName().replaceAll("<.*>", " ").equals("List") || method.getReturnType().getSimpleName().replaceAll("<.*>", " ").equals("Optional")){  // try to resolve list type
+                                if (method.getReturnType().getSimpleName().replaceAll("<.*>", " ").equals("List") || method.getReturnType().getSimpleName().replaceAll("<.*>", " ").equals("Optional")){  // try to resolve some generic types
                                     Type type = method.getGenericReturnType();
 
                                     if(type instanceof  ParameterizedType){
@@ -330,8 +330,10 @@ public class JavaParser implements IJavaParser {
 
                 if (false){                     // SAFE MODE
                     methodNameStack.remove(i);
-                } else {
+                } else if (true) {                       // LOST MESSAGE MODE
                     methodTargetStack.add("LOSTMESSAGE");
+                } else {
+                    methodTargetStack.add("ERROR");
                 }
 
 

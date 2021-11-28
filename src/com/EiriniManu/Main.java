@@ -11,6 +11,7 @@ public class Main {
         String pathToSequenceDiagram = "Diagrams";                                            // Choose desired (relative) path to sequence diagram file
         TestMethod testMethod = new TestMethod();                                                                  // Instantiate a class that provides some simple methods to test the program with.
         JavaParser parser = new JavaParser();                                                                      // Instantiate a class that can parse java source code to generate an AST (Abstract Syntax Tree)
+       JythonCaller jCaller = new JythonCaller();
         parser.addPackageDependencies("com.EiriniManu.");                                        // Add packages to help resolve classes
         parser.addPackageDependencies("java.lang.");
         parser.addPackageDependencies("java.util.");
@@ -33,16 +34,17 @@ public class Main {
        String path = "src";                        // Relative path to TestMethod Class
        String packageName = "com.EiriniManu";
        String className = "TestMethod";
-        String methodName = "test19";
+        String methodName = "parseMethodNode";
 
-       for (int i = 1; i <= 1; i++){
-        //  methodName = "test" + String.valueOf(i);
+       for (int i = 1; i <= 19; i++){
+         methodName = "test" + String.valueOf(i);
 
 
 
            // 1) Update the information structure that contains metadata on the method the user wants to display as a diagram
-        // sequenceDiagramGenerator.updateDiagramStructure(methodName ,parser,className ,fileName,path ,packageName , Node.class, int.class, DiagramStructure.class, String.class);
+          //  sequenceDiagramGenerator.updateDiagramStructure(methodName ,parser,className ,fileName,path ,packageName , Node.class, int.class, DiagramStructure.class, String.class);
            sequenceDiagramGenerator.updateDiagramStructure(methodName ,testMethod,className ,fileName,path ,packageName , String.class, int.class, boolean.class);
+          //  sequenceDiagramGenerator.updateDiagramStructure(methodName, jCaller,className ,fileName,path ,packageName ,InputStream.class, String.class, DiagramStructure.class);
 
            // 2) Generate plantUML sequence diagram using the updated information structure.
            sequenceDiagramGenerator.generateSequenceDiagram(pathToSequenceDiagram);
@@ -54,4 +56,5 @@ public class Main {
     }
 }
   //  public String parseMethodNode(Node methodcallNode, int subMethodCounter, DiagramStructure structure, String lastClassName) {
+//createDiagramFile(InputStream stream, String path, DiagramStructure structure) {
 

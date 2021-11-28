@@ -1,6 +1,0 @@
-@startuml 
-participant Actor 
-Actor -> TestMethod: parseMethodNode
-activate TestMethod
-return 
-@enduml 

@@ -129,7 +129,7 @@ public class TestMethod implements  ITestMethod{
         return "26";
     }
 
-    public String test18(String s, int j, boolean bool){        // RESOLVING THE TYPE OF
+    public String test18(String s, int j, boolean bool){        // LIMITATION: RESOLVING THE TYPE OF GENERICS IS SOMETIMES IMPOSSIBLE
         Node node = null;
         if (node.findAncestor(NameExpr.class).isPresent()){
             s.equals(node.findAncestor(NameExpr.class).get());

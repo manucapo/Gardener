@@ -20,6 +20,8 @@ def generateFile(path, implementingClass, methodName, methodCalls, methodCallTar
    tempdiag.write('activate ' + "__Array__" + '\n')
    tempdiag.write("__Array__" + '-->' + implementingClass + '\n')
    tempdiag.write('deactivate ' + "__Array__" + '\n')
+  elif methodCallTargets[i].find("LOSTMESSAGE") >= 0:
+   tempdiag.write(implementingClass + ' ->x] ' + ': ' + method + '\n')
   else:
    tempdiag.write(implementingClass + ' -> ' + methodCallTargets[i] + ': ' + method + '\n')
    tempdiag.write('activate ' + methodCallTargets[i] + '\n')
