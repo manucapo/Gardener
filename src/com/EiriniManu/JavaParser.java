@@ -11,7 +11,7 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.*;
-import com.github.javaparser.ast.stmt.IfStmt;
+import com.github.javaparser.ast.stmt.CatchClause;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import com.github.javaparser.printer.XmlPrinter;
 import com.github.javaparser.utils.CodeGenerationUtils;
@@ -19,11 +19,9 @@ import com.github.javaparser.utils.Log;
 import com.github.javaparser.utils.SourceRoot;
 
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
+import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class JavaParser implements IJavaParser {
 
@@ -57,17 +55,24 @@ public class JavaParser implements IJavaParser {
         for (MethodDeclaration method : clsX.getMethods()) {                                 // for every method declaration node in the class :
             if (method.getName().toString().equals(methodName)) {                            // Find method with given name
 
-                for (Parameter node : method.getParameters()) {
+                XmlPrinter printer = new XmlPrinter(true);
+                System.out.println(printer.output(method));
+
+                for (Parameter node : method.getParameters()) {                       // extract method parameters  (MOVE TO REFLECTOR )
                     checkParameterNode(node, diagramStructure);
+                }
+
+                for (Node node : method.findAll(CatchClause.class, Node.TreeTraversal.PREORDER)) { // extract information on variables declared inside catch clause
+                      checkCatchNode(node, diagramStructure, cu);
                 }
 
                 for (Node node : method.findAll(VariableDeclarationExpr.class, Node.TreeTraversal.PREORDER)) {  // extract information on variables inside method
                     checkVariableNode(node, diagramStructure);
                 }
                 for (Node node : method.findAll(MethodCallExpr.class, Node.TreeTraversal.PREORDER)) { // extract information on method calls inside method
-                    //  checkMethodCallNode(node, diagramStructure, cu);
-                    checkMethodNodeTest(node, diagramStructure, cu);
+                    checkMethodNode(node, diagramStructure, cu);
                 }
+
             }
         }
     }
@@ -84,33 +89,38 @@ public class JavaParser implements IJavaParser {
         structure.addVariableDeclarations(splitArray[1]);                         // the second string should be the variable name
     }
 
+    public void checkCatchNode(Node node, DiagramStructure structure, CompilationUnit cu){
+        for (Parameter param : node.findAll(Parameter.class)) {
+            structure.addCatchParameterNames(param.getNameAsString());
+            structure.addCatchParameterTypes(param.getType().toString());
+        }
+    }
 
-    public void checkMethodNodeTest(Node node, DiagramStructure structure, CompilationUnit cu) {
+    public void checkMethodNode(Node node, DiagramStructure structure, CompilationUnit cu) {
         if (subMethodCounter == 0) {           // Skip the process once for each sub method found
-            boolean foundNestedMethodCall = false;
 
             for (Node subNode : node.findAll(MethodCallExpr.class, Node.TreeTraversal.PREORDER)) {  // check for nested method calls
                 if (subNode != node) {                                                               // ignore original node
                     subMethodCounter += 1;
-                    foundNestedMethodCall = true;
                 }
             }
-            parseMethodNodeTest(node, subMethodCounter, structure, " ");
+            parseMethodNode(node, subMethodCounter, structure, " ");
 
         } else {
             subMethodCounter--;        // decrement submethod counter
         }
     }
 
-    public String parseMethodNodeTest(Node methodcallNode, int subMethodCounter, DiagramStructure structure, String lastClassName) {
+    public String parseMethodNode(Node methodcallNode, int subMethodCounter, DiagramStructure structure, String lastClassName) {
         System.out.println("--------------------TEST PARSER--------------------");
         System.out.println("ORIGINAL METHOD CALL : " + methodcallNode);
 
         XmlPrinter printer = new XmlPrinter(true);
-      //  System.out.println(printer.output(methodcallNode));
+        System.out.println(printer.output(methodcallNode));
 
         List<String> methodNameStack = new ArrayList<>();
         List<String> methodTargetStack = new ArrayList<>();
+        List<String> methodTargetTypeNameStack = new ArrayList<>();
 
         List<MethodCallExpr> containedMethods = methodcallNode.findAll(MethodCallExpr.class, Node.TreeTraversal.BREADTHFIRST);
 
@@ -131,12 +141,27 @@ public class JavaParser implements IJavaParser {
             if (i == containedMethods.size() - 1) {
                 if (!targetFound) {
 
+                    int catchParameterIndex = 0;
+                    if (subMethod.findFirst(NameExpr.class).isPresent() && subMethod.findAncestor(CatchClause.class).isPresent()) {  // if method is in catch clause. check catch parameters
+                        for (String methodParameter : structure.getCatchParameterNames()) {
+                            if (methodParameter.equals(subMethod.findFirst(NameExpr.class).get().getNameAsString())) {
+                                System.out.println("THIS IS A CATCH PARAMETER");
+                                methodTargetStack.add(structure.getCatchParameterTypes().get(catchParameterIndex).replaceAll("<.*>", " "));
+                                methodTargetTypeNameStack.add("");
+                                targetFound = true;
+                                break;
+                            }
+                            catchParameterIndex++;
+                        }
+                    }
+
                     int parameterIndex = 0;
                     if (subMethod.findFirst(NameExpr.class).isPresent()) {
                         for (String methodParameter : structure.getParameterNames()) {
                             if (methodParameter.equals(subMethod.findFirst(NameExpr.class).get().getNameAsString())) {
                                 System.out.println("THIS IS A PARAMETER");
                                 methodTargetStack.add(structure.getParameterType().get(parameterIndex).replaceAll("<.*>", " "));
+                                methodTargetTypeNameStack.add("");
                                 targetFound = true;
                                 break;
                             }
@@ -149,6 +174,7 @@ public class JavaParser implements IJavaParser {
                         if (classMethod.equals(subMethodName)) {
                             System.out.println("THIS IS A CLASS MEHTOD");
                             methodTargetStack.add(structure.getImplementingClassName());
+                            methodTargetTypeNameStack.add("");
                             targetFound = true;
                             break;
                         }
@@ -164,6 +190,7 @@ public class JavaParser implements IJavaParser {
                             if (classMethod.equals(subMethod.findFirst(NameExpr.class).get().getNameAsString())) {
                                 System.out.println("THIS IS A VARIABLE");
                                 methodTargetStack.add(structure.getVariableDeclarationTypes().get(variableIndex).replaceAll("<.*>", " "));
+                                methodTargetTypeNameStack.add("");
                                 targetFound = true;
                                 break;
                             }
@@ -177,9 +204,10 @@ public class JavaParser implements IJavaParser {
                     int classFieldIndex = 0;
                     for (String classField : structure.getClassFieldNames()) {
                         System.out.println("CLASS FIELD FINDING AT " + classField);
-                        if (classField.equals(subMethodName)) {
+                        if (classField.equals(subMethod.findFirst(NameExpr.class).get().getNameAsString())) {
                             System.out.println("THIS IS A CLASS FIELD");
                             methodTargetStack.add(structure.getClassFieldTypes().get(classFieldIndex).replaceAll("<.*>", " "));
+                            methodTargetTypeNameStack.add("");
                             targetFound = true;
                             break;
                         }
@@ -193,6 +221,7 @@ public class JavaParser implements IJavaParser {
                             try {
                                 lastClass = Class.forName(pkg + subMethod.findFirst(NameExpr.class).get().getNameAsString());     // MUST CHECK FOR ALL PACKAGES
                                 methodTargetStack.add(lastClass.getSimpleName().replaceAll("<.*>", " "));
+                                methodTargetTypeNameStack.add("");
                                 targetFound = true;
                                 break;
                             } catch (Exception e) {
@@ -208,6 +237,7 @@ public class JavaParser implements IJavaParser {
                         Node fieldAcess = subMethod.findFirst(FieldAccessExpr.class).get();
                         if (fieldAcess.findFirst(NameExpr.class).isPresent()) {
                             methodTargetStack.add(fieldAcess.findFirst(NameExpr.class).get().getNameAsString());
+                            methodTargetTypeNameStack.add("");
                             targetFound = true;
                         }
                     }
@@ -222,6 +252,18 @@ public class JavaParser implements IJavaParser {
                         String previousTarget = methodTargetStack.get(methodTargetStack.size() - 1);
                         if (previousTarget.contains("[")){
                            previousTarget = "Object";          // if last target was an array
+                        } else if (previousTarget.equals("List")){                      // if last target was a list
+                            if (methodNameStack.get(i + 1).equals("get")) {     // if last method was get
+                                previousTarget = methodTargetTypeNameStack.get(methodTargetStack.size() - 1);
+                                methodTargetStack.add(previousTarget);
+                                targetFound = true;
+                            }
+                        } else if (previousTarget.equals("Optional")){                      // if last target was optional
+                            if (methodNameStack.get(i + 1).equals("get")) {     // if last method was get
+                                previousTarget = methodTargetTypeNameStack.get(methodTargetStack.size() - 1);
+                                methodTargetStack.add(previousTarget);
+                                targetFound = true;
+                            }
                         }
                         lastClass = Class.forName(pkg + previousTarget);     // MUST CHECK FOR ALL PACKAGES
                         classFound = true;
@@ -231,21 +273,68 @@ public class JavaParser implements IJavaParser {
                     }
 
                 }
-                if (classFound) {
-                    for (Method method : lastClass.getDeclaredMethods()) {
+
+                if (classFound && ! targetFound) {
+                    for (Method method : lastClass.getDeclaredMethods()) {             // CHECK DECLARED METHODS
                         if (method.getName().equals(methodNameStack.get(i+1))) {
+                            if (method.getReturnType().getSimpleName().replaceAll("<.*>", " ").equals("List") || method.getReturnType().getSimpleName().replaceAll("<.*>", " ").equals("Optional")){  // try to resolve list type
+                                Type type = method.getGenericReturnType();
+
+                                if(type instanceof  ParameterizedType){
+                                    ParameterizedType pt = (ParameterizedType) type;
+                                    String typeName = pt.getActualTypeArguments()[0].getTypeName().split("\\.")[pt.getActualTypeArguments()[0].getTypeName().split("\\.").length -1];
+
+                                    for (Type str: pt.getActualTypeArguments()
+                                         ) {
+                                        System.out.println(str.getTypeName());
+                                    }
+
+                                    System.out.println("BINGO :" + typeName);
+                                    methodTargetTypeNameStack.add(typeName);
+                                }
+                            } else {
+                                methodTargetTypeNameStack.add("");
+                            }
                             methodTargetStack.add(method.getReturnType().getSimpleName().replaceAll("<.*>", " "));
-                           // methodTargetStack.add(lastClass.getSimpleName());
+                            targetFound = true;
                             break;
                         }
                     }
-                }
 
+                    if (!targetFound){                                             // CHECK INHERITED METHODS
+                        for (Method method : lastClass.getMethods()) {
+                            if (method.getName().equals(methodNameStack.get(i+1))) {
+
+                                if (method.getReturnType().getSimpleName().replaceAll("<.*>", " ").equals("List") || method.getReturnType().getSimpleName().replaceAll("<.*>", " ").equals("Optional")){  // try to resolve list type
+                                    Type type = method.getGenericReturnType();
+
+                                    if(type instanceof  ParameterizedType){
+                                        ParameterizedType pt = (ParameterizedType) type;
+                                        String typeName = pt.getActualTypeArguments()[0].getTypeName().split("\\.")[pt.getActualTypeArguments()[0].getTypeName().split("\\.").length -1];
+                                        methodTargetTypeNameStack.add(typeName);
+                                    }
+                                } else {
+                                    methodTargetTypeNameStack.add("");
+                                }
+                                methodTargetStack.add(method.getReturnType().getSimpleName().replaceAll("<.*>", " "));
+                                targetFound = true;
+                                break;
+                            }
+                        }
+                    }
+                }
             }
 
-            if (!targetFound && !classFound) {
+            if (!targetFound) {
                 System.out.println("COULD NOT RESOLVE ANY TARGETS");
-                methodTargetStack.add("cantfindmethodtargetERROR");
+
+                if (false){                     // SAFE MODE
+                    methodNameStack.remove(i);
+                } else {
+                    methodTargetStack.add("LOSTMESSAGE");
+                }
+
+
 
             }
             System.out.println("RELOOPING -----------------------------");
@@ -265,82 +354,7 @@ public class JavaParser implements IJavaParser {
         return "cantfindmethodtargetERROR";
     }
 
-    public void parseMethodCallString(String methodCall, DiagramStructure structure) {
 
-        methodCall = removeParametersFromMethodCall(methodCall);
-        String[] splitArray2 = methodCall.split("\\."); // split the call without parameters by . dot
-        structure.addMethodCall(splitArray2[splitArray2.length - 1]);        // the last string in the array should be the actual call
-
-        boolean foundClassMethod = false;
-        for (String classMethod : structure.getClassMethodNames()) {
-            if (classMethod.equals(splitArray2[0])) {
-                System.out.println("THIS IS A CLASS MEHTOD");
-                foundClassMethod = true;
-            }
-        }
-        boolean foundVariable = false;
-        int variableIndex = 0;
-
-        for (String classMethod : structure.getVariableDeclarations()) {
-            if (classMethod.equals(splitArray2[0])) {
-                System.out.println("THIS IS A VARIABLE");
-                foundVariable = true;
-                break;
-            }
-            variableIndex++;
-        }
-
-        boolean foundParameter = false;
-        int parameterIndex = 0;
-        for (String methodParameter : structure.getParameterNames()) {
-            if (methodParameter.equals(splitArray2[0])) {
-                System.out.println("THIS IS A PARAMETER");
-                foundParameter = true;
-                break;
-            }
-            parameterIndex++;
-        }
-
-        boolean foundClassField = false;
-        int classFieldIndex = 0;
-        for (String classField : structure.getClassFieldNames()) {
-            System.out.println("CLASS FIELD FINDING AT " + classField);
-            if (classField.equals(splitArray2[0])) {
-                System.out.println("THIS IS A CLASS FIELD");
-                foundClassField = true;
-                break;
-            }
-            classFieldIndex++;
-        }
-
-
-        if (foundClassMethod) {
-            structure.addMethodCallTarget("this");
-        } else if (foundVariable) {
-            structure.addMethodCallTarget(structure.getVariableDeclarationTypes().get(variableIndex).replaceAll("<.*>", " "));
-        } else if (foundParameter) {
-            structure.addMethodCallTarget(structure.getParameterType().get(parameterIndex).replaceAll("<.*>", " "));
-        } else if (foundClassField) {
-            structure.addMethodCallTarget(structure.getClassFieldTypes().get(classFieldIndex).replaceAll("<.*>", " "));
-        } else {
-            System.out.println("KKKKKKKKKKKKK" + splitArray2[0]);
-            structure.addMethodCallTarget(splitArray2[0].replaceAll("<.*>", " "));
-        }
-
-    }
-
-
-    private String removeParametersFromMethodCall(String nestedMethodCall) {
-        boolean containsParameters = true;
-        while (containsParameters) {
-            if (nestedMethodCall.contains("(") || nestedMethodCall.contains(")")) {
-                nestedMethodCall = nestedMethodCall.replaceAll("\\([^()]*\\)", "");  // remove parameters  GOTTA CHECK THIS FOR NESTED BRACKETS
-            } else {
-                containsParameters = false;
-            }
-        }
-        return nestedMethodCall;
-    }
     // The Classes below are part of the JavaParser API and can be used to "visit" and operate on the nodes of the AST.  https://www.tutorialspoint.com/design_pattern/visitor_pattern.htm
 
     static class MethodVisitor extends VoidVisitorAdapter<Void> {    // Visitor class that checks MethodCall nodes.

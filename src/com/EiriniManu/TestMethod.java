@@ -4,12 +4,20 @@ package com.EiriniManu;
     This class represents an object that can expose some methods to test the program with.
 */
 
+import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.expr.NameExpr;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class TestMethod implements  ITestMethod{
 
+    List<String> methodTargetStack = new ArrayList<>();
+    DiagramStructure structure = new DiagramStructure();
+    int parameterIndex = 0;
+
     public TestMethod(){
+        methodTargetStack.add("TEST");
         // TODO CONSTRUCTOR
     }
 
@@ -84,6 +92,61 @@ public class TestMethod implements  ITestMethod{
         s.toString().split("").clone().toString();
         return "26";
     }
+
+    public String test14(String s, int j, boolean bool){
+      try {
+          String e = "";
+          e.toString();
+      } catch (Exception e){
+          System.out.println(e.toString());
+      }
+        return "26";
+    }
+
+    public String test15(String s, int j, boolean bool){
+        try {
+            String e = "";
+            e.toString();
+        } catch (Exception e){
+            System.out.println(e.toString());
+        }
+        return "26";
+    }
+
+    public String test16(String s, int j, boolean bool){
+
+        Node node = null;
+        node.findFirst(NameExpr.class).isPresent();
+
+        return "26";
+    }
+
+    public String test17(String s, int j, boolean bool){
+
+        Node node = null;
+        node.findAncestor(NameExpr.class).isPresent();
+
+        return "26";
+    }
+
+    public String test18(String s, int j, boolean bool){        // RESOLVING THE TYPE OF
+        Node node = null;
+        if (node.findAncestor(NameExpr.class).isPresent()){
+            s.equals(node.findAncestor(NameExpr.class).get());
+        }
+
+        return "26";
+    }
+
+    public String test19(String s, int j, boolean bool){
+        Node node = null;
+        if (node.findAncestor(NameExpr.class).isPresent()){
+            s.equals(node.findAncestor(NameExpr.class).get().toString());
+        }
+
+        return "26";
+    }
+
 
 
 

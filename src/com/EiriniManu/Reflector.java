@@ -42,8 +42,11 @@ public class Reflector implements IReflector {
             Method mtd = cls.getMethod(methodName, parameterTypes);                 // get method
 
             for (Class<?> param : mtd.getParameterTypes()) {                                // for each parameter type in list
+
             }
+
             diagramStructure.setMethodReturnType(mtd.getReturnType().getSimpleName());
+
 
         } catch (Exception e) {
             System.out.println("ERROR TESTING METHOD ");

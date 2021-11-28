@@ -23,6 +23,9 @@ public class DiagramStructure {
     private String methodReturnType;                  // the return Type of the method
     private List<String> parameterType;      //  A list of names of every parameter TYPE that belong to the method the user is interested in
     private List<String> parameterNames;      // A list of names of every parameter that belongs to the method
+    private List<String> catchParameterTypes;
+
+    private List<String> catchParameterNames;
     private List<String> methodCalls;             //  A list of methodCalls made by the method  ( 1 layer of calls atm)
     private List<String> methodCallTargets;       // The target classes of the method calls
     private List<String> variableDeclarations;     //  A list of variable declarations made by the method  ( 1 layer of calls atm)
@@ -42,6 +45,8 @@ public class DiagramStructure {
         variableDeclarationTypes = new ArrayList<>();
         parameterNames = new ArrayList<>();
         parameterType = new ArrayList<>();
+        catchParameterTypes = new ArrayList<>();
+        catchParameterNames = new ArrayList<>();
         classFieldNames = new ArrayList<>();
         classFieldTypes = new ArrayList<>();
     }
@@ -116,6 +121,31 @@ public class DiagramStructure {
 
     public void addParameterName(String parameterName) {
         this.parameterNames.add(parameterName);
+    }
+
+    public List<String> getCatchParameterTypes() {
+        return catchParameterTypes;
+    }
+
+    public void setCatchParameterTypes(List<String> catchParameterTypes) {
+        this.catchParameterTypes = catchParameterTypes;
+    }
+
+    public void addCatchParameterTypes(String catchParameterType) {
+        this.catchParameterTypes.add(catchParameterType);
+    }
+
+
+    public List<String> getCatchParameterNames() {
+        return catchParameterNames;
+    }
+
+    public void setCatchParameterNames(List<String> catchParameterNames) {
+        this.catchParameterNames = catchParameterNames;
+    }
+
+    public void addCatchParameterNames(String catchParameterName) {
+        this.catchParameterNames.add(catchParameterName);
     }
 
     public List<String> getMethodCalls() {
