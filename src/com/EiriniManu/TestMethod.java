@@ -60,12 +60,12 @@ public class TestMethod implements  ITestMethod{
     }
 
     public String test8(String s, int i, boolean bool) {
-        test7("a", 2, true).split("\\.");          // BUG HERE
+        test7("a", 2, true).split("\\.");
         return "2";
     }
 
     public String test9(String s, int i, boolean bool) {
-        this.test7("a", 2, true).split("\\.");       // BUG HERE
+        this.test7("a", 2, true).split("\\.");
         return "2";
     }
 

@@ -8,13 +8,8 @@ public class Main {
     
     public static void main(String[] args)
     {
-        String pathToSequenceDiagram = "Diagrams";                                            // Choose desired (relative) path to sequence diagram file
+
         TestMethod testMethod = new TestMethod();                                                                  // Instantiate a class that provides some simple methods to test the program with.
-        JavaParser parser = new JavaParser();                                                                      // Instantiate a class that can parse java source code to generate an AST (Abstract Syntax Tree)
-       JythonCaller jCaller = new JythonCaller();
-
-
-
         SequenceDiagramGenerator sequenceDiagramGenerator = new SequenceDiagramGenerator();            // Instantiate a class that can create a plantUML sequence diagram
         sequenceDiagramGenerator.addDependency("com.EiriniManu.");                                        // Add packages to help resolve classes
         sequenceDiagramGenerator.addDependency("java.lang.");
@@ -30,6 +25,7 @@ public class Main {
 
         // Some extra metadata entered by the user. (NEED TO FIND A BETTER WAY TO PASS THIS)
        String pathToSource = "src";                        // Relative path to TestMethod Class
+        String pathToSequenceDiagram = "Diagrams";                                            // Choose desired (relative) path to sequence diagram file
        String packageName = "com.EiriniManu";
        String className = "TestMethod";
 
