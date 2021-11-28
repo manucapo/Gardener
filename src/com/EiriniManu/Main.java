@@ -42,9 +42,7 @@ public class Main {
 
 
            // 1) Update the information structure that contains metadata on the method the user wants to display as a diagram
-          //  sequenceDiagramGenerator.updateDiagramStructure(methodName ,parser,className ,fileName,path ,packageName , Node.class, int.class, DiagramStructure.class, String.class);
            sequenceDiagramGenerator.updateDiagramStructure(methodName ,testMethod,className ,fileName,path ,packageName , String.class, int.class, boolean.class);
-          //  sequenceDiagramGenerator.updateDiagramStructure(methodName, jCaller,className ,fileName,path ,packageName ,InputStream.class, String.class, DiagramStructure.class);
 
            // 2) Generate plantUML sequence diagram using the updated information structure.
            sequenceDiagramGenerator.generateSequenceDiagram(pathToSequenceDiagram);
