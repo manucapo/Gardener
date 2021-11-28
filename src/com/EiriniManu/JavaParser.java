@@ -13,11 +13,13 @@ import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
+import com.github.javaparser.printer.XmlPrinter;
 import com.github.javaparser.utils.CodeGenerationUtils;
 import com.github.javaparser.utils.Log;
 import com.github.javaparser.utils.SourceRoot;
 
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +65,8 @@ public class JavaParser implements IJavaParser {
                     checkVariableNode(node, diagramStructure);
                 }
                 for (Node node : method.findAll(MethodCallExpr.class, Node.TreeTraversal.PREORDER)) { // extract information on method calls inside method
-                    checkMethodCallNode(node, diagramStructure, cu);
+                    //  checkMethodCallNode(node, diagramStructure, cu);
+                    checkMethodNodeTest(node, diagramStructure, cu);
                 }
             }
         }
@@ -81,161 +84,190 @@ public class JavaParser implements IJavaParser {
         structure.addVariableDeclarations(splitArray[1]);                         // the second string should be the variable name
     }
 
-    public void checkMethodCallNode(Node node, DiagramStructure structure, CompilationUnit cu) {
 
-        System.out.println("--------------------------------");
-        System.out.println(node.toString());
-
+    public void checkMethodNodeTest(Node node, DiagramStructure structure, CompilationUnit cu) {
         if (subMethodCounter == 0) {           // Skip the process once for each sub method found
             boolean foundNestedMethodCall = false;
 
             for (Node subNode : node.findAll(MethodCallExpr.class, Node.TreeTraversal.PREORDER)) {  // check for nested method calls
                 if (subNode != node) {                                                               // ignore original node
-                    System.out.println("THERE IS A SUBNODE " + subNode.toString());
                     subMethodCounter += 1;
                     foundNestedMethodCall = true;
                 }
             }
+            parseMethodNodeTest(node, subMethodCounter, structure, " ");
 
-            if (!foundNestedMethodCall) {
-                parseMethodCallString(node.toString(), structure);
-                System.out.println("PARSING METHOD");
-            } else {
-                parseNestedMethodCall(node.toString(), subMethodCounter, structure);
-                System.out.println("PARSING METHOD STACK");
-            }
-
-            if (!node.findAncestor(IfStmt.class).equals(Optional.empty())) {
-                // System.out.println( node.findAncestor(IfStmt.class).get().getElseStmt());
-                System.out.println("THIS MEHTOD IS INSIDE AN IF BLOCK");
-            }
-            System.out.println("--------------------------------");
         } else {
             subMethodCounter--;        // decrement submethod counter
         }
-
     }
 
-    public void parseNestedMethodCall(String nestedMethodCall, int subMethodCounter, DiagramStructure structure) {
+    public String parseMethodNodeTest(Node methodcallNode, int subMethodCounter, DiagramStructure structure, String lastClassName) {
+        System.out.println("--------------------TEST PARSER--------------------");
+        System.out.println("ORIGINAL METHOD CALL : " + methodcallNode);
 
-        boolean containsParameters = true;
-        while (containsParameters) {
-            nestedMethodCall = nestedMethodCall.replaceAll("\\([^()]*\\)", "");  // remove parameters  GOTTA CHECK THIS FOR NESTED BRACKETS
+        XmlPrinter printer = new XmlPrinter(true);
+      //  System.out.println(printer.output(methodcallNode));
 
-            if (nestedMethodCall.contains("(") || nestedMethodCall.contains(")")) {
-                nestedMethodCall = nestedMethodCall.replaceAll("\\([^()]*\\)", "");  // remove parameters  GOTTA CHECK THIS FOR NESTED BRACKETS
-            } else {
-                containsParameters = false;
-            }
-        }
-        System.out.println("AFTER " + nestedMethodCall);
-        String[] splitArray = nestedMethodCall.split("\\."); // split the call without parameters by . dot
+        List<String> methodNameStack = new ArrayList<>();
+        List<String> methodTargetStack = new ArrayList<>();
 
-        for (String string : splitArray) {
-            System.out.println(string);
+        List<MethodCallExpr> containedMethods = methodcallNode.findAll(MethodCallExpr.class, Node.TreeTraversal.BREADTHFIRST);
 
+        for (int i = 0; i < containedMethods.size(); i++) {
+            Node subMethod = containedMethods.get(i);
+            String subMethodName = subMethod.findAll(SimpleName.class, Node.TreeTraversal.BREADTHFIRST).get(0).toString();
+            methodNameStack.add(subMethodName);
         }
 
-        parseMethodCallString(splitArray[0], structure);
-        String lastClassName = "";
+        for (int i = containedMethods.size() - 1; i >= 0; i--) {
+            Node subMethod = containedMethods.get(i);
+            String subMethodName = subMethod.findAll(SimpleName.class, Node.TreeTraversal.BREADTHFIRST).get(0).toString();
 
-        for (int i = 1; i <= subMethodCounter; i++) {
-            System.out.println(subMethodCounter);
-            //   System.out.println("XXXXXXXXXX -- "+ splitArray[i-1] + "."  + splitArray[i]);
-            structure.addMethodCall(splitArray[i]);
+            boolean targetFound = false;
+            boolean classFound = false;
+            Class<?> lastClass = null;
 
-            boolean foundClassMethod = false;
-            int methodIndex = 0;
-            for (String classMethod : structure.getClassMethodNames()) {
-                if (classMethod.equals(splitArray[i - 1])) {
-                    System.out.println("THIS IS A CLASS METHOD");
-                    foundClassMethod = true;
-                    break;
+            if (i == containedMethods.size() - 1) {
+                if (!targetFound) {
+
+                    int parameterIndex = 0;
+                    if (subMethod.findFirst(NameExpr.class).isPresent()) {
+                        for (String methodParameter : structure.getParameterNames()) {
+                            if (methodParameter.equals(subMethod.findFirst(NameExpr.class).get().getNameAsString())) {
+                                System.out.println("THIS IS A PARAMETER");
+                                methodTargetStack.add(structure.getParameterType().get(parameterIndex).replaceAll("<.*>", " "));
+                                targetFound = true;
+                                break;
+                            }
+                            parameterIndex++;
+                        }
+                    }
                 }
-                methodIndex++;
-            }
-            boolean foundVariable = false;
-            int variableIndex = 0;
-
-            for (String classMethod : structure.getVariableDeclarations()) {
-                if (classMethod.equals(splitArray[i - 1])) {
-                    System.out.println("THIS IS A VARIABLE");
-                    foundVariable = true;
-                    break;
+                if (!targetFound) {
+                    for (String classMethod : structure.getClassMethodNames()) {
+                        if (classMethod.equals(subMethodName)) {
+                            System.out.println("THIS IS A CLASS MEHTOD");
+                            methodTargetStack.add(structure.getImplementingClassName());
+                            targetFound = true;
+                            break;
+                        }
+                    }
                 }
-                variableIndex++;
-            }
 
-            boolean foundParameter = false;
-            int parameterIndex = 0;
-            for (String methodParameter : structure.getParameterNames()) {
-                if (methodParameter.equals(splitArray[i - 1])) {
-                    System.out.println("THIS IS A PARAMETER");
-                    foundParameter = true;
-                    break;
+
+                if (!targetFound) {
+
+                    int variableIndex = 0;
+                    if (subMethod.findFirst(NameExpr.class).isPresent()) {
+                        for (String classMethod : structure.getVariableDeclarations()) {
+                            if (classMethod.equals(subMethod.findFirst(NameExpr.class).get().getNameAsString())) {
+                                System.out.println("THIS IS A VARIABLE");
+                                methodTargetStack.add(structure.getVariableDeclarationTypes().get(variableIndex).replaceAll("<.*>", " "));
+                                targetFound = true;
+                                break;
+                            }
+                            variableIndex++;
+                        }
+
+                    }
                 }
-                parameterIndex++;
-            }
 
-            boolean foundClassField = false;
-            int classFieldIndex = 0;
-
-            for (String classField : structure.getClassFieldNames()) {
-                if (classField.equals(splitArray[i - 1])) {
-                    System.out.println("THIS IS A CLASS FIELD");
-                    foundClassField = true;
-                    break;
+                if (!targetFound) {
+                    int classFieldIndex = 0;
+                    for (String classField : structure.getClassFieldNames()) {
+                        System.out.println("CLASS FIELD FINDING AT " + classField);
+                        if (classField.equals(subMethodName)) {
+                            System.out.println("THIS IS A CLASS FIELD");
+                            methodTargetStack.add(structure.getClassFieldTypes().get(classFieldIndex).replaceAll("<.*>", " "));
+                            targetFound = true;
+                            break;
+                        }
+                        classFieldIndex++;
+                    }
                 }
-                classFieldIndex++;
+
+                if (subMethod.findFirst(NameExpr.class).isPresent()) {
+                        for (String pkg : packageDependencies) {
+
+                            try {
+                                lastClass = Class.forName(pkg + subMethod.findFirst(NameExpr.class).get().getNameAsString());     // MUST CHECK FOR ALL PACKAGES
+                                methodTargetStack.add(lastClass.getSimpleName().replaceAll("<.*>", " "));
+                                targetFound = true;
+                                break;
+                            } catch (Exception e) {
+                                        //TODO
+                            }
+                        }
+                }
             }
 
-            if (foundClassMethod) {
-                lastClassName = structure.getClassMethodReturnTypes().get(methodIndex);
-                structure.addMethodCallTarget(lastClassName);
+                if (!targetFound) {
 
-            } else if (foundVariable) {
-                lastClassName = structure.getVariableDeclarationTypes().get(variableIndex);
-                structure.addMethodCallTarget(lastClassName);
-            } else if (foundParameter) {
-                lastClassName = structure.getParameterType().get(parameterIndex);
-                structure.addMethodCallTarget(lastClassName);
-            } else if (foundClassField) {
-                lastClassName = structure.getClassFieldTypes().get(classFieldIndex);
-                structure.addMethodCallTarget(lastClassName);
-            } else {                                                                     // if all else fails try to find method in class in package
-                boolean classFound = false;
-                Class<?> lastClass = null;
+                    if (subMethod.findFirst(FieldAccessExpr.class).isPresent()) {
+                        Node fieldAcess = subMethod.findFirst(FieldAccessExpr.class).get();
+                        if (fieldAcess.findFirst(NameExpr.class).isPresent()) {
+                            methodTargetStack.add(fieldAcess.findFirst(NameExpr.class).get().getNameAsString());
+                            targetFound = true;
+                        }
+                    }
+                }
+
+
+
+            if (!targetFound) {
+
                 for (String pkg : packageDependencies) {
-
                     try {
-                        lastClass = Class.forName(pkg + lastClassName);     // MUST CHECK FOR ALL PACKAGES
+                        String previousTarget = methodTargetStack.get(methodTargetStack.size() - 1);
+                        if (previousTarget.contains("[")){
+                           previousTarget = "Object";          // if last target was an array
+                        }
+                        lastClass = Class.forName(pkg + previousTarget);     // MUST CHECK FOR ALL PACKAGES
                         classFound = true;
                         break;
                     } catch (Exception e) {
-                        System.out.println("CHECKING NEXT PACKAGE");
+                     // TODO
                     }
 
                 }
                 if (classFound) {
-                    for (Method method : lastClass.getMethods()) {
-                        if (method.getName().equals(splitArray[i - 1])) {
-                            structure.addMethodCallTarget(method.getReturnType().getSimpleName());
+                    for (Method method : lastClass.getDeclaredMethods()) {
+                        if (method.getName().equals(methodNameStack.get(i+1))) {
+                            methodTargetStack.add(method.getReturnType().getSimpleName().replaceAll("<.*>", " "));
+                           // methodTargetStack.add(lastClass.getSimpleName());
                             break;
                         }
                     }
-                } else {
-                    System.out.println("COULD NOT RESOLVE ANY CLASSES");
-                    structure.addMethodCallTarget("cantfindmethodtargetERROR");
-
                 }
+
             }
+
+            if (!targetFound && !classFound) {
+                System.out.println("COULD NOT RESOLVE ANY TARGETS");
+                methodTargetStack.add("cantfindmethodtargetERROR");
+
+            }
+            System.out.println("RELOOPING -----------------------------");
         }
 
+        for (int i = methodNameStack.size() - 1; i >= 0; i--) {
+            System.out.println("NAME : " + methodNameStack.get(i));
+            structure.addMethodCall(methodNameStack.get(i));                                                 // first contained name should be method name
+        }
+
+        for (int i = 0; i <= methodTargetStack.size() - 1; i++) {
+            System.out.println("TARGET : " + methodTargetStack.get(i));
+            structure.addMethodCallTarget(methodTargetStack.get(i));                                                 // first contained name should be method name
+        }
+
+
+        return "cantfindmethodtargetERROR";
     }
 
     public void parseMethodCallString(String methodCall, DiagramStructure structure) {
 
-        methodCall = methodCall.replaceAll("\\([^()]*\\)", "");  // remove parameters  GOTTA CHECK THIS FOR NESTED BRACKETS
+        methodCall = removeParametersFromMethodCall(methodCall);
         String[] splitArray2 = methodCall.split("\\."); // split the call without parameters by . dot
         structure.addMethodCall(splitArray2[splitArray2.length - 1]);        // the last string in the array should be the actual call
 
@@ -285,18 +317,30 @@ public class JavaParser implements IJavaParser {
         if (foundClassMethod) {
             structure.addMethodCallTarget("this");
         } else if (foundVariable) {
-            structure.addMethodCallTarget(structure.getVariableDeclarationTypes().get(variableIndex));
+            structure.addMethodCallTarget(structure.getVariableDeclarationTypes().get(variableIndex).replaceAll("<.*>", " "));
         } else if (foundParameter) {
-            structure.addMethodCallTarget(structure.getParameterType().get(parameterIndex));
+            structure.addMethodCallTarget(structure.getParameterType().get(parameterIndex).replaceAll("<.*>", " "));
         } else if (foundClassField) {
-            structure.addMethodCallTarget(structure.getClassFieldTypes().get(classFieldIndex));
+            structure.addMethodCallTarget(structure.getClassFieldTypes().get(classFieldIndex).replaceAll("<.*>", " "));
         } else {
             System.out.println("KKKKKKKKKKKKK" + splitArray2[0]);
-            structure.addMethodCallTarget(splitArray2[0]);
+            structure.addMethodCallTarget(splitArray2[0].replaceAll("<.*>", " "));
         }
 
     }
 
+
+    private String removeParametersFromMethodCall(String nestedMethodCall) {
+        boolean containsParameters = true;
+        while (containsParameters) {
+            if (nestedMethodCall.contains("(") || nestedMethodCall.contains(")")) {
+                nestedMethodCall = nestedMethodCall.replaceAll("\\([^()]*\\)", "");  // remove parameters  GOTTA CHECK THIS FOR NESTED BRACKETS
+            } else {
+                containsParameters = false;
+            }
+        }
+        return nestedMethodCall;
+    }
     // The Classes below are part of the JavaParser API and can be used to "visit" and operate on the nodes of the AST.  https://www.tutorialspoint.com/design_pattern/visitor_pattern.htm
 
     static class MethodVisitor extends VoidVisitorAdapter<Void> {    // Visitor class that checks MethodCall nodes.
@@ -329,5 +373,4 @@ public class JavaParser implements IJavaParser {
     public void addPackageDependencies(String packageDependency) {
         this.packageDependencies.add(packageDependency);
     }
-
 }

@@ -20,6 +20,7 @@ public class DiagramStructure {
     private List<String> classFieldNames;              // A list of names of every declared field  in the implementing class
     private List<String> classFieldTypes;            // A list of names of every declared field TYPE in the implementing class
     private String methodName;                    // The name of the method the user is interested in
+    private String methodReturnType;                  // the return Type of the method
     private List<String> parameterType;      //  A list of names of every parameter TYPE that belong to the method the user is interested in
     private List<String> parameterNames;      // A list of names of every parameter that belongs to the method
     private List<String> methodCalls;             //  A list of methodCalls made by the method  ( 1 layer of calls atm)
@@ -33,6 +34,7 @@ public class DiagramStructure {
         classMethodNames = new ArrayList<>();     // Are ArrayLists the best data structure for our lists of Strings?
         classMethodReturnTypes = new ArrayList<>();
         methodName = "NULL";
+        methodReturnType = "NULL";
         parameterType = new ArrayList<>();
         methodCalls = new ArrayList<>();
         methodCallTargets = new ArrayList<>();
@@ -80,6 +82,15 @@ public class DiagramStructure {
 
     public void setMethodName(String methodName) {
         this.methodName = methodName;
+    }
+
+
+    public String getMethodReturnType() {
+        return methodReturnType;
+    }
+
+    public void setMethodReturnType(String methodReturnType) {
+        this.methodReturnType = methodReturnType;
     }
 
     public List<String> getParameterType() {

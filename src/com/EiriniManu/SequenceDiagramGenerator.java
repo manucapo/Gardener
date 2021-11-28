@@ -48,7 +48,7 @@ public class SequenceDiagramGenerator implements ISequenceDiagramGenerator {
         try {
             File file = new File( "src\\com\\EiriniManu\\Script.py");  // Relative path to python Script
             InputStream stream = new FileInputStream(file);                     // Read File as InputStream
-            jCaller.createDiagramFile(stream, path, structure);                 // Pass input stream and script path to the Jython caller. It can then generate the file using the information in the diagram structure
+            jCaller.createDiagramFile(stream, path + "\\" + structure.getMethodName() + ".txt", structure);                 // Pass input stream and script path to the Jython caller. It can then generate the file using the information in the diagram structure
         }catch (Exception e){
             System.out.println("ERROR READING PYTHON SCRIPT");
             System.out.println(e.toString());
@@ -58,7 +58,7 @@ public class SequenceDiagramGenerator implements ISequenceDiagramGenerator {
 
     public void generateSequenceDiagramImage(String path) {  // Use the plantUML library to generate a sequence diagram image from the plantUML text file
         try {
-            File file = new File("Diagrams\\sequenceDiagram.txt");
+            File file = new File(path + "\\" + structure.getMethodName() + ".txt");
             SourceFileReader fileReader = new SourceFileReader(file);     // instantiate plantUML file reader
             List<GeneratedImage> imgList = fileReader.getGeneratedImages();  // generate UML sequence diagram from file as png
 

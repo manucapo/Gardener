@@ -18,18 +18,15 @@ public class Reflector implements IReflector {
 
     public void ReflectOnClass(Object obj, DiagramStructure diagramStructure) {   // Get information on a java class and update diagram structure
         Class<?> cls = obj.getClass();                                           // get class
-        System.out.println("CLASS ------------------------- ");
-        System.out.println("CLASS NAME -> " + cls.getSimpleName());                  // get class name
         diagramStructure.setImplementingClassName(cls.getSimpleName());              // update diagram structure
 
-        System.out.println("CLASS METHODS -> ");
+
 
         for (Method method : cls.getDeclaredMethods()) {                      // for every Method declared in the class
-            System.out.println(method.getName());                             // get method name
             diagramStructure.addClassMethodName(method.getName());            // update diagram structure
             diagramStructure.addClassMethodReturnType(method.getReturnType().getSimpleName());
         }
-        System.out.println("CLASS FIELDS -> ");
+
 
         for (Field field : cls.getDeclaredFields()) {
             diagramStructure.addClassFieldNames(field.getName());
@@ -44,18 +41,9 @@ public class Reflector implements IReflector {
         try {
             Method mtd = cls.getMethod(methodName, parameterTypes);                 // get method
 
-            System.out.println(" \n");
-            System.out.println("METHOD ------------------------- ");
-            System.out.println("METHOD NAME -> " + mtd.getName());                           // get method name
-            System.out.println("DECLARING CLASS -> " + mtd.getDeclaringClass().getName());   // get declaring class name
-            System.out.println("DEFAULT VALUE-> " + mtd.getDefaultValue());                  // get default value
-            System.out.println("PARAMETER COUNT -> " + mtd.getParameterCount());             // get parameter count
-
-            System.out.println("PARAMETER TYPE -> ");                                        // we can get this from java parser.
             for (Class<?> param : mtd.getParameterTypes()) {                                // for each parameter type in list
-                System.out.println(param.getSimpleName());                                         // get name of type
             }
-            System.out.println("RETURN TYPE -> " + mtd.getReturnType());                      // get return type
+            diagramStructure.setMethodReturnType(mtd.getReturnType().getSimpleName());
 
         } catch (Exception e) {
             System.out.println("ERROR TESTING METHOD ");
