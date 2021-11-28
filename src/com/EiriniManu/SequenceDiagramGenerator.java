@@ -21,27 +21,27 @@ public class SequenceDiagramGenerator implements ISequenceDiagramGenerator {
     private JythonCaller jCaller;
 
 
-    public SequenceDiagramGenerator(JavaParser parser){                // Default constructor.
+    public SequenceDiagramGenerator(){                // Default constructor.
          structure = new DiagramStructure();
          reflector = new Reflector();
-         this.parser = parser;
+         parser = new JavaParser();
          jCaller = new JythonCaller();
-        // TODO CONSTRUCTOR
     }
 
 
-    public void updateDiagramStructure(String methodName, Object cls, String className , String classfileName, String classFilePath, String packageName, Class<?>... params){            // Update structure with information gathered by reflector and parser
+    public void updateDiagramStructure(String methodName, Object cls, String className , String classFilePath, String packageName, Class<?>... params){            // Update structure with information gathered by reflector and parser
         structure.setMethodName(methodName);
         reflector.ReflectOnClass(cls, structure);
         reflector.ReflectOnMethod(cls,methodName,structure ,params);
-
-        parser.ParseMethodFromClass(parser.ParseFile(classfileName, parser.SetSourceRoot(classFilePath,packageName)), className, methodName, structure);
+        parser.ParseMethodFromClass(parser.ParseFile(className, parser.SetSourceRoot(classFilePath,packageName)), className, methodName, structure);
 
     }
 
-    public void generateSequenceDiagram(String path){                  // Wrapper function for the two-steps required for creating a plantUML diagram image.
-        generateSequenceDiagramTextFile(path);
-        generateSequenceDiagramImage(path);
+    public void generateSequenceDiagram(String pathToSource, String pathToDiagram, String methodName, Object cls, String className, String packageName, Class<?>... params){                  // Wrapper function for the two-steps required for creating a plantUML diagram image.
+        updateDiagramStructure(methodName, cls, className, pathToSource, packageName, params);
+        generateSequenceDiagramTextFile(pathToDiagram);
+        generateSequenceDiagramImage(pathToDiagram);
+        resetStructure();
     }
 
     public void generateSequenceDiagramTextFile(String path) {     // Use JythonCaller class to generate Text file with plantUML code
@@ -68,5 +68,12 @@ public class SequenceDiagramGenerator implements ISequenceDiagramGenerator {
         }
     }
 
+    public void addDependency(String dependency){
+        parser.addPackageDependencies(dependency);
+    }
 
+    public void resetStructure()
+    {
+        structure = new DiagramStructure();
+    }
 }

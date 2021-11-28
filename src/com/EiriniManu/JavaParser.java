@@ -37,9 +37,9 @@ public class JavaParser implements IJavaParser {
         return new SourceRoot(CodeGenerationUtils.packageAbsolutePath(path, packageName));
     }
 
-    public CompilationUnit ParseFile(String fileName, SourceRoot sourceRoot) {                    // Parse the code and return the AST
+    public CompilationUnit ParseFile(String className, SourceRoot sourceRoot) {                    // Parse the code and return the AST
         Log.setAdapter(new Log.StandardOutStandardErrorAdapter());                     // Set the parser to log errors to standard out.
-        CompilationUnit cu = sourceRoot.parse("", fileName);               // parse the file with a corresponding name in the root path.
+        CompilationUnit cu = sourceRoot.parse("", className + ".java");               // parse the file with a corresponding name in the root path.
         Log.info("DONE PARSING");
         return cu;
     }
@@ -61,6 +61,7 @@ public class JavaParser implements IJavaParser {
                 for (Parameter node : method.getParameters()) {                       // extract method parameters  (MOVE TO REFLECTOR )
                     checkParameterNode(node, diagramStructure);
                 }
+
 
                 for (Node node : method.findAll(CatchClause.class, Node.TreeTraversal.PREORDER)) { // extract information on variables declared inside catch clause
                       checkCatchNode(node, diagramStructure, cu);
@@ -352,27 +353,7 @@ public class JavaParser implements IJavaParser {
             structure.addMethodCallTarget(methodTargetStack.get(i));                                                 // first contained name should be method name
         }
 
-
         return "cantfindmethodtargetERROR";
-    }
-
-
-    // The Classes below are part of the JavaParser API and can be used to "visit" and operate on the nodes of the AST.  https://www.tutorialspoint.com/design_pattern/visitor_pattern.htm
-
-    static class MethodVisitor extends VoidVisitorAdapter<Void> {    // Visitor class that checks MethodCall nodes.
-        @Override
-        public void visit(MethodCallExpr n, Void arg) {
-            System.out.println(n.getName());
-            super.visit(n, arg);
-        }
-    }
-
-    static class ParamVisitor extends VoidVisitorAdapter<Void> {       // Visitor class that checks Parameters
-        @Override
-        public void visit(Parameter n, Void arg) {
-            System.out.println(n.getName());
-            super.visit(n, arg);
-        }
     }
 
     // GETTERS AND SETTERS
