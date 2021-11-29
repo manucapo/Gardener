@@ -1,0 +1,10 @@
+@startuml 
+participant Actor 
+Actor -> NULL: NULL
+activate NULL
+NULL -> String: split
+activate String
+String-->NULL
+deactivate String
+return 
+@enduml 

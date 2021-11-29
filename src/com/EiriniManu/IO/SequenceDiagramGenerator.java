@@ -1,4 +1,4 @@
-package com.EiriniManu;
+package com.EiriniManu.IO;
 
 /*
     This class represents an object that can handle the creation of a plantUML file from the information stored in the Diagram Structure data type.
@@ -6,6 +6,9 @@ package com.EiriniManu;
     This class feeds the python script the necessary information
  */
 
+import com.EiriniManu.Parsing.DiagramStructure;
+import com.EiriniManu.Parsing.JavaParser;
+import com.EiriniManu.Parsing.Reflector;
 import net.sourceforge.plantuml.GeneratedImage;
 import net.sourceforge.plantuml.SourceFileReader;
 
@@ -16,7 +19,7 @@ import java.util.List;
 
 public class SequenceDiagramGenerator implements ISequenceDiagramGenerator {
     private DiagramStructure structure;
-    private  Reflector reflector;
+    private Reflector reflector;
     private JavaParser parser;
     private JythonCaller jCaller;
 
@@ -24,16 +27,16 @@ public class SequenceDiagramGenerator implements ISequenceDiagramGenerator {
     public SequenceDiagramGenerator(){                // Default constructor.
          structure = new DiagramStructure();
          reflector = new Reflector();
+        reflector.addObserver(structure);
          parser = new JavaParser();
          jCaller = new JythonCaller();
     }
 
 
     public void updateDiagramStructure(String methodName, Object cls, String className , String classFilePath, String packageName, Class<?>... params){            // Update structure with information gathered by reflector and parser
-        structure.setMethodName(methodName);
-        reflector.ReflectOnClass(cls, structure);
-        reflector.ReflectOnMethod(cls,methodName,structure ,params);
-        parser.ParseMethodFromClass(parser.ParseFile(className, parser.SetSourceRoot(classFilePath,packageName)), className, methodName, structure);
+        reflector.ReflectOnClass(cls);
+        reflector.ReflectOnMethod(cls,methodName,params);
+        parser.ParseMethod(parser.ParseFile(className, parser.SetSourceRoot(classFilePath,packageName)), className, methodName, structure);
 
     }
 
@@ -41,12 +44,12 @@ public class SequenceDiagramGenerator implements ISequenceDiagramGenerator {
         updateDiagramStructure(methodName, cls, className, pathToSource, packageName, params);
         generateSequenceDiagramTextFile(pathToDiagram);
         generateSequenceDiagramImage(pathToDiagram);
-        resetStructure();
+        structure.reset();
     }
 
     public void generateSequenceDiagramTextFile(String path) {     // Use JythonCaller class to generate Text file with plantUML code
         try {
-            File file = new File( "src\\com\\EiriniManu\\Script.py");  // Relative path to python Script
+            File file = new File( "src\\com\\EiriniManu\\IO\\Script.py");  // Relative path to python Script
             InputStream stream = new FileInputStream(file);                     // Read File as InputStream
             jCaller.createDiagramFile(stream, path + "\\" + structure.getMethodName() + ".txt", structure);                 // Pass input stream and script path to the Jython caller. It can then generate the file using the information in the diagram structure
         }catch (Exception e){
@@ -72,8 +75,4 @@ public class SequenceDiagramGenerator implements ISequenceDiagramGenerator {
         parser.addPackageDependencies(dependency);
     }
 
-    public void resetStructure()
-    {
-        structure = new DiagramStructure();
-    }
 }

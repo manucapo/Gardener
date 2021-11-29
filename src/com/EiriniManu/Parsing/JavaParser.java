@@ -1,4 +1,4 @@
-package com.EiriniManu;
+package com.EiriniManu.Parsing;
 
 /*
     This class represents an object that can create an AST (abstract symbol tree) from java source code and pass the resulting tree for information.
@@ -16,7 +16,6 @@ import com.github.javaparser.printer.XmlPrinter;
 import com.github.javaparser.utils.CodeGenerationUtils;
 import com.github.javaparser.utils.Log;
 import com.github.javaparser.utils.SourceRoot;
-import org.python.antlr.op.Param;
 
 
 import java.lang.reflect.*;
@@ -43,7 +42,7 @@ public class JavaParser implements IJavaParser {
         return cu;
     }
 
-    public void ParseMethodFromClass(CompilationUnit cu, String className, String methodName, DiagramStructure diagramStructure) {
+    public void ParseMethod(CompilationUnit cu, String className, String methodName, DiagramStructure diagramStructure) {
 
         ClassOrInterfaceDeclaration clsX = new ClassOrInterfaceDeclaration();                 // Holder variable for the class declaration node.
 
@@ -91,8 +90,6 @@ public class JavaParser implements IJavaParser {
         }
     }
     }
-
-
 
     public void parseMethodNode(Node methodcallNode, DiagramStructure structure) {
         System.out.println("--------------------TEST PARSER--------------------");

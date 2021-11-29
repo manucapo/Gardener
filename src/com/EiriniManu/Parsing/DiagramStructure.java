@@ -1,4 +1,4 @@
-package com.EiriniManu;
+package com.EiriniManu.Parsing;
 
 /*
     This class represents a data structure that contains all information needed by the plantUML diagram to generate the desired UML sequence diagram
@@ -6,6 +6,8 @@ package com.EiriniManu;
     Add information here as necessary. Keeping the information in Strings is a good idea because the information will eventually be mapped to
     Strings in a text file.
  */
+
+import com.EiriniManu.Messaging.IMessageObserver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -248,6 +250,27 @@ public class DiagramStructure implements IMessageObserver {
     public void addGetClassFieldTypes(String getClassFieldType) {
         this.classFieldTypes.add(getClassFieldType);
     }
+
+    public void reset(){
+        implementingClassName = "NULL";
+        callingClassName = "NULL";
+        classMethodNames = new ArrayList<>();
+        classMethodReturnTypes = new ArrayList<>();
+        methodName = "NULL";
+        methodReturnType = "NULL";
+        parameterType = new ArrayList<>();
+        methodCalls = new ArrayList<>();
+        methodCallTargets = new ArrayList<>();
+        variableDeclarations = new ArrayList<>();
+        variableDeclarationTypes = new ArrayList<>();
+        parameterNames = new ArrayList<>();
+        parameterType = new ArrayList<>();
+        catchParameterTypes = new ArrayList<>();
+        catchParameterNames = new ArrayList<>();
+        classFieldNames = new ArrayList<>();
+        classFieldTypes = new ArrayList<>();
+    }
+
 
     @Override
     public void update(Object o) {

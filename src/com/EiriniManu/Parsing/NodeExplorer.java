@@ -1,8 +1,9 @@
-package com.EiriniManu;
+package com.EiriniManu.Parsing;
 
+import com.EiriniManu.Messaging.IMessageObserver;
+import com.EiriniManu.Messaging.IMessageSender;
 import com.github.javaparser.ast.Node;
 
-import java.util.ArrayList;
 import java.util.List;
 
 abstract class NodeExplorer implements INodeExplorer, IMessageSender {

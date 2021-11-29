@@ -1,8 +1,6 @@
 package com.EiriniManu;
 
-import com.github.javaparser.ast.Node;
-
-import java.io.InputStream;
+import com.EiriniManu.IO.SequenceDiagramGenerator;
 
 public class Main {
     

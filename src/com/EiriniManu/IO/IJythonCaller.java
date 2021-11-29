@@ -1,4 +1,6 @@
-package com.EiriniManu;
+package com.EiriniManu.IO;
+
+import com.EiriniManu.Parsing.DiagramStructure;
 
 import java.io.InputStream;
 

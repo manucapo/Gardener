@@ -1,10 +1,10 @@
-package com.EiriniManu;
+package com.EiriniManu.Parsing;
 
+import com.EiriniManu.Messaging.IMessageObserver;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.Parameter;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class CatchNodeExplorer extends NodeExplorer{
 

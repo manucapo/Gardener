@@ -1,11 +1,11 @@
-package com.EiriniManu;
+package com.EiriniManu.IO;
 
 /*
     This class represents a helper object that can execute python code from a .py file.
     It can be used by other classes to handle any task in python
  */
 
-import org.python.core.Py;
+import com.EiriniManu.Parsing.DiagramStructure;
 import org.python.core.PyArray;
 import org.python.core.PyObject;
 import org.python.util.PythonInterpreter;
@@ -14,7 +14,6 @@ import org.python.core.PyString;
 
 import java.io.InputStream;
 import java.lang.reflect.Array;
-import java.util.ArrayList;
 
 public class JythonCaller implements IJythonCaller {
 

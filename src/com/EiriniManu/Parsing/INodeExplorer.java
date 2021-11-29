@@ -1,4 +1,4 @@
-package com.EiriniManu;
+package com.EiriniManu.Parsing;
 
 import com.github.javaparser.ast.Node;
 

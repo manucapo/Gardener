@@ -1,4 +1,4 @@
-package com.EiriniManu;
+package com.EiriniManu.Messaging;
 
 public interface IMessageObserver {
 
