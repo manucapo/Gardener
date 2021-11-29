@@ -45,21 +45,21 @@ public class DiagramStructure implements IMessageObserver {
     private List<String> parameterType;      //  A list of names of every parameter TYPE that belong to the method the user is interested in
     private List<String> parameterNames;      // A list of names of every parameter that belongs to the method
     private List<String> catchParameterTypes;
-
     private List<String> catchParameterNames;
     private List<String> methodCalls;             //  A list of methodCalls made by the method  ( 1 layer of calls atm)
     private List<String> methodCallTargets;       // The target classes of the method calls
     private List<String> variableDeclarations;     //  A list of variable declarations made by the method  ( 1 layer of calls atm)
     private List<String> variableDeclarationTypes; //  The types of variable declarations made by the method  ( 1 layer of calls atm)
 
-    public DiagramStructure() {                    // Default constructor. Initializes the class to "safe" values.
+    private static final DiagramStructure instance = new DiagramStructure();  // singleton instance
+
+    private DiagramStructure() {                    // Default constructor. Initializes the class to "safe" values.
         implementingClassName = "NULL";           // The string "NULL" was chosen as default as a class or method could never be called "NULL". Allowing error detection
         callingClassName = "NULL";
         classMethodNames = new ArrayList<>();     // Are ArrayLists the best data structure for our lists of Strings?
         classMethodReturnTypes = new ArrayList<>();
         methodName = "NULL";
         methodReturnType = "NULL";
-        parameterType = new ArrayList<>();
         methodCalls = new ArrayList<>();
         methodCallTargets = new ArrayList<>();
         variableDeclarations = new ArrayList<>();
@@ -70,6 +70,10 @@ public class DiagramStructure implements IMessageObserver {
         catchParameterNames = new ArrayList<>();
         classFieldNames = new ArrayList<>();
         classFieldTypes = new ArrayList<>();
+    }
+
+    public static DiagramStructure getInstance(){
+        return instance;
     }
 
     // Getters and setters
@@ -85,7 +89,7 @@ public class DiagramStructure implements IMessageObserver {
         return callingClassName;
     }
 
-    public void setCallingClassName(String callingClassName) {
+    private void setCallingClassName(String callingClassName) {
         this.callingClassName = callingClassName;
     }
 
@@ -94,7 +98,7 @@ public class DiagramStructure implements IMessageObserver {
     }
 
 
-    public void setClassMethodNames(List<String> classMethodNames) {
+    private void setClassMethodNames(List<String> classMethodNames) {
         this.classMethodNames = classMethodNames;
     }
 
@@ -106,7 +110,7 @@ public class DiagramStructure implements IMessageObserver {
         return methodName;
     }
 
-    public void setMethodName(String methodName) {
+    private void setMethodName(String methodName) {
         this.methodName = methodName;
     }
 
@@ -115,7 +119,7 @@ public class DiagramStructure implements IMessageObserver {
         return methodReturnType;
     }
 
-    public void setMethodReturnType(String methodReturnType) {
+    private void setMethodReturnType(String methodReturnType) {
         this.methodReturnType = methodReturnType;
     }
 
@@ -123,11 +127,11 @@ public class DiagramStructure implements IMessageObserver {
         return parameterType;
     }
 
-    public void addParameterType(String name) {
+    private void addParameterType(String name) {
         this.parameterType.add(name);
     }
 
-    public void setParameterType(List<String> parameterTypes) {
+    private void setParameterType(List<String> parameterTypes) {
         this.parameterType = (parameterTypes);
     }
 
@@ -136,11 +140,11 @@ public class DiagramStructure implements IMessageObserver {
         return parameterNames;
     }
 
-    public void setParameterNames(List<String> parameterNames) {
+    private void setParameterNames(List<String> parameterNames) {
         this.parameterNames = parameterNames;
     }
 
-    public void addParameterName(String parameterName) {
+    private void addParameterName(String parameterName) {
         this.parameterNames.add(parameterName);
     }
 
@@ -148,11 +152,11 @@ public class DiagramStructure implements IMessageObserver {
         return catchParameterTypes;
     }
 
-    public void setCatchParameterTypes(List<String> catchParameterTypes) {
+    private void setCatchParameterTypes(List<String> catchParameterTypes) {
         this.catchParameterTypes = catchParameterTypes;
     }
 
-    public void addCatchParameterTypes(String catchParameterType) {
+    private void addCatchParameterTypes(String catchParameterType) {
         this.catchParameterTypes.add(catchParameterType);
     }
 
@@ -161,11 +165,11 @@ public class DiagramStructure implements IMessageObserver {
         return catchParameterNames;
     }
 
-    public void setCatchParameterNames(List<String> catchParameterNames) {
+    private void setCatchParameterNames(List<String> catchParameterNames) {
         this.catchParameterNames = catchParameterNames;
     }
 
-    public void addCatchParameterNames(String catchParameterName) {
+    private void addCatchParameterNames(String catchParameterName) {
         this.catchParameterNames.add(catchParameterName);
     }
 
@@ -173,7 +177,7 @@ public class DiagramStructure implements IMessageObserver {
         return methodCalls;
     }
 
-    public void setMethodCalls(List<String> methodCalls) {
+    private void setMethodCalls(List<String> methodCalls) {
         this.methodCalls = methodCalls;
     }
 
@@ -193,11 +197,11 @@ public class DiagramStructure implements IMessageObserver {
         return variableDeclarations;
     }
 
-    public void setVariableDeclarations(List<String> variableDeclarations) {
+    private void setVariableDeclarations(List<String> variableDeclarations) {
         this.variableDeclarations = variableDeclarations;
     }
 
-    public void addVariableDeclarations(String variableDeclaration) {
+    private void addVariableDeclarations(String variableDeclaration) {
         this.variableDeclarations.add(variableDeclaration);
     }
 
@@ -205,11 +209,11 @@ public class DiagramStructure implements IMessageObserver {
         return variableDeclarationTypes;
     }
 
-    public void setVariableDeclarationTypes(List<String> variableDeclarationTypes) {
+    private void setVariableDeclarationTypes(List<String> variableDeclarationTypes) {
         this.variableDeclarationTypes = variableDeclarationTypes;
     }
 
-    public void addVariableDeclarationTypes(String variableDeclarationType) {
+    private void addVariableDeclarationTypes(String variableDeclarationType) {
         this.variableDeclarationTypes.add(variableDeclarationType);
     }
 
@@ -218,11 +222,11 @@ public class DiagramStructure implements IMessageObserver {
         return classMethodReturnTypes;
     }
 
-    public void setClassMethodReturnType(List<String> classMethodReturnType) {
+    private void setClassMethodReturnType(List<String> classMethodReturnType) {
         this.classMethodReturnTypes = classMethodReturnType;
     }
 
-    public void addClassMethodReturnType(String classMethodReturnType) {
+    private void addClassMethodReturnType(String classMethodReturnType) {
         this.classMethodReturnTypes.add(classMethodReturnType);
     }
 
@@ -231,11 +235,11 @@ public class DiagramStructure implements IMessageObserver {
         return classFieldNames;
     }
 
-    public void setClassFieldNames(List<String> classFieldNames) {
+    private void setClassFieldNames(List<String> classFieldNames) {
         this.classFieldNames = classFieldNames;
     }
 
-    public void addClassFieldNames(String classFieldName) {
+    private void addClassFieldNames(String classFieldName) {
         this.classFieldNames.add(classFieldName);
     }
 
@@ -243,11 +247,11 @@ public class DiagramStructure implements IMessageObserver {
         return classFieldTypes;
     }
 
-    public void setClassFieldTypes(List<String> classFieldTypes) {
+    private void setClassFieldTypes(List<String> classFieldTypes) {
         this.classFieldTypes = classFieldTypes;
     }
 
-    public void addGetClassFieldTypes(String getClassFieldType) {
+    private void addGetClassFieldTypes(String getClassFieldType) {
         this.classFieldTypes.add(getClassFieldType);
     }
 
@@ -270,7 +274,6 @@ public class DiagramStructure implements IMessageObserver {
         classFieldNames = new ArrayList<>();
         classFieldTypes = new ArrayList<>();
     }
-
 
     @Override
     public void update(Object o) {

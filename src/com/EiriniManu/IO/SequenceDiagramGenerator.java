@@ -25,7 +25,7 @@ public class SequenceDiagramGenerator implements ISequenceDiagramGenerator {
 
 
     public SequenceDiagramGenerator(){                // Default constructor.
-         structure = new DiagramStructure();
+         structure = DiagramStructure.getInstance();
          reflector = new Reflector();
         reflector.addObserver(structure);
          parser = new JavaParser();

@@ -14,7 +14,7 @@ import java.util.List;
 public class TestMethod implements  ITestMethod{
 
     List<String> methodTargetStack = new ArrayList<>();
-    DiagramStructure structure = new DiagramStructure();
+    DiagramStructure structure = DiagramStructure.getInstance();
     int parameterIndex = 0;
 
     public TestMethod(){
