@@ -7,16 +7,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CatchNodeExplorer extends NodeExplorer{
-    @Override
-    public List<String[]> checkNode(Node node){
-        List<String[]> typeNameList = new ArrayList<>();
-        int index = 0;
-        for (Parameter param : node.findAll(Parameter.class)) {
-            ParameterNodeExplorer parameterNodeExplorer = (ParameterNodeExplorer) NodeExplorerFactory.create(Parameter.class);
-           String[] splitArray = parameterNodeExplorer.checkNode(param);
-           typeNameList.add(splitArray);
-           index++;
-        }
-       return typeNameList;
+
+    public CatchNodeExplorer(IMessageObserver observer){
+        setObserverList(new ArrayList<>());
+        this.addObserver(observer);
     }
+
+    @Override
+    public void checkNode(Node node){
+        for (Parameter param : node.findAll(Parameter.class)) {
+            String[] splitArray = node.toString().split(" ");
+            Object[] type = {Fields.CATCHPARAMETERTYPE,splitArray[0]};
+            sendMessage(type);
+            Object[] name = {Fields.CATCHPARAMETERNAME,splitArray[1]};
+            sendMessage(name);
+        }
+    }
+
 }

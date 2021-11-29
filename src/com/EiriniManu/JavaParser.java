@@ -25,12 +25,10 @@ import java.util.List;
 
 public class JavaParser implements IJavaParser {
 
-    private int subMethodCounter;
     private List<String> packageDependencies;
 
 
     public JavaParser() {
-        subMethodCounter = 0;
         packageDependencies = new ArrayList<>();
     }
 
@@ -61,33 +59,31 @@ public class JavaParser implements IJavaParser {
 
 
                 for (Parameter node : method.getParameters()) {                       // extract method parameters
-                    ParameterNodeExplorer nodeExplorer = (ParameterNodeExplorer) NodeExplorerFactory.create(Parameter.class);
-                    String[] splitArray =  nodeExplorer.checkNode(node);
-                    diagramStructure.addParameterType(splitArray[0]);         // first string should be type
-                    diagramStructure.addParameterName(splitArray[1]);         // second string should be name
+                    ParameterNodeExplorer nodeExplorer = (ParameterNodeExplorer) NodeExplorerFactory.create(Parameter.class, diagramStructure);
+                    nodeExplorer.checkNode(node);
                 }
 
                 for (Node node : method.findAll(CatchClause.class, Node.TreeTraversal.PREORDER)) { // extract information on variables declared inside catch clause
-                    CatchNodeExplorer nodeExplorer = (CatchNodeExplorer) NodeExplorerFactory.create(CatchClause.class);
-                     List<String[]> typeNameList = nodeExplorer.checkNode(node);
-                    for (String[] splitArray : typeNameList) {
-                        diagramStructure.addCatchParameterTypes(splitArray[0]);
-                        diagramStructure.addCatchParameterNames(splitArray[1]);
-                    }
+                    CatchNodeExplorer nodeExplorer = (CatchNodeExplorer) NodeExplorerFactory.create(CatchClause.class, diagramStructure);
+                     nodeExplorer.checkNode(node);
                 }
 
                 for (Node node : method.findAll(VariableDeclarationExpr.class, Node.TreeTraversal.PREORDER)) {  // extract information on variables inside method
-                    VariableNodeExplorer nodeExplorer = (VariableNodeExplorer) NodeExplorerFactory.create(VariableDeclarationExpr.class);
-                    String[] splitArray =  nodeExplorer.checkNode(node);
-                    diagramStructure.addVariableDeclarationTypes(splitArray[0]);
-                    diagramStructure.addVariableDeclarations(splitArray[1]);
+                    VariableNodeExplorer nodeExplorer = (VariableNodeExplorer) NodeExplorerFactory.create(VariableDeclarationExpr.class, diagramStructure);
+
+                    nodeExplorer.checkNode(node);
                 }
 
+                int subMethodCounter = 0;
+
                 for (Node node : method.findAll(MethodCallExpr.class, Node.TreeTraversal.PREORDER)) { // extract information on method calls inside method
-                    MethodNodeExplorer nodeExplorer = (MethodNodeExplorer) NodeExplorerFactory.create(MethodCallExpr.class);
 
                     if (subMethodCounter == 0){
-                        subMethodCounter = nodeExplorer.checkNode(node);
+                        for (Node subNode : node.findAll(MethodCallExpr.class)) {  // check for nested method calls
+                            if (subNode != node) {                                                               // ignore original node
+                                subMethodCounter += 1;
+                            }
+                        }
                         parseMethodNode(node, diagramStructure);
                     } else {subMethodCounter--;}
 

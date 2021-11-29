@@ -10,7 +10,26 @@ package com.EiriniManu;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DiagramStructure {
+enum Fields {
+    IMPLEMENTINGCLASS,
+    CALLINGCLASS,
+    CLASSMETHODNAME,
+    CLASSMETHODRETURNTYPE,
+    CLASSFIELDNAME,
+    CLASSFIELDTYPE,
+    METHODNAME,
+    METHODRETURNTYPE,
+    PARAMETERTYPE,
+    PARAMETERNAME,
+    CATCHPARAMETERTYPE,
+    CATCHPARAMETERNAME,
+    METHODCALL,
+    METHODCALLTARGET,
+    VARIABLEDECLARATIONNAME,
+    VARIABLEDECLARATIONTYPE
+}
+
+public class DiagramStructure implements IMessageObserver {
 
 
     private String implementingClassName;         // Name of class where method is implemented
@@ -229,4 +248,68 @@ public class DiagramStructure {
     public void addGetClassFieldTypes(String getClassFieldType) {
         this.classFieldTypes.add(getClassFieldType);
     }
+
+    @Override
+    public void update(Object o) {
+
+        Object[] data = (Object[]) o;
+        Fields field = (Fields) data[0];
+        String string = (String) data[1];
+
+
+        switch (field){
+            case IMPLEMENTINGCLASS:
+                setImplementingClassName(string);
+                break;
+            case CALLINGCLASS:
+                setCallingClassName(string);
+                break;
+            case CLASSMETHODNAME:
+                addClassMethodName(string);
+                break;
+            case CLASSMETHODRETURNTYPE:
+                addClassMethodReturnType(string);
+                break;
+            case CLASSFIELDNAME:
+                addClassFieldNames(string);
+                break;
+            case CLASSFIELDTYPE:
+                addGetClassFieldTypes(string);
+                break;
+            case METHODNAME:
+                setMethodName(string);
+                break;
+            case METHODRETURNTYPE:
+                setMethodReturnType(string);
+                break;
+            case PARAMETERTYPE:
+                addParameterType(string);
+                break;
+            case PARAMETERNAME:
+                addParameterName(string);
+                break;
+            case CATCHPARAMETERTYPE:
+                addCatchParameterTypes(string);
+                break;
+            case CATCHPARAMETERNAME:
+                addCatchParameterNames(string);
+                break;
+            case METHODCALL:
+                addMethodCall(string);
+                break;
+            case METHODCALLTARGET:
+                addMethodCallTarget(string);
+                break;
+            case VARIABLEDECLARATIONNAME:
+                addVariableDeclarations(string);
+                break;
+            case VARIABLEDECLARATIONTYPE:
+                addVariableDeclarationTypes(string);
+                break;
+            default:
+                break;
+        }
+    }
 }
+
+

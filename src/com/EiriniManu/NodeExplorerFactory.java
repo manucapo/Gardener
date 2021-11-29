@@ -7,17 +7,18 @@ import com.github.javaparser.ast.stmt.CatchClause;
 
 public class NodeExplorerFactory {
 
-    public static NodeExplorer create(Class<?> nodeType){
+    public static NodeExplorer create(Class<?> nodeType, IMessageObserver observer){
         if (nodeType == null){
             return  null;
-        } else if (nodeType == MethodCallExpr.class){
-            return new MethodNodeExplorer();
-        } else if (nodeType == Parameter.class){
-            return  new ParameterNodeExplorer();
+        }  else if (nodeType == Parameter.class){
+            NodeExplorer explorer = new ParameterNodeExplorer(observer);
+            return  new ParameterNodeExplorer(observer);
         } else if (nodeType == VariableDeclarationExpr.class){
-            return new VariableNodeExplorer();
+            NodeExplorer explorer = new VariableNodeExplorer(observer);
+            return new VariableNodeExplorer(observer);
         }  else if (nodeType == CatchClause.class){
-            return new CatchNodeExplorer();
+            NodeExplorer explorer = new CatchNodeExplorer(observer);
+            return new CatchNodeExplorer(observer);
         }
         return  null;
     }
