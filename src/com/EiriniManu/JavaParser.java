@@ -12,11 +12,11 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.stmt.CatchClause;
-import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import com.github.javaparser.printer.XmlPrinter;
 import com.github.javaparser.utils.CodeGenerationUtils;
 import com.github.javaparser.utils.Log;
 import com.github.javaparser.utils.SourceRoot;
+import org.python.antlr.op.Param;
 
 
 import java.lang.reflect.*;
@@ -27,6 +27,7 @@ public class JavaParser implements IJavaParser {
 
     private int subMethodCounter;
     private List<String> packageDependencies;
+
 
     public JavaParser() {
         subMethodCounter = 0;
@@ -56,63 +57,48 @@ public class JavaParser implements IJavaParser {
             if (method.getName().toString().equals(methodName)) {                            // Find method with given name
 
                 XmlPrinter printer = new XmlPrinter(true);
-                System.out.println(printer.output(method));
+             //   System.out.println(printer.output(method));                                // DEBUG PRINTER
 
-                for (Parameter node : method.getParameters()) {                       // extract method parameters  (MOVE TO REFLECTOR )
-                    checkParameterNode(node, diagramStructure);
+
+                for (Parameter node : method.getParameters()) {                       // extract method parameters
+                    ParameterNodeExplorer nodeExplorer = (ParameterNodeExplorer) NodeExplorerFactory.create(Parameter.class);
+                    String[] splitArray =  nodeExplorer.checkNode(node);
+                    diagramStructure.addParameterType(splitArray[0]);         // first string should be type
+                    diagramStructure.addParameterName(splitArray[1]);         // second string should be name
                 }
 
-
                 for (Node node : method.findAll(CatchClause.class, Node.TreeTraversal.PREORDER)) { // extract information on variables declared inside catch clause
-                      checkCatchNode(node, diagramStructure, cu);
+                    CatchNodeExplorer nodeExplorer = (CatchNodeExplorer) NodeExplorerFactory.create(CatchClause.class);
+                     List<String[]> typeNameList = nodeExplorer.checkNode(node);
+                    for (String[] splitArray : typeNameList) {
+                        diagramStructure.addCatchParameterTypes(splitArray[0]);
+                        diagramStructure.addCatchParameterNames(splitArray[1]);
+                    }
                 }
 
                 for (Node node : method.findAll(VariableDeclarationExpr.class, Node.TreeTraversal.PREORDER)) {  // extract information on variables inside method
-                    checkVariableNode(node, diagramStructure);
+                    VariableNodeExplorer nodeExplorer = (VariableNodeExplorer) NodeExplorerFactory.create(VariableDeclarationExpr.class);
+                    String[] splitArray =  nodeExplorer.checkNode(node);
+                    diagramStructure.addVariableDeclarationTypes(splitArray[0]);
+                    diagramStructure.addVariableDeclarations(splitArray[1]);
                 }
+
                 for (Node node : method.findAll(MethodCallExpr.class, Node.TreeTraversal.PREORDER)) { // extract information on method calls inside method
-                    checkMethodNode(node, diagramStructure, cu);
-                }
+                    MethodNodeExplorer nodeExplorer = (MethodNodeExplorer) NodeExplorerFactory.create(MethodCallExpr.class);
+
+                    if (subMethodCounter == 0){
+                        subMethodCounter = nodeExplorer.checkNode(node);
+                        parseMethodNode(node, diagramStructure);
+                    } else {subMethodCounter--;}
 
             }
         }
     }
-
-    public void checkParameterNode(Node node, DiagramStructure structure) {
-        String[] splitArray = node.toString().split(" ");   // split parameter node name by space
-        structure.addParameterType(splitArray[0]);         // first string should be type
-        structure.addParameterName(splitArray[1]);         // second string should be name
     }
 
-    public void checkVariableNode(Node node, DiagramStructure structure) {
-        String[] splitArray = node.toString().split(" ");                    // split variable declaration by spaces
-        structure.addVariableDeclarationTypes(splitArray[0]);                     // the first string should be the type
-        structure.addVariableDeclarations(splitArray[1]);                         // the second string should be the variable name
-    }
 
-    public void checkCatchNode(Node node, DiagramStructure structure, CompilationUnit cu){
-        for (Parameter param : node.findAll(Parameter.class)) {
-            structure.addCatchParameterNames(param.getNameAsString());
-            structure.addCatchParameterTypes(param.getType().toString());
-        }
-    }
 
-    public void checkMethodNode(Node node, DiagramStructure structure, CompilationUnit cu) {
-        if (subMethodCounter == 0) {           // Skip the process once for each sub method found
-
-            for (Node subNode : node.findAll(MethodCallExpr.class, Node.TreeTraversal.PREORDER)) {  // check for nested method calls
-                if (subNode != node) {                                                               // ignore original node
-                    subMethodCounter += 1;
-                }
-            }
-            parseMethodNode(node, subMethodCounter, structure, " ");
-
-        } else {
-            subMethodCounter--;        // decrement submethod counter
-        }
-    }
-
-    public String parseMethodNode(Node methodcallNode, int subMethodCounter, DiagramStructure structure, String lastClassName) {
+    public void parseMethodNode(Node methodcallNode, DiagramStructure structure) {
         System.out.println("--------------------TEST PARSER--------------------");
         System.out.println("ORIGINAL METHOD CALL : " + methodcallNode);
 
@@ -352,8 +338,6 @@ public class JavaParser implements IJavaParser {
             System.out.println("TARGET : " + methodTargetStack.get(i));
             structure.addMethodCallTarget(methodTargetStack.get(i));                                                 // first contained name should be method name
         }
-
-        return "cantfindmethodtargetERROR";
     }
 
     // GETTERS AND SETTERS
