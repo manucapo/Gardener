@@ -22,6 +22,5 @@ TestMethod -> N: toString
 activate N
 N-->TestMethod
 deactivate N
-TestMethod ->x] : equals
 return 
 @enduml 

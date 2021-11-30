@@ -12,16 +12,13 @@ public class NodeExplorerFactory {
         if (nodeType == null){
             return  null;
         } else if (nodeType == MethodCallExpr.class){
-
+            return  new MethodNodeExplorer(observer);
         }
         else if (nodeType == Parameter.class){
-            NodeExplorer explorer = new ParameterNodeExplorer(observer);
             return  new ParameterNodeExplorer(observer);
         } else if (nodeType == VariableDeclarationExpr.class){
-            NodeExplorer explorer = new VariableNodeExplorer(observer);
             return new VariableNodeExplorer(observer);
         }  else if (nodeType == CatchClause.class){
-            NodeExplorer explorer = new CatchNodeExplorer(observer);
             return new CatchNodeExplorer(observer);
         }
         return  null;

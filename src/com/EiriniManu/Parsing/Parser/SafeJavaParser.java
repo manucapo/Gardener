@@ -8,10 +8,7 @@ package com.EiriniManu.Parsing.Parser;
 import com.EiriniManu.IO.DiagramStructure;
 import com.EiriniManu.Messaging.IMessageObserver;
 import com.EiriniManu.Messaging.MessageTag;
-import com.EiriniManu.Parsing.NodeExplorer.CatchNodeExplorer;
-import com.EiriniManu.Parsing.NodeExplorer.NodeExplorerFactory;
-import com.EiriniManu.Parsing.NodeExplorer.ParameterNodeExplorer;
-import com.EiriniManu.Parsing.NodeExplorer.VariableNodeExplorer;
+import com.EiriniManu.Parsing.NodeExplorer.*;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -117,12 +114,10 @@ public class SafeJavaParser implements IJavaParser{
                 for (Node node : method.findAll(MethodCallExpr.class, Node.TreeTraversal.PREORDER)) { // extract information on method calls inside method
 
                     if (subMethodCounter == 0){
-                        for (Node subNode : node.findAll(MethodCallExpr.class)) {  // check for nested method calls
-                            if (subNode != node) {                                                               // ignore original node
-                                subMethodCounter += 1;
-                            }
-                        }
-                        parseMethodNode(node);
+                        MethodNodeExplorer nodeExplorer = (MethodNodeExplorer) NodeExplorerFactory.create(MethodCallExpr.class, diagramStructure);
+                       subMethodCounter = nodeExplorer.countSubMethods(node);
+                       nodeExplorer.setParser(this);
+                        nodeExplorer.checkNode(node);
                     } else {subMethodCounter--;}
 
             }

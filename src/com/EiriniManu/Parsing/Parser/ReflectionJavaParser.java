@@ -260,6 +260,7 @@ public void parseMethodNode(Node methodcallNode) {
         if (!targetFound) {
             System.out.println("COULD NOT RESOLVE ANY TARGETS");
 
+
                                     if (false){                     // SAFE MODE
                     methodNameStack.remove(i);
                 } else if (true) {                       // LOST MESSAGE MODE

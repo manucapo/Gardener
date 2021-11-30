@@ -1,4 +1,4 @@
-package com.EiriniManu.IO;
+package com.EiriniManu;
 
 /*
     This class represents an object that can handle the creation of a plantUML file from the information stored in the Diagram Structure data type.
@@ -6,6 +6,9 @@ package com.EiriniManu.IO;
     This class feeds the python script the necessary information
  */
 
+import com.EiriniManu.IO.DiagramStructure;
+import com.EiriniManu.IO.ISequenceDiagramGenerator;
+import com.EiriniManu.IO.JythonCaller;
 import com.EiriniManu.Parsing.Parser.*;
 import com.EiriniManu.Parsing.Reflector;
 import net.sourceforge.plantuml.GeneratedImage;
@@ -23,12 +26,12 @@ public class SequenceDiagramGenerator implements ISequenceDiagramGenerator {
     private JythonCaller jCaller;
 
 
-    public SequenceDiagramGenerator(){                // Default constructor.
+    public SequenceDiagramGenerator(ParserType parserType){                // Default constructor.
          structure = DiagramStructure.getInstance();
          reflector = new Reflector();
         reflector.addObserver(structure);
          jCaller = new JythonCaller();
-        parserContext = new ParserContext(new SafeJavaParser(), structure);
+        setParser(parserType);
     }
 
 
@@ -73,8 +76,24 @@ public class SequenceDiagramGenerator implements ISequenceDiagramGenerator {
         parserContext.addDependency(dependency);
     }
 
-    public void setParser(IJavaParser parser){
-        parserContext = new ParserContext(parser,structure);
+    public void setParser(ParserType type){
+
+        switch (type){
+            case SAFE:
+                parserContext = new ParserContext(new SafeJavaParser(),structure);
+                break;
+            case REFLECTION:
+                parserContext = new ParserContext(new ReflectionJavaParser(),structure);
+                break;
+            case DEEP:
+                parserContext = new ParserContext(new DeepJavaParser(),structure);
+                break;
+            default:
+                break;
+        }
+
+
+
     }
 
 }

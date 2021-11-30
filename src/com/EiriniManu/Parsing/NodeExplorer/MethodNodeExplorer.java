@@ -1,6 +1,7 @@
 package com.EiriniManu.Parsing.NodeExplorer;
 
 import com.EiriniManu.Messaging.IMessageObserver;
+import com.EiriniManu.Parsing.Parser.IJavaParser;
 import com.EiriniManu.Parsing.Parser.SafeJavaParser;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.MethodCallExpr;
@@ -9,11 +10,15 @@ import java.util.ArrayList;
 
 public class MethodNodeExplorer extends NodeExplorer{
 
-    private SafeJavaParser parser;
+    private IJavaParser parser;
 
     public MethodNodeExplorer(IMessageObserver observer){
         setObserverList(new ArrayList<>());
         this.addObserver(observer);
+    }
+
+    public void setParser(IJavaParser parser){
+        this.parser = parser;
     }
 
     public int countSubMethods(Node node){
@@ -31,6 +36,6 @@ public class MethodNodeExplorer extends NodeExplorer{
 
     @Override
     public void checkNode(Node node) {
-     //  parser.parseMethodNode(node);
+       parser.parseMethodNode(node);
     }
 }
