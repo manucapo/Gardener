@@ -1,10 +1,17 @@
-package com.EiriniManu.Parsing;
+package com.EiriniManu.Parsing.Parser;
 
 /*
     This class represents an object that can create an AST (abstract symbol tree) from java source code and pass the resulting tree for information.
     This is the second layer of information extraction in our process.
 */
 
+import com.EiriniManu.IO.DiagramStructure;
+import com.EiriniManu.Messaging.IMessageObserver;
+import com.EiriniManu.Messaging.MessageTag;
+import com.EiriniManu.Parsing.NodeExplorer.CatchNodeExplorer;
+import com.EiriniManu.Parsing.NodeExplorer.NodeExplorerFactory;
+import com.EiriniManu.Parsing.NodeExplorer.ParameterNodeExplorer;
+import com.EiriniManu.Parsing.NodeExplorer.VariableNodeExplorer;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -22,13 +29,44 @@ import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JavaParser implements IJavaParser {
+public class SafeJavaParser implements IJavaParser{
 
-    private List<String> packageDependencies;
+    protected List<String> packageDependencies;
+    protected List<IMessageObserver> observerList;
+
+    protected List<String> catchParameterNames;
+    protected List<String> catchParameterTypes;
+    protected List<String> parameterNames;
+    protected List<String> parameterTypes;
+    protected List<String> classMethodNames;
+    protected String implementingClassName;
+    protected List<String> variableDeclarationNames;
+    protected List<String> variableDeclarationTypes;
+    protected List<String> classFieldNames;
+    protected List<String> classFieldTypes;
 
 
-    public JavaParser() {
+
+
+    public SafeJavaParser() {
+
         packageDependencies = new ArrayList<>();
+        catchParameterTypes = new ArrayList<>();
+        catchParameterNames = new ArrayList<>();
+        parameterNames = new ArrayList<>();
+        parameterTypes = new ArrayList<>();
+        classMethodNames = new ArrayList<>();
+        implementingClassName = "NULL";
+        variableDeclarationNames = new ArrayList<>();
+        variableDeclarationTypes = new ArrayList<>();
+        classFieldNames = new ArrayList<>();
+        classFieldTypes = new ArrayList<>();
+        observerList = new ArrayList<>();
+
+    }
+
+    public void execute(String methodName, String className, String classFilePath, String packageName, DiagramStructure structure){
+        this.ParseMethod(this.ParseFile(className, this.SetSourceRoot(classFilePath,packageName)), className, methodName, structure);
     }
 
     public SourceRoot SetSourceRoot(String path, String packageName) {                           // Set a Root path for the source code. Needed by the parser.
@@ -41,6 +79,7 @@ public class JavaParser implements IJavaParser {
         Log.info("DONE PARSING");
         return cu;
     }
+
 
     public void ParseMethod(CompilationUnit cu, String className, String methodName, DiagramStructure diagramStructure) {
 
@@ -83,7 +122,7 @@ public class JavaParser implements IJavaParser {
                                 subMethodCounter += 1;
                             }
                         }
-                        parseMethodNode(node, diagramStructure);
+                        parseMethodNode(node);
                     } else {subMethodCounter--;}
 
             }
@@ -91,7 +130,7 @@ public class JavaParser implements IJavaParser {
     }
     }
 
-    public void parseMethodNode(Node methodcallNode, DiagramStructure structure) {
+    public void parseMethodNode(Node methodcallNode) {
         System.out.println("--------------------TEST PARSER--------------------");
         System.out.println("ORIGINAL METHOD CALL : " + methodcallNode);
 
@@ -123,10 +162,10 @@ public class JavaParser implements IJavaParser {
 
                     int catchParameterIndex = 0;
                     if (subMethod.findFirst(NameExpr.class).isPresent() && subMethod.findAncestor(CatchClause.class).isPresent()) {  // if method is in catch clause. check catch parameters
-                        for (String methodParameter : structure.getCatchParameterNames()) {
+                        for (String methodParameter : catchParameterNames) {
                             if (methodParameter.equals(subMethod.findFirst(NameExpr.class).get().getNameAsString())) {
                                 System.out.println("THIS IS A CATCH PARAMETER");
-                                methodTargetStack.add(structure.getCatchParameterTypes().get(catchParameterIndex).replaceAll("<.*>", " "));
+                                methodTargetStack.add(catchParameterTypes.get(catchParameterIndex).replaceAll("<.*>", " "));
                                 methodTargetTypeNameStack.add("");
                                 targetFound = true;
                                 break;
@@ -137,10 +176,10 @@ public class JavaParser implements IJavaParser {
 
                     int parameterIndex = 0;
                     if (subMethod.findFirst(NameExpr.class).isPresent()) {
-                        for (String methodParameter : structure.getParameterNames()) {
+                        for (String methodParameter : parameterNames) {
                             if (methodParameter.equals(subMethod.findFirst(NameExpr.class).get().getNameAsString())) {
                                 System.out.println("THIS IS A PARAMETER");
-                                methodTargetStack.add(structure.getParameterType().get(parameterIndex).replaceAll("<.*>", " "));
+                                methodTargetStack.add(parameterTypes.get(parameterIndex).replaceAll("<.*>", " "));
                                 methodTargetTypeNameStack.add("");
                                 targetFound = true;
                                 break;
@@ -150,10 +189,10 @@ public class JavaParser implements IJavaParser {
                     }
                 }
                 if (!targetFound) {
-                    for (String classMethod : structure.getClassMethodNames()) {
+                    for (String classMethod :  classMethodNames) {
                         if (classMethod.equals(subMethodName)) {
                             System.out.println("THIS IS A CLASS MEHTOD");
-                            methodTargetStack.add(structure.getImplementingClassName());
+                            methodTargetStack.add(implementingClassName);
                             methodTargetTypeNameStack.add("");
                             targetFound = true;
                             break;
@@ -166,10 +205,10 @@ public class JavaParser implements IJavaParser {
 
                     int variableIndex = 0;
                     if (subMethod.findFirst(NameExpr.class).isPresent()) {
-                        for (String classMethod : structure.getVariableDeclarations()) {
+                        for (String classMethod : variableDeclarationNames) {
                             if (classMethod.equals(subMethod.findFirst(NameExpr.class).get().getNameAsString())) {
                                 System.out.println("THIS IS A VARIABLE");
-                                methodTargetStack.add(structure.getVariableDeclarationTypes().get(variableIndex).replaceAll("<.*>", " "));
+                                methodTargetStack.add(variableDeclarationTypes.get(variableIndex).replaceAll("<.*>", " "));
                                 methodTargetTypeNameStack.add("");
                                 targetFound = true;
                                 break;
@@ -180,13 +219,14 @@ public class JavaParser implements IJavaParser {
                     }
                 }
 
-                if (!targetFound) {
+                if (!targetFound && subMethod.findFirst(NameExpr.class).isPresent()) {
+
                     int classFieldIndex = 0;
-                    for (String classField : structure.getClassFieldNames()) {
+                    for (String classField : classFieldNames) {
                         System.out.println("CLASS FIELD FINDING AT " + classField);
                         if (classField.equals(subMethod.findFirst(NameExpr.class).get().getNameAsString())) {
                             System.out.println("THIS IS A CLASS FIELD");
-                            methodTargetStack.add(structure.getClassFieldTypes().get(classFieldIndex).replaceAll("<.*>", " "));
+                            methodTargetStack.add(classFieldTypes.get(classFieldIndex).replaceAll("<.*>", " "));
                             methodTargetTypeNameStack.add("");
                             targetFound = true;
                             break;
@@ -307,16 +347,18 @@ public class JavaParser implements IJavaParser {
 
             if (!targetFound) {
                 System.out.println("COULD NOT RESOLVE ANY TARGETS");
+                    methodNameStack.remove(i);
 
-                if (false){                     // SAFE MODE
+
+                    /*
+                                    if (false){                     // SAFE MODE
                     methodNameStack.remove(i);
                 } else if (true) {                       // LOST MESSAGE MODE
                     methodTargetStack.add("LOSTMESSAGE");
                 } else {
                     methodTargetStack.add("ERROR");
                 }
-
-
+                     */
 
             }
             System.out.println("RELOOPING -----------------------------");
@@ -324,12 +366,21 @@ public class JavaParser implements IJavaParser {
 
         for (int i = methodNameStack.size() - 1; i >= 0; i--) {
             System.out.println("NAME : " + methodNameStack.get(i));
-            structure.addMethodCall(methodNameStack.get(i));                                                 // first contained name should be method name
+
+            Object[] type = {MessageTag.METHODCALL,methodNameStack.get(i)};
+            sendMessage(type);
+
+        //    structure.addMethodCall(methodNameStack.get(i));                                                 // first contained name should be method name
+
         }
 
         for (int i = 0; i <= methodTargetStack.size() - 1; i++) {
             System.out.println("TARGET : " + methodTargetStack.get(i));
-            structure.addMethodCallTarget(methodTargetStack.get(i));                                                 // first contained name should be method name
+
+            Object[] type = {MessageTag.METHODCALLTARGET,methodTargetStack.get(i)};
+            sendMessage(type);
+           //
+            // structure.addMethodCallTarget(methodTargetStack.get(i));                                                 // first contained name should be method name
         }
     }
 
@@ -344,7 +395,124 @@ public class JavaParser implements IJavaParser {
         this.packageDependencies = packageDependencies;
     }
 
-    public void addPackageDependencies(String packageDependency) {
+    public void addDependency(String packageDependency) {
         this.packageDependencies.add(packageDependency);
+    }
+
+    @Override
+    public void addObserver(IMessageObserver observer) {
+        observerList.add(observer);
+    }
+
+    @Override
+    public void removeObserver(IMessageObserver observer) {
+            observerList.remove(observer);
+    }
+
+    @Override
+    public void sendMessage(Object message) {
+        for (IMessageObserver observer : observerList) {
+            observer.update(message);
+        }
+    }
+
+    @Override
+    public void update(Object o) {
+
+        Object[] data = (Object[]) o;
+        MessageTag field = (MessageTag) data[0];
+        String string = (String) data[1];
+
+
+        switch (field){
+            case IMPLEMENTINGCLASS:
+                setImplementingClassName(string);
+                break;
+            case CALLINGCLASS:
+                break;
+            case CLASSMETHODNAME:
+                setClassMethodName(string);
+                break;
+            case CLASSMETHODRETURNTYPE:
+                break;
+            case CLASSFIELDNAME:
+                addClassFieldName(string);
+                break;
+            case CLASSFIELDTYPE:
+                addClassFieldType(string);
+                break;
+            case METHODNAME:
+                break;
+            case METHODRETURNTYPE:
+                break;
+            case PARAMETERTYPE:
+                addParameterType(string);
+                break;
+            case PARAMETERNAME:
+                addParameterNames(string);
+                break;
+            case CATCHPARAMETERTYPE:
+                addCatchParameterType(string);
+                break;
+            case CATCHPARAMETERNAME:
+                addCatchParameterName(string);
+                break;
+            case METHODCALL: ;
+                break;
+            case METHODCALLTARGET:
+                break;
+            case VARIABLEDECLARATIONNAME:
+                addVariableDeclarationName(string);
+                break;
+            case VARIABLEDECLARATIONTYPE:
+                addVariableDeclarationType(string);
+                break;
+            default:
+                break;
+        }
+    }
+
+
+    // SETTERS
+
+
+    public void addCatchParameterName(String catchParameterName) {
+        this.catchParameterNames.add(catchParameterName);
+    }
+
+    public void addCatchParameterType(String catchParameterType) {
+        this.catchParameterTypes.add(catchParameterType);
+    }
+
+    public void addParameterNames(String parameterName) {
+        this.parameterNames.add(parameterName);
+    }
+
+    public void addParameterType(String parameterType) {
+        this.parameterTypes.add(parameterType);
+    }
+
+    public void setClassMethodName(String classMethodName) {
+        this.classMethodNames.add(classMethodName);
+    }
+
+    public void setImplementingClassName(String implementingClassName) {
+        this.implementingClassName = implementingClassName;
+    }
+
+    public void addVariableDeclarationName(String variableDeclarationName) {
+        this.variableDeclarationNames.add(variableDeclarationName);
+    }
+
+    public void addVariableDeclarationType(String variableDeclarationType) {
+        this.variableDeclarationTypes.add(variableDeclarationType);
+    }
+
+    public void addClassFieldName(String classFieldName) {
+        this.classFieldNames.add(classFieldName);
+    }
+
+    public void addClassFieldType(String classFieldType) {
+        this.classFieldTypes.add(classFieldType);
     }
 }

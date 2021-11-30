@@ -2,6 +2,9 @@ package com.EiriniManu;
 
 import com.EiriniManu.IO.SequenceDiagramGenerator;
 
+import com.EiriniManu.Parsing.Parser.ReflectionJavaParser;
+import com.EiriniManu.Parsing.Parser.SafeJavaParser;
+
 public class Main {
     
     public static void main(String[] args)
@@ -9,6 +12,7 @@ public class Main {
 
         TestMethod testMethod = new TestMethod();                                                                  // Instantiate a class that provides some simple methods to test the program with.
         SequenceDiagramGenerator sequenceDiagramGenerator = new SequenceDiagramGenerator();            // Instantiate a class that can create a plantUML sequence diagram
+        sequenceDiagramGenerator.setParser(new ReflectionJavaParser());
         sequenceDiagramGenerator.addDependency("com.EiriniManu.");                                        // Add packages to help resolve classes
         sequenceDiagramGenerator.addDependency("java.lang.");
         sequenceDiagramGenerator.addDependency("java.util.");
@@ -28,7 +32,7 @@ public class Main {
        String className = "TestMethod";
 
        for (int i = 1; i <= 19; i++){
-         String methodName = "test" + String.valueOf(i);
+         String methodName = "test"  + String.valueOf(i);
 
            // Generate plantUML sequence diagram
            sequenceDiagramGenerator.generateSequenceDiagram(pathToSource ,pathToSequenceDiagram, methodName ,testMethod,className,packageName , String.class, int.class, boolean.class);

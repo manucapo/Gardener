@@ -5,7 +5,6 @@ package com.EiriniManu.IO;
     It can be used by other classes to handle any task in python
  */
 
-import com.EiriniManu.Parsing.DiagramStructure;
 import org.python.core.PyArray;
 import org.python.core.PyObject;
 import org.python.util.PythonInterpreter;

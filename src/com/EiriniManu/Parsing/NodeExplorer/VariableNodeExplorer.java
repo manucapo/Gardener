@@ -1,6 +1,7 @@
-package com.EiriniManu.Parsing;
+package com.EiriniManu.Parsing.NodeExplorer;
 
 import com.EiriniManu.Messaging.IMessageObserver;
+import com.EiriniManu.Messaging.MessageTag;
 import com.github.javaparser.ast.Node;
 
 import java.util.ArrayList;
@@ -15,9 +16,9 @@ public class VariableNodeExplorer extends NodeExplorer{
      @Override
     public void checkNode(Node node){         // split parameter node name by space.  first string should be type.   second string should be name
          String[] splitArray = node.toString().split(" ");
-         Object[] type = {Fields.VARIABLEDECLARATIONTYPE,splitArray[0]};
+         Object[] type = {MessageTag.VARIABLEDECLARATIONTYPE,splitArray[0]};
          sendMessage(type);
-         Object[] name = {Fields.VARIABLEDECLARATIONNAME,splitArray[1]};
+         Object[] name = {MessageTag.VARIABLEDECLARATIONNAME,splitArray[1]};
          sendMessage(name);
     }
 }

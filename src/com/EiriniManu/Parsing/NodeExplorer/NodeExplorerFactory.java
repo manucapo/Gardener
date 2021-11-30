@@ -1,4 +1,4 @@
-package com.EiriniManu.Parsing;
+package com.EiriniManu.Parsing.NodeExplorer;
 
 import com.EiriniManu.Messaging.IMessageObserver;
 import com.github.javaparser.ast.body.Parameter;

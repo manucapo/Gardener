@@ -6,8 +6,7 @@ package com.EiriniManu.IO;
     This class feeds the python script the necessary information
  */
 
-import com.EiriniManu.Parsing.DiagramStructure;
-import com.EiriniManu.Parsing.JavaParser;
+import com.EiriniManu.Parsing.Parser.*;
 import com.EiriniManu.Parsing.Reflector;
 import net.sourceforge.plantuml.GeneratedImage;
 import net.sourceforge.plantuml.SourceFileReader;
@@ -20,7 +19,7 @@ import java.util.List;
 public class SequenceDiagramGenerator implements ISequenceDiagramGenerator {
     private DiagramStructure structure;
     private Reflector reflector;
-    private JavaParser parser;
+    private ParserContext parserContext;
     private JythonCaller jCaller;
 
 
@@ -28,16 +27,15 @@ public class SequenceDiagramGenerator implements ISequenceDiagramGenerator {
          structure = DiagramStructure.getInstance();
          reflector = new Reflector();
         reflector.addObserver(structure);
-         parser = new JavaParser();
          jCaller = new JythonCaller();
+        parserContext = new ParserContext(new SafeJavaParser(), structure);
     }
 
 
     public void updateDiagramStructure(String methodName, Object cls, String className , String classFilePath, String packageName, Class<?>... params){            // Update structure with information gathered by reflector and parser
         reflector.ReflectOnClass(cls);
         reflector.ReflectOnMethod(cls,methodName,params);
-        parser.ParseMethod(parser.ParseFile(className, parser.SetSourceRoot(classFilePath,packageName)), className, methodName, structure);
-
+        parserContext.executeParsing(methodName, className, classFilePath, packageName,structure);
     }
 
     public void generateSequenceDiagram(String pathToSource, String pathToDiagram, String methodName, Object cls, String className, String packageName, Class<?>... params){                  // Wrapper function for the two-steps required for creating a plantUML diagram image.
@@ -72,7 +70,11 @@ public class SequenceDiagramGenerator implements ISequenceDiagramGenerator {
     }
 
     public void addDependency(String dependency){
-        parser.addPackageDependencies(dependency);
+        parserContext.addDependency(dependency);
+    }
+
+    public void setParser(IJavaParser parser){
+        parserContext = new ParserContext(parser,structure);
     }
 
 }

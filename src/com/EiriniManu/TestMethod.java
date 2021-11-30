@@ -4,7 +4,7 @@ package com.EiriniManu;
     This class represents an object that can expose some methods to test the program with.
 */
 
-import com.EiriniManu.Parsing.DiagramStructure;
+import com.EiriniManu.IO.DiagramStructure;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.NameExpr;
 

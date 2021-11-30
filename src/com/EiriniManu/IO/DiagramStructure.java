@@ -1,4 +1,4 @@
-package com.EiriniManu.Parsing;
+package com.EiriniManu.IO;
 
 /*
     This class represents a data structure that contains all information needed by the plantUML diagram to generate the desired UML sequence diagram
@@ -8,31 +8,16 @@ package com.EiriniManu.Parsing;
  */
 
 import com.EiriniManu.Messaging.IMessageObserver;
+import com.EiriniManu.Messaging.IMessageSender;
+import com.EiriniManu.Messaging.MessageTag;
 
 import java.util.ArrayList;
 import java.util.List;
 
-enum Fields {
-    IMPLEMENTINGCLASS,
-    CALLINGCLASS,
-    CLASSMETHODNAME,
-    CLASSMETHODRETURNTYPE,
-    CLASSFIELDNAME,
-    CLASSFIELDTYPE,
-    METHODNAME,
-    METHODRETURNTYPE,
-    PARAMETERTYPE,
-    PARAMETERNAME,
-    CATCHPARAMETERTYPE,
-    CATCHPARAMETERNAME,
-    METHODCALL,
-    METHODCALLTARGET,
-    VARIABLEDECLARATIONNAME,
-    VARIABLEDECLARATIONTYPE
-}
 
-public class DiagramStructure implements IMessageObserver {
 
+public class DiagramStructure implements IMessageObserver, IMessageSender {
+    private List<IMessageObserver> observerList;
 
     private String implementingClassName;         // Name of class where method is implemented
     private String callingClassName;              // Name of class that calls a method (must it be given by user ?)
@@ -70,6 +55,7 @@ public class DiagramStructure implements IMessageObserver {
         catchParameterNames = new ArrayList<>();
         classFieldNames = new ArrayList<>();
         classFieldTypes = new ArrayList<>();
+        observerList = new ArrayList<>();
     }
 
     public static DiagramStructure getInstance(){
@@ -83,6 +69,8 @@ public class DiagramStructure implements IMessageObserver {
 
     public void setImplementingClassName(String implementingClassName) {
         this.implementingClassName = implementingClassName;
+        Object[] msg = {MessageTag.IMPLEMENTINGCLASS,this.implementingClassName };
+        sendMessage(msg);
     }
 
     public String getCallingClassName() {
@@ -90,99 +78,78 @@ public class DiagramStructure implements IMessageObserver {
     }
 
     private void setCallingClassName(String callingClassName) {
+
         this.callingClassName = callingClassName;
+
+        Object[] msg = {MessageTag.CALLINGCLASS,this.callingClassName };
+        sendMessage(msg);
     }
 
     public void addClassMethodName(String name) {
+
         classMethodNames.add(name);
+        Object[] msg = {MessageTag.CLASSMETHODNAME,name};
+        sendMessage(msg);
     }
 
-
-    private void setClassMethodNames(List<String> classMethodNames) {
-        this.classMethodNames = classMethodNames;
-    }
-
-    public List<String> getClassMethodNames(){
-        return classMethodNames;
-    }
 
     public String getMethodName() {
         return methodName;
     }
 
     private void setMethodName(String methodName) {
+
         this.methodName = methodName;
+        Object[] msg = {MessageTag.METHODNAME,this.methodName };
+        sendMessage(msg);
     }
 
-
-    public String getMethodReturnType() {
-        return methodReturnType;
-    }
 
     private void setMethodReturnType(String methodReturnType) {
         this.methodReturnType = methodReturnType;
+        Object[] msg = {MessageTag.METHODRETURNTYPE,this.methodReturnType };
+        sendMessage(msg);
     }
 
-    public List<String> getParameterType() {
-        return parameterType;
-    }
 
     private void addParameterType(String name) {
         this.parameterType.add(name);
+        Object[] msg = {MessageTag.PARAMETERTYPE,name};
+        sendMessage(msg);
     }
 
-    private void setParameterType(List<String> parameterTypes) {
-        this.parameterType = (parameterTypes);
-    }
-
-
-    public List<String> getParameterNames() {
-        return parameterNames;
-    }
-
-    private void setParameterNames(List<String> parameterNames) {
-        this.parameterNames = parameterNames;
-    }
 
     private void addParameterName(String parameterName) {
         this.parameterNames.add(parameterName);
+        Object[] msg = {MessageTag.PARAMETERNAME,parameterName };
+        sendMessage(msg);
     }
 
-    public List<String> getCatchParameterTypes() {
-        return catchParameterTypes;
-    }
-
-    private void setCatchParameterTypes(List<String> catchParameterTypes) {
-        this.catchParameterTypes = catchParameterTypes;
-    }
 
     private void addCatchParameterTypes(String catchParameterType) {
+
         this.catchParameterTypes.add(catchParameterType);
+        Object[] msg = {MessageTag.CATCHPARAMETERTYPE,catchParameterType };
+        sendMessage(msg);
     }
 
-
-    public List<String> getCatchParameterNames() {
-        return catchParameterNames;
-    }
-
-    private void setCatchParameterNames(List<String> catchParameterNames) {
-        this.catchParameterNames = catchParameterNames;
-    }
 
     private void addCatchParameterNames(String catchParameterName) {
+
         this.catchParameterNames.add(catchParameterName);
+        Object[] msg = {MessageTag.CATCHPARAMETERNAME,catchParameterName};
+        sendMessage(msg);
     }
 
     public List<String> getMethodCalls() {
         return methodCalls;
     }
 
-    private void setMethodCalls(List<String> methodCalls) {
-        this.methodCalls = methodCalls;
-    }
 
     public void addMethodCall(String methodCall) {
         this.methodCalls.add(methodCall);             // the last string in the array should be the actual call
+        Object[] msg = {MessageTag.METHODCALL,methodCall};
+        sendMessage(msg);
     }
 
     public List<String> getMethodCallTargets(){
@@ -190,69 +157,46 @@ public class DiagramStructure implements IMessageObserver {
     }
 
     public void addMethodCallTarget(String methodCallTarget) {
+
         this.methodCallTargets.add(methodCallTarget);
+        Object[] msg = {MessageTag.METHODCALLTARGET,methodCallTarget };
+        sendMessage(msg);
     }
 
-    public List<String> getVariableDeclarations() {
-        return variableDeclarations;
-    }
-
-    private void setVariableDeclarations(List<String> variableDeclarations) {
-        this.variableDeclarations = variableDeclarations;
-    }
 
     private void addVariableDeclarations(String variableDeclaration) {
         this.variableDeclarations.add(variableDeclaration);
+        Object[] msg = {MessageTag.VARIABLEDECLARATIONNAME,variableDeclaration };
+        sendMessage(msg);
     }
 
-    public List<String> getVariableDeclarationTypes() {
-        return variableDeclarationTypes;
-    }
-
-    private void setVariableDeclarationTypes(List<String> variableDeclarationTypes) {
-        this.variableDeclarationTypes = variableDeclarationTypes;
-    }
 
     private void addVariableDeclarationTypes(String variableDeclarationType) {
         this.variableDeclarationTypes.add(variableDeclarationType);
+        Object[] msg = {MessageTag.VARIABLEDECLARATIONTYPE,variableDeclarationType };
+        sendMessage(msg);
     }
 
-
-    public List<String> getClassMethodReturnTypes() {
-        return classMethodReturnTypes;
-    }
-
-    private void setClassMethodReturnType(List<String> classMethodReturnType) {
-        this.classMethodReturnTypes = classMethodReturnType;
-    }
 
     private void addClassMethodReturnType(String classMethodReturnType) {
         this.classMethodReturnTypes.add(classMethodReturnType);
-    }
-
-
-    public List<String> getClassFieldNames() {
-        return classFieldNames;
-    }
-
-    private void setClassFieldNames(List<String> classFieldNames) {
-        this.classFieldNames = classFieldNames;
+        Object[] msg = {MessageTag.CLASSMETHODRETURNTYPE,classMethodReturnType};
+        sendMessage(msg);
     }
 
     private void addClassFieldNames(String classFieldName) {
+
         this.classFieldNames.add(classFieldName);
+        Object[] msg = {MessageTag.CLASSFIELDNAME, classFieldName};
+        sendMessage(msg);
     }
 
-    public List<String> getClassFieldTypes() {
-        return classFieldTypes;
-    }
 
-    private void setClassFieldTypes(List<String> classFieldTypes) {
-        this.classFieldTypes = classFieldTypes;
-    }
+    private void addClassFieldTypes(String classFieldType) {
 
-    private void addGetClassFieldTypes(String getClassFieldType) {
-        this.classFieldTypes.add(getClassFieldType);
+        this.classFieldTypes.add(classFieldType);
+        Object[] msg = {MessageTag.CLASSFIELDTYPE,classFieldType };
+        sendMessage(msg);
     }
 
     public void reset(){
@@ -279,7 +223,7 @@ public class DiagramStructure implements IMessageObserver {
     public void update(Object o) {
 
         Object[] data = (Object[]) o;
-        Fields field = (Fields) data[0];
+        MessageTag field = (MessageTag) data[0];
         String string = (String) data[1];
 
 
@@ -300,7 +244,7 @@ public class DiagramStructure implements IMessageObserver {
                 addClassFieldNames(string);
                 break;
             case CLASSFIELDTYPE:
-                addGetClassFieldTypes(string);
+                addClassFieldTypes(string);
                 break;
             case METHODNAME:
                 setMethodName(string);
@@ -334,6 +278,23 @@ public class DiagramStructure implements IMessageObserver {
                 break;
             default:
                 break;
+        }
+    }
+
+    @Override
+    public void addObserver(IMessageObserver observer) {
+        this.observerList.add(observer);
+    }
+
+    @Override
+    public void removeObserver(IMessageObserver observer) {
+        this.observerList.remove(observer);
+    }
+
+    @Override
+    public void sendMessage(Object message) {
+        for (IMessageObserver observer : observerList) {
+            observer.update(message);
         }
     }
 }
