@@ -22,5 +22,9 @@ TestMethod -> N: toString
 activate N
 N-->TestMethod
 deactivate N
+TestMethod -> String: equals
+activate String
+String-->TestMethod
+deactivate String
 return 
 @enduml 

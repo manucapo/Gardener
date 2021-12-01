@@ -148,6 +148,16 @@ public class TestMethod implements  ITestMethod{
         return "26";
     }
 
+    public String test20(String s, int j, boolean bool){
+        String f = "2";
+            System.out.println(test1(s.toString(),Integer.parseInt(f),bool));
+        return "26";
+    }
+
+    public String test21(String s, int j, boolean bool){
+        structure.getMethodName();
+        return "26";
+    }
 
 
 

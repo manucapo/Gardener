@@ -1,15 +1,19 @@
 @startuml 
 participant Actor 
-Actor -> TestMethod: test14
+Actor -> TestMethod: test20
 activate TestMethod
+TestMethod -> Integer: parseInt
+activate Integer
+Integer-->TestMethod
+deactivate Integer
 TestMethod -> String: toString
 activate String
 String-->TestMethod
 deactivate String
-TestMethod -> Exception: toString
-activate Exception
-Exception-->TestMethod
-deactivate Exception
+TestMethod -> TestMethod: test1
+activate TestMethod
+TestMethod-->TestMethod
+deactivate TestMethod
 TestMethod -> System: println
 activate System
 System-->TestMethod

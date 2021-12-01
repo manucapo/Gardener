@@ -6,10 +6,10 @@ TestMethod -> String: toString
 activate String
 String-->TestMethod
 deactivate String
-TestMethod -> String: toString
-activate String
-String-->TestMethod
-deactivate String
+TestMethod -> Exception: toString
+activate Exception
+Exception-->TestMethod
+deactivate Exception
 TestMethod -> System: println
 activate System
 System-->TestMethod

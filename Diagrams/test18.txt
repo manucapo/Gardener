@@ -18,9 +18,9 @@ TestMethod -> Optional: get
 activate Optional
 Optional-->TestMethod
 deactivate Optional
-TestMethod -> N: equals
-activate N
-N-->TestMethod
-deactivate N
+TestMethod -> String: equals
+activate String
+String-->TestMethod
+deactivate String
 return 
 @enduml 
