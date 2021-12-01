@@ -1,16 +1,18 @@
-package com.EiriniManu;
+package com.EiriniManu.IO;
 
 /*
     This class represents a helper object that can execute python code from a .py file.
     It can be used by other classes to handle any task in python
  */
 
+import org.python.core.PyArray;
 import org.python.core.PyObject;
 import org.python.util.PythonInterpreter;
 import org.python.core.PyString;
 
 
 import java.io.InputStream;
+import java.lang.reflect.Array;
 
 public class JythonCaller implements IJythonCaller {
 
@@ -31,7 +33,8 @@ public class JythonCaller implements IJythonCaller {
             if (pyFunction == null) {
                 throw new Exception("Could not find Python function");
             } else {
-                pyFunction.__call__(new PyString(path), new PyString(structure.getImplementingClassName()), new PyString(structure.getMethodName()));  // Call the function in the python string with parameters.
+                PyObject[] args = {new PyString(path), new PyString(structure.getImplementingClassName()), new PyString(structure.getMethodName()), new PyArray(Array.class, structure.getMethodCalls().toArray()), new PyArray(Array.class, structure.getMethodCallTargets().toArray())  };
+                pyFunction.__call__(args);  // Call the function in the python string with argument array.
             }
         } catch (Exception e) {
             System.out.println(e.toString());

@@ -1,3 +1,0 @@
-@startuml 
- [o-> com.EiriniManu.TestMethod: Test3
-@enduml 

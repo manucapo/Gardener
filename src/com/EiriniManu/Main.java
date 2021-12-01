@@ -1,33 +1,38 @@
 package com.EiriniManu;
 
+import com.EiriniManu.Parsing.Parser.ReflectionJavaParser;
+
 public class Main {
     
     public static void main(String[] args)
     {
-        String pathToSequenceDiagram = "Diagrams\\sequenceDiagram.txt";                                            // Choose desired (relative) path to sequence diagram file
+
         TestMethod testMethod = new TestMethod();                                                                  // Instantiate a class that provides some simple methods to test the program with.
-        SequenceDiagramGenerator sequenceDiagramGenerator = new SequenceDiagramGenerator();            // Instantiate a class that can create a plantUML sequence diagram
-        JavaParser parser = new JavaParser();                                                                      // Instantiate a class that can parse java source code to generate an AST (Abstract Syntax Tree)
+        SequenceDiagramGenerator sequenceDiagramGenerator = new SequenceDiagramGenerator(ParserType.SAFE);            // Instantiate a class that can create a plantUML sequence diagram
+        sequenceDiagramGenerator.addDependency("com.EiriniManu.");                                        // Add packages to help resolve classes
+        sequenceDiagramGenerator.addDependency("java.lang.");
+        sequenceDiagramGenerator.addDependency("java.util.");
+        sequenceDiagramGenerator.addDependency("java.util.Optional<T>.");
+        sequenceDiagramGenerator.addDependency("java.util.Optional.");
+        sequenceDiagramGenerator.addDependency("com.github.javaparser.ast.");
+        sequenceDiagramGenerator.addDependency("com.github.javaparser.ast.expr");
+        sequenceDiagramGenerator.addDependency("com.github.javaparser.ast.stmt");
+        sequenceDiagramGenerator.addDependency("com.github.javaparser.");
+        sequenceDiagramGenerator.addDependency("com.github.javaparser.HasParentNode<T>.");
+        sequenceDiagramGenerator.addDependency("com.github.javaparser.HasParentNode.");
 
         // Some extra metadata entered by the user. (NEED TO FIND A BETTER WAY TO PASS THIS)
-       String fileName = "TestMethod.java";
-       String path = "src";                        // Relative path to TestMethod Class
+       String pathToSource = "src";                        // Relative path to TestMethod Class
+        String pathToSequenceDiagram = "Diagrams";                                            // Choose desired (relative) path to sequence diagram file
        String packageName = "com.EiriniManu";
        String className = "TestMethod";
-       String methodName = "Test3";
 
-       //OPERATION STEPS
+       for (int i = 1; i <= 19; i++){
+         String methodName = "test"  + String.valueOf(i);
 
-       // 1) Parse the given java class for information on a method
-       parser.ParseMethodFromClass(parser.ParseFile(fileName, parser.SetSourceRoot(path,packageName)), className, methodName);
-
-       // 2) Update the information structure that contains metadata on the method the user wants to display as a diagram
-        sequenceDiagramGenerator.updateDiagramStructure("Test3", testMethod, String.class, int.class, boolean.class);
-
-        // 3) Generate plantUML sequence diagram using the updated information structure.
-        sequenceDiagramGenerator.generateSequenceDiagram(pathToSequenceDiagram);
-
+           // Generate plantUML sequence diagram
+           sequenceDiagramGenerator.generateSequenceDiagram(pathToSource ,pathToSequenceDiagram, methodName ,testMethod,className,packageName , String.class, int.class, boolean.class);
+       }
     }
 }
-
 
