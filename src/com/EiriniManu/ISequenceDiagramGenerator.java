@@ -1,4 +1,4 @@
-package com.EiriniManu.IO;
+package com.EiriniManu;
 
 import java.io.File;
 

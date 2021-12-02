@@ -16,6 +16,7 @@ public class TestMethod implements  ITestMethod{
     List<String> methodTargetStack = new ArrayList<>();
     DiagramStructure structure = DiagramStructure.getInstance();
     int parameterIndex = 0;
+    String str = "";
 
     public TestMethod(){
         methodTargetStack.add("TEST");
@@ -96,8 +97,8 @@ public class TestMethod implements  ITestMethod{
 
     public String test14(String s, int j, boolean bool){
       try {
-          String e = "";
-          e.toString();
+          DiagramStructure e = DiagramStructure.getInstance();
+          str.split("");
       } catch (Exception e){
           System.out.println(e.toString());
       }

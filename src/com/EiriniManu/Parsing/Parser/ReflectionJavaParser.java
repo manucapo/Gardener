@@ -1,8 +1,10 @@
 package com.EiriniManu.Parsing.Parser;
 
+import com.EiriniManu.IO.DiagramStructure;
 import com.EiriniManu.Messaging.IMessageObserver;
 import com.EiriniManu.Messaging.MessageTag;
 import com.EiriniManu.Parsing.*;
+import com.EiriniManu.Parsing.NodeExplorer.*;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -41,7 +43,58 @@ public class ReflectionJavaParser extends SafeJavaParser implements IJavaParser 
 
     }
 
+    public void execute(String methodName, String className, String classFilePath, String packageName, DiagramStructure structure){
+        this.ParseMethod(this.ParseFile(className, this.SetSourceRoot(classFilePath,packageName)), className, methodName, structure);
+    }
+
+    public void ParseMethod(CompilationUnit cu, String className, String methodName, DiagramStructure diagramStructure) {
+
+        ClassOrInterfaceDeclaration clsX = new ClassOrInterfaceDeclaration();                 // Holder variable for the class declaration node.
+
+        if (cu.getClassByName(className).isPresent()) {                                      // Check if class with corresponding name exists. :
+            clsX = cu.getClassByName(className).get();                                       // if yes hold the class declaration node
+        }
+
+        for (MethodDeclaration method : clsX.getMethods()) {                                 // for every method declaration node in the class :
+            if (method.getName().toString().equals(methodName)) {                            // Find method with given name
+
+                XmlPrinter printer = new XmlPrinter(true);
+                //   System.out.println(printer.output(method));                                // DEBUG PRINTER
+
+
+                for (Parameter node : method.getParameters()) {                       // extract method parameters
+                    ParameterNodeExplorer nodeExplorer = (ParameterNodeExplorer) NodeExplorerFactory.create(Parameter.class);
+                    nodeExplorer.checkNode(node);
+                }
+
+                for (Node node : method.findAll(CatchClause.class, Node.TreeTraversal.PREORDER)) { // extract information on variables declared inside catch clause
+                    CatchNodeExplorer nodeExplorer = (CatchNodeExplorer) NodeExplorerFactory.create(CatchClause.class);
+                    nodeExplorer.checkNode(node);
+                }
+
+                for (Node node : method.findAll(VariableDeclarationExpr.class, Node.TreeTraversal.PREORDER)) {  // extract information on variables inside method
+                    VariableNodeExplorer nodeExplorer = (VariableNodeExplorer) NodeExplorerFactory.create(VariableDeclarationExpr.class);
+
+                    nodeExplorer.checkNode(node);
+                }
+
+                int subMethodCounter = 0;
+
+                for (Node node : method.findAll(MethodCallExpr.class, Node.TreeTraversal.PREORDER)) { // extract information on method calls inside method
+
+                    if (subMethodCounter == 0){
+                        MethodNodeExplorer nodeExplorer = (MethodNodeExplorer) NodeExplorerFactory.create(MethodCallExpr.class);
+                        subMethodCounter = nodeExplorer.countSubMethods(node);
+                        nodeExplorer.setParser(this);
+                        nodeExplorer.checkNode(node);
+                    } else {subMethodCounter--;}
+
+                }
+            }
+        }
+    }
     @Override
+
     public void parseMethodNode(Node methodcallNode) {
         System.out.println("--------------------TEST PARSER--------------------");
         System.out.println("ORIGINAL METHOD CALL : " + methodcallNode);
@@ -71,14 +124,6 @@ public class ReflectionJavaParser extends SafeJavaParser implements IJavaParser 
             MethodCallExpr subMethod = containedMethods.get(i);
             String subMethodName = subMethod.findAll(SimpleName.class, Node.TreeTraversal.BREADTHFIRST).get(0).toString();
 
-            Node scope = null;
-            if (subMethod.getScope().isPresent()) {                       // get the nearest sub method scope. By removing previous scope from current scope
-                scope = subMethod.getScope().get();
-                if (previousScope != null) {
-                    scope.remove(previousScope);
-                }
-                System.out.println("DEBUGING SCOPE : " + scope);
-            }
 
             for (String classMethod : classMethodNames) {                   // check if node is a class method
                 if (classMethod.equals(subMethodName)) {
@@ -88,6 +133,15 @@ public class ReflectionJavaParser extends SafeJavaParser implements IJavaParser 
                     targetFound = true;
                     break;
                 }
+            }
+
+            Node scope = null;
+            if (subMethod.getScope().isPresent()) {                       // get the nearest sub method scope. By removing previous scope from current scope
+                scope = subMethod.getScope().get();
+                if (previousScope != null) {
+                    scope.remove(previousScope);
+                }
+                System.out.println("DEBUGING SCOPE : " + scope);
             }
 
 
@@ -172,24 +226,23 @@ public class ReflectionJavaParser extends SafeJavaParser implements IJavaParser 
                         }
                     }
                 }
-            }
 
 
-            if (subMethod.findFirst(NameExpr.class).isPresent()) {         // try to resolve method target by using last class
-                for (String pkg : packageDependencies) {
 
-                    try {
-                        lastClass = Class.forName(pkg + "." + subMethod.findFirst(NameExpr.class).get().getNameAsString());     // MUST CHECK FOR ALL PACKAGES
-                        methodTargetStack.add(lastClass.getSimpleName().replaceAll("<.*>", " "));
-                        methodTargetTypeNameStack.add("");
-                        targetFound = true;
-                        break;
-                    } catch (Exception e) {
-                        //TODO
+                if (!targetFound) {         // try to resolve method target by using last class
+                    for (String pkg : packageDependencies) {
+                        try {
+                            lastClass = Class.forName(pkg + "." + scope.findFirst(SimpleName.class).get().toString());     // MUST CHECK FOR ALL PACKAGES
+                            methodTargetStack.add(lastClass.getSimpleName().replaceAll("<.*>", " "));
+                            methodTargetTypeNameStack.add("");
+                            targetFound = true;
+                            break;
+                        } catch (Exception e) {
+                            //TODO
+                        }
                     }
                 }
             }
-
 
             if (!targetFound) {                                             // try to resolve method if last class was a container class
                 for (String pkg : packageDependencies) {
@@ -281,7 +334,6 @@ public class ReflectionJavaParser extends SafeJavaParser implements IJavaParser 
                 } else {
                     methodTargetStack.add("ERROR");
                 }
-
 
             }
 

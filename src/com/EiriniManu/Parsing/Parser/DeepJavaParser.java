@@ -41,13 +41,6 @@ public class DeepJavaParser extends SafeJavaParser{
         observerList = new ArrayList<>();
     }
     public void execute(String methodName, String className, String classFilePath, String packageName, DiagramStructure structure){
-
-        for (Package pkg: Package.getPackages()
-             ) {
-            if (pkg.getName().contains(packageName)){
-                packageDependencies.add(pkg.getName());
-            }
-        }
         this.ParseMethod(this.ParseFile(className, this.SetSourceRoot(classFilePath,packageName)), className, methodName, structure);
     }
 
@@ -61,22 +54,23 @@ public class DeepJavaParser extends SafeJavaParser{
 
         for (MethodDeclaration method : clsX.getMethods()) {                                 // for every method declaration node in the class :
             if (method.getName().toString().equals(methodName)) {                            // Find method with given name
+
                 XmlPrinter printer = new XmlPrinter(true);
                 //   System.out.println(printer.output(method));                                // DEBUG PRINTER
 
 
                 for (Parameter node : method.getParameters()) {                       // extract method parameters
-                    ParameterNodeExplorer nodeExplorer = (ParameterNodeExplorer) NodeExplorerFactory.create(Parameter.class, diagramStructure);
+                    ParameterNodeExplorer nodeExplorer = (ParameterNodeExplorer) NodeExplorerFactory.create(Parameter.class);
                     nodeExplorer.checkNode(node);
                 }
 
                 for (Node node : method.findAll(CatchClause.class, Node.TreeTraversal.PREORDER)) { // extract information on variables declared inside catch clause
-                    CatchNodeExplorer nodeExplorer = (CatchNodeExplorer) NodeExplorerFactory.create(CatchClause.class, diagramStructure);
+                    CatchNodeExplorer nodeExplorer = (CatchNodeExplorer) NodeExplorerFactory.create(CatchClause.class);
                     nodeExplorer.checkNode(node);
                 }
 
                 for (Node node : method.findAll(VariableDeclarationExpr.class, Node.TreeTraversal.PREORDER)) {  // extract information on variables inside method
-                    VariableNodeExplorer nodeExplorer = (VariableNodeExplorer) NodeExplorerFactory.create(VariableDeclarationExpr.class, diagramStructure);
+                    VariableNodeExplorer nodeExplorer = (VariableNodeExplorer) NodeExplorerFactory.create(VariableDeclarationExpr.class);
 
                     nodeExplorer.checkNode(node);
                 }
@@ -86,7 +80,7 @@ public class DeepJavaParser extends SafeJavaParser{
                 for (Node node : method.findAll(MethodCallExpr.class, Node.TreeTraversal.PREORDER)) { // extract information on method calls inside method
 
                     if (subMethodCounter == 0){
-                        MethodNodeExplorer nodeExplorer = (MethodNodeExplorer) NodeExplorerFactory.create(MethodCallExpr.class, diagramStructure);
+                        MethodNodeExplorer nodeExplorer = (MethodNodeExplorer) NodeExplorerFactory.create(MethodCallExpr.class);
                         subMethodCounter = nodeExplorer.countSubMethods(node);
                         nodeExplorer.setParser(this);
                         nodeExplorer.checkNode(node);
@@ -126,14 +120,6 @@ public class DeepJavaParser extends SafeJavaParser{
             MethodCallExpr subMethod = containedMethods.get(i);
             String subMethodName = subMethod.findAll(SimpleName.class, Node.TreeTraversal.BREADTHFIRST).get(0).toString();
 
-            Node scope = null;
-            if (subMethod.getScope().isPresent()) {                       // get the nearest sub method scope. By removing previous scope from current scope
-                scope = subMethod.getScope().get();
-                if (previousScope != null) {
-                    scope.remove(previousScope);
-                }
-                System.out.println("DEBUGING SCOPE : " + scope);
-            }
 
             for (String classMethod : classMethodNames) {                   // check if node is a class method
                 if (classMethod.equals(subMethodName)) {
@@ -145,6 +131,15 @@ public class DeepJavaParser extends SafeJavaParser{
                 }
             }
 
+            Node scope = null;
+            if (subMethod.getScope().isPresent()) {                       // get the nearest sub method scope. By removing previous scope from current scope
+                scope = subMethod.getScope().get();
+                if (previousScope != null) {
+                    scope.remove(previousScope);
+                }
+                System.out.println("DEBUGING SCOPE : " + scope);
+            }
+
 
             if (scope != null) {
                 if (!targetFound) {
@@ -154,10 +149,23 @@ public class DeepJavaParser extends SafeJavaParser{
                         for (String methodCatchParameter : catchParameterNames) {
                             if (methodCatchParameter.equals(scope.findFirst(SimpleName.class).get().toString())) {
                                 System.out.println("THIS IS A CATCH PARAMETER");
+                                boolean isSafe = false;
+                                for (String pkg : packageDependencies) {
+                                    try {
+                                        Class.forName(pkg + "." + catchParameterTypes.get(catchParameterIndex).replaceAll("<.*>", " "));
+                                        isSafe = true;
+                                    }
+                                    catch (Exception e){
+                                        //TODO
+                                    }
+                                }
+                                if (isSafe) {
                                     methodTargetStack.add(catchParameterTypes.get(catchParameterIndex).replaceAll("<.*>", " "));
                                     methodTargetTypeNameStack.add("");
-                                    targetFound = true;
-
+                                } else {
+                                    methodNameStack.remove(i);   // avoid target call and target name list desync
+                                }
+                                targetFound = true;
                                 break;
                             }
                             catchParameterIndex++;
@@ -171,9 +179,21 @@ public class DeepJavaParser extends SafeJavaParser{
                         for (String methodParameter : parameterNames) {
                             if (methodParameter.equals(scope.findFirst(SimpleName.class).get().toString())) {
                                 System.out.println("THIS IS A PARAMETER");
+                                boolean isSafe = false;
+                                for (String pkg : packageDependencies) {
+                                    try {
+                                        Class.forName(pkg + "." + parameterTypes.get(parameterIndex).replaceAll("<.*>", " "));
+                                        isSafe = true;
+                                    }
+                                    catch (Exception e){
+                                        //TODO
+                                    }
+                                }
+                                if (isSafe) {
                                     methodTargetStack.add(parameterTypes.get(parameterIndex).replaceAll("<.*>", " "));
                                     methodTargetTypeNameStack.add("");
                                     targetFound = true;
+                                }
                                 break;
                             }
                             parameterIndex++;
@@ -188,9 +208,21 @@ public class DeepJavaParser extends SafeJavaParser{
                         for (String classMethod : variableDeclarationNames) {
                             if (classMethod.equals(scope.findFirst(SimpleName.class).get().toString())) {
                                 System.out.println("THIS IS A VARIABLE");
-                                methodTargetStack.add(variableDeclarationTypes.get(variableIndex).replaceAll("<.*>", " "));
-                                methodTargetTypeNameStack.add("");
-                                targetFound = true;
+                                boolean isSafe = false;
+                                for (String pkg : packageDependencies) {
+                                    try {
+                                        Class.forName(pkg + "." + variableDeclarationTypes.get(variableIndex).replaceAll("<.*>", " "));
+                                        isSafe = true;
+                                    }
+                                    catch (Exception e){
+                                        //TODO
+                                    }
+                                }
+                                if (isSafe) {
+                                    methodTargetStack.add(variableDeclarationTypes.get(variableIndex).replaceAll("<.*>", " "));
+                                    methodTargetTypeNameStack.add("");
+                                    targetFound = true;
+                                }
                                 break;
                             }
                             variableIndex++;
@@ -207,9 +239,22 @@ public class DeepJavaParser extends SafeJavaParser{
                             System.out.println("CLASS FIELD FINDING AT " + classField);
                             if (classField.equals(scope.findFirst(SimpleName.class).get().toString())) {
                                 System.out.println("THIS IS A CLASS FIELD");
-                                methodTargetStack.add(classFieldTypes.get(classFieldIndex).replaceAll("<.*>", " "));
-                                methodTargetTypeNameStack.add("");
-                                targetFound = true;
+                                boolean isSafe = false;
+                                for (String pkg : packageDependencies) {
+                                    try {
+                                        Class.forName(pkg + "." + classFieldTypes.get(classFieldIndex).replaceAll("<.*>", " "));
+                                        isSafe = true;
+                                    }
+                                    catch (Exception e){
+                                        //TODO
+                                    }
+                                }
+                                if (isSafe) {
+                                    methodTargetStack.add(classFieldTypes.get(classFieldIndex).replaceAll("<.*>", " "));
+                                    methodTargetTypeNameStack.add("");
+                                    targetFound = true;
+                                }
+
                                 break;
                             }
                             classFieldIndex++;
@@ -222,30 +267,40 @@ public class DeepJavaParser extends SafeJavaParser{
                     if (scope.findFirst(FieldAccessExpr.class).isPresent()) {
                         Node fieldAcess = scope.findFirst(FieldAccessExpr.class).get();
                         if (fieldAcess.findFirst(NameExpr.class).isPresent()) {
-                            methodTargetStack.add(fieldAcess.findFirst(NameExpr.class).get().getNameAsString());
+                            boolean isSafe = false;
+                            for (String pkg : packageDependencies) {
+                                try {
+                                    Class.forName(pkg + "." + fieldAcess.findFirst(NameExpr.class).get().getNameAsString());
+                                    isSafe = true;
+                                }
+                                catch (Exception e){
+                                    //TODO
+                                }
+                            }
+                            if (isSafe) {
+                                methodTargetStack.add(fieldAcess.findFirst(NameExpr.class).get().getNameAsString());
+                                methodTargetTypeNameStack.add("");
+                                targetFound = true;
+                            }
+                        }
+                    }
+                }
+
+
+                if (!targetFound) {         // try to resolve method target by using last class
+                    for (String pkg : packageDependencies) {
+                        try {
+                            lastClass = Class.forName(pkg + "." + scope.findFirst(SimpleName.class).get().toString());     // MUST CHECK FOR ALL PACKAGES
+                            methodTargetStack.add(lastClass.getSimpleName().replaceAll("<.*>", " "));
                             methodTargetTypeNameStack.add("");
                             targetFound = true;
+                            break;
+                        } catch (Exception e) {
+                            //TODO
                         }
                     }
                 }
             }
-
-
-            if (subMethod.findFirst(NameExpr.class).isPresent()) {         // try to resolve method target by using last class
-                for (String pkg : packageDependencies) {
-
-                    try {
-                        lastClass = Class.forName(pkg + "." + subMethod.findFirst(NameExpr.class).get().getNameAsString());     // MUST CHECK FOR ALL PACKAGES
-                        methodTargetStack.add(lastClass.getSimpleName().replaceAll("<.*>", " "));
-                        methodTargetTypeNameStack.add("");
-                        targetFound = true;
-                        break;
-                    } catch (Exception e) {
-                        //TODO
-                    }
-                }
-            }
-
 
             if (!targetFound) {                                             // try to resolve method if last class was a container class
                 for (String pkg : packageDependencies) {
@@ -275,55 +330,7 @@ public class DeepJavaParser extends SafeJavaParser{
 
                 }
 
-                if (classFound && !targetFound) {                                            // If class inside container was found try to resolve
-                    for (Method method : lastClass.getDeclaredMethods()) {             // CHECK DECLARED METHODS
-                        if (method.getName().equals(methodNameStack.get(i + 1))) {
-                            if (method.getReturnType().getSimpleName().replaceAll("<.*>", " ").equals("List") || method.getReturnType().getSimpleName().replaceAll("<.*>", " ").equals("Optional")) {  // try to resolve some generic types
-                                Type type = method.getGenericReturnType();
 
-                                if (type instanceof ParameterizedType) {
-                                    ParameterizedType pt = (ParameterizedType) type;
-                                    String typeName = pt.getActualTypeArguments()[0].getTypeName().split("\\.")[pt.getActualTypeArguments()[0].getTypeName().split("\\.").length - 1];
-
-                                    for (Type str : pt.getActualTypeArguments()
-                                    ) {
-                                        System.out.println(str.getTypeName());
-                                    }
-
-                                    System.out.println("BINGO :" + typeName);
-                                    methodTargetTypeNameStack.add(typeName);
-                                }
-                            } else {
-                                methodTargetTypeNameStack.add("");
-                            }
-                            methodTargetStack.add(method.getReturnType().getSimpleName().replaceAll("<.*>", " "));
-                            targetFound = true;
-                            break;
-                        }
-                    }
-
-                    if (!targetFound) {                                             // CHECK INHERITED METHODS
-                        for (Method method : lastClass.getMethods()) {
-                            if (method.getName().equals(methodNameStack.get(i + 1))) {
-
-                                if (method.getReturnType().getSimpleName().replaceAll("<.*>", " ").equals("List") || method.getReturnType().getSimpleName().replaceAll("<.*>", " ").equals("Optional")) {  // try to resolve some generic types
-                                    Type type = method.getGenericReturnType();
-
-                                    if (type instanceof ParameterizedType) {
-                                        ParameterizedType pt = (ParameterizedType) type;
-                                        String typeName = pt.getActualTypeArguments()[0].getTypeName().split("\\.")[pt.getActualTypeArguments()[0].getTypeName().split("\\.").length - 1];
-                                        methodTargetTypeNameStack.add(typeName);
-                                    }
-                                } else {
-                                    methodTargetTypeNameStack.add("");
-                                }
-                                methodTargetStack.add(method.getReturnType().getSimpleName().replaceAll("<.*>", " "));
-                                targetFound = true;
-                                break;
-                            }
-                        }
-                    }
-                }
             }
 
             if (!targetFound) {

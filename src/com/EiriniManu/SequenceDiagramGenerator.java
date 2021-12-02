@@ -7,7 +7,6 @@ package com.EiriniManu;
  */
 
 import com.EiriniManu.IO.DiagramStructure;
-import com.EiriniManu.IO.ISequenceDiagramGenerator;
 import com.EiriniManu.IO.JythonCaller;
 import com.EiriniManu.Parsing.Parser.*;
 import com.EiriniManu.Parsing.Reflector;
@@ -80,13 +79,13 @@ public class SequenceDiagramGenerator implements ISequenceDiagramGenerator {
 
         switch (type){
             case SAFE:
-                parserContext = new ParserContext(new SafeJavaParser(),structure);
+                parserContext = new ParserContext(ParserType.SAFE);
                 break;
             case REFLECTION:
-                parserContext = new ParserContext(new ReflectionJavaParser(),structure);
+                parserContext = new ParserContext(ParserType.REFLECTION);
                 break;
             case DEEP:
-                parserContext = new ParserContext(new DeepJavaParser(),structure);
+                parserContext = new ParserContext(ParserType.DEEP);
                 break;
             default:
                 break;
