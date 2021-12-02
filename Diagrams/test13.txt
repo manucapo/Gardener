@@ -6,17 +6,5 @@ TestMethod -> String: toString
 activate String
 String-->TestMethod
 deactivate String
-TestMethod -> String: split
-activate String
-String-->TestMethod
-deactivate String
-TestMethod -> __Array__: clone
-activate __Array__
-__Array__-->TestMethod
-deactivate __Array__
-TestMethod -> Object: toString
-activate Object
-Object-->TestMethod
-deactivate Object
 return 
 @enduml 

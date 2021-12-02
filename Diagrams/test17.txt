@@ -6,9 +6,5 @@ TestMethod -> Node: findAncestor
 activate Node
 Node-->TestMethod
 deactivate Node
-TestMethod -> Optional: isPresent
-activate Optional
-Optional-->TestMethod
-deactivate Optional
 return 
 @enduml 

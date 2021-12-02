@@ -8,18 +8,18 @@ public class Main {
     {
 
         TestMethod testMethod = new TestMethod();                                                                  // Instantiate a class that provides some simple methods to test the program with.
-        SequenceDiagramGenerator sequenceDiagramGenerator = new SequenceDiagramGenerator(ParserType.SAFE);            // Instantiate a class that can create a plantUML sequence diagram
-        sequenceDiagramGenerator.addDependency("com.EiriniManu.");                                        // Add packages to help resolve classes
-        sequenceDiagramGenerator.addDependency("java.lang.");
-        sequenceDiagramGenerator.addDependency("java.util.");
-        sequenceDiagramGenerator.addDependency("java.util.Optional<T>.");
-        sequenceDiagramGenerator.addDependency("java.util.Optional.");
-        sequenceDiagramGenerator.addDependency("com.github.javaparser.ast.");
+        SequenceDiagramGenerator sequenceDiagramGenerator = new SequenceDiagramGenerator(ParserType.DEEP);            // Instantiate a class that can create a plantUML sequence diagram
+        sequenceDiagramGenerator.addDependency("com.EiriniManu");                                        // Add packages to help resolve classes
+        sequenceDiagramGenerator.addDependency("java.lang");
+        sequenceDiagramGenerator.addDependency("java.util");
+        sequenceDiagramGenerator.addDependency("java.util.Optional<T>");
+        sequenceDiagramGenerator.addDependency("java.util.Optional");
+        sequenceDiagramGenerator.addDependency("com.github.javaparser.ast");
         sequenceDiagramGenerator.addDependency("com.github.javaparser.ast.expr");
         sequenceDiagramGenerator.addDependency("com.github.javaparser.ast.stmt");
-        sequenceDiagramGenerator.addDependency("com.github.javaparser.");
-        sequenceDiagramGenerator.addDependency("com.github.javaparser.HasParentNode<T>.");
-        sequenceDiagramGenerator.addDependency("com.github.javaparser.HasParentNode.");
+        sequenceDiagramGenerator.addDependency("com.github.javaparser");
+        sequenceDiagramGenerator.addDependency("com.github.javaparser.HasParentNode<T>");
+        sequenceDiagramGenerator.addDependency("com.github.javaparser.HasParentNode");
 
         // Some extra metadata entered by the user. (NEED TO FIND A BETTER WAY TO PASS THIS)
        String pathToSource = "src";                        // Relative path to TestMethod Class

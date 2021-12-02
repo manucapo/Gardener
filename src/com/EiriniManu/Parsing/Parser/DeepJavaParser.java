@@ -1,8 +1,10 @@
 package com.EiriniManu.Parsing.Parser;
 
+import com.EiriniManu.IO.DiagramStructure;
 import com.EiriniManu.Messaging.IMessageObserver;
 import com.EiriniManu.Messaging.MessageTag;
 import com.EiriniManu.Parsing.*;
+import com.EiriniManu.Parsing.NodeExplorer.*;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -37,7 +39,62 @@ public class DeepJavaParser extends SafeJavaParser{
         classFieldNames = new ArrayList<>();
         classFieldTypes = new ArrayList<>();
         observerList = new ArrayList<>();
+    }
+    public void execute(String methodName, String className, String classFilePath, String packageName, DiagramStructure structure){
 
+        for (Package pkg: Package.getPackages()
+             ) {
+            if (pkg.getName().contains(packageName)){
+                packageDependencies.add(pkg.getName());
+            }
+        }
+        this.ParseMethod(this.ParseFile(className, this.SetSourceRoot(classFilePath,packageName)), className, methodName, structure);
+    }
+
+    public void ParseMethod(CompilationUnit cu, String className, String methodName, DiagramStructure diagramStructure) {
+
+        ClassOrInterfaceDeclaration clsX = new ClassOrInterfaceDeclaration();                 // Holder variable for the class declaration node.
+
+        if (cu.getClassByName(className).isPresent()) {                                      // Check if class with corresponding name exists. :
+            clsX = cu.getClassByName(className).get();                                       // if yes hold the class declaration node
+        }
+
+        for (MethodDeclaration method : clsX.getMethods()) {                                 // for every method declaration node in the class :
+            if (method.getName().toString().equals(methodName)) {                            // Find method with given name
+                XmlPrinter printer = new XmlPrinter(true);
+                //   System.out.println(printer.output(method));                                // DEBUG PRINTER
+
+
+                for (Parameter node : method.getParameters()) {                       // extract method parameters
+                    ParameterNodeExplorer nodeExplorer = (ParameterNodeExplorer) NodeExplorerFactory.create(Parameter.class, diagramStructure);
+                    nodeExplorer.checkNode(node);
+                }
+
+                for (Node node : method.findAll(CatchClause.class, Node.TreeTraversal.PREORDER)) { // extract information on variables declared inside catch clause
+                    CatchNodeExplorer nodeExplorer = (CatchNodeExplorer) NodeExplorerFactory.create(CatchClause.class, diagramStructure);
+                    nodeExplorer.checkNode(node);
+                }
+
+                for (Node node : method.findAll(VariableDeclarationExpr.class, Node.TreeTraversal.PREORDER)) {  // extract information on variables inside method
+                    VariableNodeExplorer nodeExplorer = (VariableNodeExplorer) NodeExplorerFactory.create(VariableDeclarationExpr.class, diagramStructure);
+
+                    nodeExplorer.checkNode(node);
+                }
+
+                int subMethodCounter = 0;
+
+                for (Node node : method.findAll(MethodCallExpr.class, Node.TreeTraversal.PREORDER)) { // extract information on method calls inside method
+
+                    if (subMethodCounter == 0){
+                        MethodNodeExplorer nodeExplorer = (MethodNodeExplorer) NodeExplorerFactory.create(MethodCallExpr.class, diagramStructure);
+                        subMethodCounter = nodeExplorer.countSubMethods(node);
+                        nodeExplorer.setParser(this);
+                        nodeExplorer.checkNode(node);
+                    } else {subMethodCounter--;}
+
+                }
+            }
+        }
     }
 
     public void parseMethodNode(Node methodcallNode) {
@@ -97,9 +154,10 @@ public class DeepJavaParser extends SafeJavaParser{
                         for (String methodCatchParameter : catchParameterNames) {
                             if (methodCatchParameter.equals(scope.findFirst(SimpleName.class).get().toString())) {
                                 System.out.println("THIS IS A CATCH PARAMETER");
-                                methodTargetStack.add(catchParameterTypes.get(catchParameterIndex).replaceAll("<.*>", " "));
-                                methodTargetTypeNameStack.add("");
-                                targetFound = true;
+                                    methodTargetStack.add(catchParameterTypes.get(catchParameterIndex).replaceAll("<.*>", " "));
+                                    methodTargetTypeNameStack.add("");
+                                    targetFound = true;
+
                                 break;
                             }
                             catchParameterIndex++;
@@ -113,9 +171,9 @@ public class DeepJavaParser extends SafeJavaParser{
                         for (String methodParameter : parameterNames) {
                             if (methodParameter.equals(scope.findFirst(SimpleName.class).get().toString())) {
                                 System.out.println("THIS IS A PARAMETER");
-                                methodTargetStack.add(parameterTypes.get(parameterIndex).replaceAll("<.*>", " "));
-                                methodTargetTypeNameStack.add("");
-                                targetFound = true;
+                                    methodTargetStack.add(parameterTypes.get(parameterIndex).replaceAll("<.*>", " "));
+                                    methodTargetTypeNameStack.add("");
+                                    targetFound = true;
                                 break;
                             }
                             parameterIndex++;
@@ -177,7 +235,7 @@ public class DeepJavaParser extends SafeJavaParser{
                 for (String pkg : packageDependencies) {
 
                     try {
-                        lastClass = Class.forName(pkg + subMethod.findFirst(NameExpr.class).get().getNameAsString());     // MUST CHECK FOR ALL PACKAGES
+                        lastClass = Class.forName(pkg + "." + subMethod.findFirst(NameExpr.class).get().getNameAsString());     // MUST CHECK FOR ALL PACKAGES
                         methodTargetStack.add(lastClass.getSimpleName().replaceAll("<.*>", " "));
                         methodTargetTypeNameStack.add("");
                         targetFound = true;
@@ -208,7 +266,7 @@ public class DeepJavaParser extends SafeJavaParser{
                                 targetFound = true;
                             }
                         }
-                        lastClass = Class.forName(pkg + previousTarget);     // MUST CHECK FOR ALL PACKAGES
+                        lastClass = Class.forName(pkg + "." + previousTarget);     // MUST CHECK FOR ALL PACKAGES
                         classFound = true;
                         break;
                     } catch (Exception e) {
@@ -270,17 +328,7 @@ public class DeepJavaParser extends SafeJavaParser{
 
             if (!targetFound) {
                 System.out.println("COULD NOT RESOLVE ANY TARGETS");
-
-
-                if (false) {                     // SAFE MODE
-                    methodNameStack.remove(i);
-                } else if (true) {                       // LOST MESSAGE MODE
-                    methodTargetStack.add("LOSTMESSAGE");
-                } else {
-                    methodTargetStack.add("ERROR");
-                }
-
-
+                methodNameStack.remove(i);   // SAFE MODE
             }
 
             previousScope = scope;
@@ -306,4 +354,5 @@ public class DeepJavaParser extends SafeJavaParser{
             // structure.addMethodCallTarget(methodTargetStack.get(i));                                                 // first contained name should be method name
         }
     }
-}
+
+    }

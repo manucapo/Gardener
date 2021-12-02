@@ -264,7 +264,7 @@ public class SafeJavaParser implements IJavaParser{
                 for (String pkg : packageDependencies) {
 
                     try {
-                        lastClass = Class.forName(pkg + subMethod.findFirst(NameExpr.class).get().getNameAsString());     // MUST CHECK FOR ALL PACKAGES
+                        lastClass = Class.forName(pkg + "." + subMethod.findFirst(NameExpr.class).get().getNameAsString());     // MUST CHECK FOR ALL PACKAGES
                         methodTargetStack.add(lastClass.getSimpleName().replaceAll("<.*>", " "));
                         methodTargetTypeNameStack.add("");
                         targetFound = true;
@@ -295,7 +295,7 @@ public class SafeJavaParser implements IJavaParser{
                                 targetFound = true;
                             }
                         }
-                        lastClass = Class.forName(pkg + previousTarget);     // MUST CHECK FOR ALL PACKAGES
+                        lastClass = Class.forName(pkg + "." + previousTarget);     // MUST CHECK FOR ALL PACKAGES
                         classFound = true;
                         break;
                     } catch (Exception e) {

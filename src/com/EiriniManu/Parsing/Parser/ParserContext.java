@@ -16,7 +16,9 @@ public class ParserContext {
         parser.execute(methodName, className, classFilePath, packageName, structure);
     }
     public void addDependency(String dependency){
-        parser.addDependency(dependency);
+        if(!(parser instanceof DeepJavaParser)) {
+            parser.addDependency(dependency);
+        }
     }
 
 }

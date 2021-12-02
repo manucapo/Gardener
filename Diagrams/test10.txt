@@ -6,9 +6,5 @@ TestMethod -> System: println
 activate System
 System-->TestMethod
 deactivate System
-TestMethod -> System: abs
-activate System
-System-->TestMethod
-deactivate System
 return 
 @enduml 
