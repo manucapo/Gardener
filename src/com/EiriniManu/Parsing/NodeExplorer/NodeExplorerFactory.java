@@ -5,6 +5,7 @@ import com.EiriniManu.Messaging.IMessageObserver;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
+import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.CatchClause;
 
 public class NodeExplorerFactory {
@@ -21,6 +22,8 @@ public class NodeExplorerFactory {
             return new VariableNodeExplorer(DiagramStructure.getInstance());
         }  else if (nodeType == CatchClause.class){
             return new CatchNodeExplorer(DiagramStructure.getInstance());
+        } else if (nodeType == BlockStmt.class){
+            return new BlockNodeExplorer(DiagramStructure.getInstance());
         }
         return  null;
     }

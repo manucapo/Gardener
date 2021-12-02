@@ -1,0 +1,48 @@
+@startuml 
+participant Actor 
+Actor -> TestMethod: test22
+activate TestMethod
+alt if 1
+TestMethod -> TestMethod: test2
+activate TestMethod
+TestMethod-->TestMethod
+deactivate TestMethod
+end 
+alt if 1.2
+TestMethod -> TestMethod: test4
+activate TestMethod
+TestMethod-->TestMethod
+deactivate TestMethod
+end 
+alt if 2.3
+TestMethod -> TestMethod: test5
+activate TestMethod
+TestMethod-->TestMethod
+deactivate TestMethod
+end 
+alt if 3.4
+TestMethod -> TestMethod: test5
+activate TestMethod
+TestMethod-->TestMethod
+deactivate TestMethod
+end 
+alt if 2.3
+TestMethod -> TestMethod: test5
+activate TestMethod
+TestMethod-->TestMethod
+deactivate TestMethod
+end 
+alt if 1.2
+TestMethod -> TestMethod: test4
+activate TestMethod
+TestMethod-->TestMethod
+deactivate TestMethod
+end 
+alt if 5
+TestMethod -> TestMethod: test3
+activate TestMethod
+TestMethod-->TestMethod
+deactivate TestMethod
+end 
+return 
+@enduml 

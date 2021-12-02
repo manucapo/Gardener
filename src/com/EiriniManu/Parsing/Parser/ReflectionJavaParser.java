@@ -25,24 +25,6 @@ import java.util.List;
 
 public class ReflectionJavaParser extends SafeJavaParser implements IJavaParser {
 
-
-    public ReflectionJavaParser() {
-
-        packageDependencies = new ArrayList<>();
-        catchParameterTypes = new ArrayList<>();
-        catchParameterNames = new ArrayList<>();
-        parameterNames = new ArrayList<>();
-        parameterTypes = new ArrayList<>();
-        classMethodNames = new ArrayList<>();
-        implementingClassName = "NULL";
-        variableDeclarationNames = new ArrayList<>();
-        variableDeclarationTypes = new ArrayList<>();
-        classFieldNames = new ArrayList<>();
-        classFieldTypes = new ArrayList<>();
-        observerList = new ArrayList<>();
-
-    }
-
     public void execute(String methodName, String className, String classFilePath, String packageName, DiagramStructure structure){
         this.ParseMethod(this.ParseFile(className, this.SetSourceRoot(classFilePath,packageName)), className, methodName, structure);
     }

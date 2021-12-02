@@ -1,9 +1,7 @@
 package com.EiriniManu.Parsing.Parser;
 
 import com.EiriniManu.IO.DiagramStructure;
-import com.EiriniManu.Messaging.IMessageObserver;
 import com.EiriniManu.Messaging.MessageTag;
-import com.EiriniManu.Parsing.*;
 import com.EiriniManu.Parsing.NodeExplorer.*;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Node;
@@ -11,22 +9,31 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.*;
+import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.CatchClause;
+import com.github.javaparser.ast.stmt.IfStmt;
+import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.printer.XmlPrinter;
-import com.github.javaparser.utils.CodeGenerationUtils;
-import com.github.javaparser.utils.Log;
-import com.github.javaparser.utils.SourceRoot;
+import jdk.nashorn.internal.ir.Block;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DeepJavaParser extends SafeJavaParser{
+public class BlockJavaParser extends SafeJavaParser {
 
+    private List<Node> blockNodes;
+
+    public BlockJavaParser(){
+        blockNodes = new ArrayList<>();
+    }
 
     public void execute(String methodName, String className, String classFilePath, String packageName, DiagramStructure structure){
+        for (Package pkg: Package.getPackages()
+        ) {
+            if (pkg.getName().contains(packageName)){
+                packageDependencies.add(pkg.getName());
+            }
+        }
         this.ParseMethod(this.ParseFile(className, this.SetSourceRoot(classFilePath,packageName)), className, methodName, structure);
     }
 
@@ -42,7 +49,7 @@ public class DeepJavaParser extends SafeJavaParser{
             if (method.getName().toString().equals(methodName)) {                            // Find method with given name
 
                 XmlPrinter printer = new XmlPrinter(true);
-                //   System.out.println(printer.output(method));                                // DEBUG PRINTER
+                   System.out.println(printer.output(method));                                // DEBUG PRINTER
 
 
                 for (Parameter node : method.getParameters()) {                       // extract method parameters
@@ -58,6 +65,11 @@ public class DeepJavaParser extends SafeJavaParser{
                 for (Node node : method.findAll(VariableDeclarationExpr.class, Node.TreeTraversal.PREORDER)) {  // extract information on variables inside method
                     VariableNodeExplorer nodeExplorer = (VariableNodeExplorer) NodeExplorerFactory.create(VariableDeclarationExpr.class);
 
+                    nodeExplorer.checkNode(node);
+                }
+
+                for (Node node : method.findAll(Statement.class, Node.TreeTraversal.PREORDER)){
+                    BlockNodeExplorer nodeExplorer = (BlockNodeExplorer) NodeExplorerFactory.create(BlockStmt.class);
                     nodeExplorer.checkNode(node);
                 }
 
@@ -105,6 +117,32 @@ public class DeepJavaParser extends SafeJavaParser{
 
             MethodCallExpr subMethod = containedMethods.get(i);
             String subMethodName = subMethod.findAll(SimpleName.class, Node.TreeTraversal.BREADTHFIRST).get(0).toString();
+            String blockName = "top";
+
+            for(int index = blockNodes.size() - 1; index >= 0; index--){
+                if (blockNodes.get(index).isAncestorOf(subMethod)){
+                    if (blockNodes.get(index) instanceof  IfStmt){
+                        if (((IfStmt) blockNodes.get(index)).getElseStmt().isPresent()){
+                            Node elseStatement = ((IfStmt) blockNodes.get(index)).getElseStmt().get();
+                            if(elseStatement.isAncestorOf(subMethod)){
+                                blockName = "else " + String.valueOf(index + 1);
+                            } else {
+                                blockName = "if "  + String.valueOf(index + 1);
+                            }
+                        } else if (index - 1 >= 0){
+                            if (blockNodes.get(index-1).isAncestorOf(blockNodes.get(index))){
+                                blockName = "if "  + String.valueOf(index) +"." +  String.valueOf(index + 1);
+                            } else {
+                                blockName = "if "  + String.valueOf(index + 1);
+                            }
+                        } else {blockName = "if "  + String.valueOf(index + 1);}
+                    }
+                    break;
+                }
+            }
+
+            Object[] type = {MessageTag.METHODBLOCK, blockName};
+            sendMessage(type);
 
 
             for (String classMethod : classMethodNames) {                   // check if node is a class method
@@ -116,6 +154,7 @@ public class DeepJavaParser extends SafeJavaParser{
                     break;
                 }
             }
+
 
             Node scope = null;
             if (subMethod.getScope().isPresent()) {                       // get the nearest sub method scope. By removing previous scope from current scope
@@ -313,17 +352,13 @@ public class DeepJavaParser extends SafeJavaParser{
                     } catch (Exception e) {
                         // TODO
                     }
-
                 }
-
-
             }
 
             if (!targetFound) {
                 System.out.println("COULD NOT RESOLVE ANY TARGETS");
                 methodNameStack.remove(i);   // SAFE MODE
             }
-
             previousScope = scope;
             System.out.println("RELOOPING -----------------------------");
         }
@@ -333,9 +368,6 @@ public class DeepJavaParser extends SafeJavaParser{
 
             Object[] type = {MessageTag.METHODCALL, methodNameStack.get(i)};
             sendMessage(type);
-
-            //    structure.addMethodCall(methodNameStack.get(i));                                                 // first contained name should be method name
-
         }
 
         for (int i = 0; i <= methodTargetStack.size() - 1; i++) {
@@ -343,9 +375,75 @@ public class DeepJavaParser extends SafeJavaParser{
 
             Object[] type = {MessageTag.METHODCALLTARGET, methodTargetStack.get(i)};
             sendMessage(type);
-            //
-            // structure.addMethodCallTarget(methodTargetStack.get(i));                                                 // first contained name should be method name
         }
     }
 
+    public void update(Object o) {
+
+        Object[] data = (Object[]) o;
+        MessageTag field = (MessageTag) data[0];
+        String string = null;
+        Node node = null;
+
+        if (field.equals(MessageTag.BLOCKNODE)){
+            node = (Node) data[1];
+        } else {
+            string =     (String) data[1];
+        }
+
+
+        switch (field){
+            case IMPLEMENTINGCLASS:
+                setImplementingClassName(string);
+                break;
+            case CALLINGCLASS:
+                break;
+            case CLASSMETHODNAME:
+                setClassMethodName(string);
+                break;
+            case CLASSMETHODRETURNTYPE:
+                break;
+            case CLASSFIELDNAME:
+                addClassFieldName(string);
+                break;
+            case CLASSFIELDTYPE:
+                addClassFieldType(string);
+                break;
+            case METHODNAME:
+                break;
+            case METHODRETURNTYPE:
+                break;
+            case PARAMETERTYPE:
+                addParameterType(string);
+                break;
+            case PARAMETERNAME:
+                addParameterNames(string);
+                break;
+            case CATCHPARAMETERTYPE:
+                addCatchParameterType(string);
+                break;
+            case CATCHPARAMETERNAME:
+                addCatchParameterName(string);
+                break;
+            case METHODCALL: ;
+                break;
+            case METHODCALLTARGET:
+                break;
+            case VARIABLEDECLARATIONNAME:
+                addVariableDeclarationName(string);
+                break;
+            case VARIABLEDECLARATIONTYPE:
+                addVariableDeclarationType(string);
+                break;
+            case BLOCKNODE:
+                addBlockNode(node);
+                break;
+            default:
+                break;
+        }
     }
+
+    public void addBlockNode(Node blockNode) {
+        this.blockNodes.add(blockNode);
+    }
+}

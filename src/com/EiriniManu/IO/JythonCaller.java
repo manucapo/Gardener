@@ -33,7 +33,7 @@ public class JythonCaller implements IJythonCaller {
             if (pyFunction == null) {
                 throw new Exception("Could not find Python function");
             } else {
-                PyObject[] args = {new PyString(path), new PyString(structure.getImplementingClassName()), new PyString(structure.getMethodName()), new PyArray(Array.class, structure.getMethodCalls().toArray()), new PyArray(Array.class, structure.getMethodCallTargets().toArray())  };
+                PyObject[] args = {new PyString(path), new PyString(structure.getImplementingClassName()), new PyString(structure.getMethodName()), new PyArray(Array.class, structure.getMethodCalls().toArray()), new PyArray(Array.class, structure.getMethodCallTargets().toArray()) , new PyArray(Array.class, structure.getMethodBlock().toArray()) };
                 pyFunction.__call__(args);  // Call the function in the python string with argument array.
             }
         } catch (Exception e) {

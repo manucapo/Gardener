@@ -23,6 +23,10 @@ public class JavaParserFactory {
                 parser = new DeepJavaParser();
                 parser.addObserver(DiagramStructure.getInstance());
                 return parser;
+            case BLOCK:
+                parser = new BlockJavaParser();
+                parser.addObserver(DiagramStructure.getInstance());
+                return parser;
             default:
                 break;
         }

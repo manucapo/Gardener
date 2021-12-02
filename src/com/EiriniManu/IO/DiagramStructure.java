@@ -10,6 +10,7 @@ package com.EiriniManu.IO;
 import com.EiriniManu.Messaging.IMessageObserver;
 import com.EiriniManu.Messaging.IMessageSender;
 import com.EiriniManu.Messaging.MessageTag;
+import com.github.javaparser.ast.Node;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +37,9 @@ public class DiagramStructure implements IMessageObserver, IMessageSender {
     private List<String> variableDeclarations;     //  A list of variable declarations made by the method  ( 1 layer of calls atm)
     private List<String> variableDeclarationTypes; //  The types of variable declarations made by the method  ( 1 layer of calls atm)
 
+    private List<Node> blockNodes;
+    private List<String> methodBlock;
+
     private static final DiagramStructure instance = new DiagramStructure();  // singleton instance
 
     private DiagramStructure() {                    // Default constructor. Initializes the class to "safe" values.
@@ -56,6 +60,9 @@ public class DiagramStructure implements IMessageObserver, IMessageSender {
         classFieldNames = new ArrayList<>();
         classFieldTypes = new ArrayList<>();
         observerList = new ArrayList<>();
+
+        blockNodes = new ArrayList<>();
+        methodBlock = new ArrayList<>();
     }
 
     public static DiagramStructure getInstance(){
@@ -199,6 +206,22 @@ public class DiagramStructure implements IMessageObserver, IMessageSender {
         sendMessage(msg);
     }
 
+    private void addBlockNode(Node blockNode) {
+        this.blockNodes.add(blockNode);
+        Object[] msg = {MessageTag.BLOCKNODE,blockNode };
+        sendMessage(msg);
+    }
+
+    public List<String> getMethodBlock() {
+        return methodBlock;
+    }
+
+    public void addMethodBlock(String methodBlock) {
+        this.methodBlock.add(methodBlock);
+        Object[] msg = {MessageTag.METHODBLOCK,methodBlock};
+        sendMessage(msg);
+    }
+
     public void reset(){
         implementingClassName = "NULL";
         callingClassName = "NULL";
@@ -217,6 +240,9 @@ public class DiagramStructure implements IMessageObserver, IMessageSender {
         catchParameterNames = new ArrayList<>();
         classFieldNames = new ArrayList<>();
         classFieldTypes = new ArrayList<>();
+
+        blockNodes = new ArrayList<>();
+        methodBlock = new ArrayList<>();
     }
 
     @Override
@@ -224,7 +250,14 @@ public class DiagramStructure implements IMessageObserver, IMessageSender {
 
         Object[] data = (Object[]) o;
         MessageTag field = (MessageTag) data[0];
-        String string = (String) data[1];
+        String string = null;
+        Node node = null;
+
+        if (field.equals(MessageTag.BLOCKNODE)){
+            node = (Node) data[1];
+        }else {
+           string = (String) data[1];
+        }
 
 
         switch (field){
@@ -275,6 +308,12 @@ public class DiagramStructure implements IMessageObserver, IMessageSender {
                 break;
             case VARIABLEDECLARATIONTYPE:
                 addVariableDeclarationTypes(string);
+                break;
+            case BLOCKNODE:
+                addBlockNode(node);
+                break;
+            case METHODBLOCK:
+                addMethodBlock(string);
                 break;
             default:
                 break;

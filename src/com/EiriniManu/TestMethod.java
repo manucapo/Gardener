@@ -160,6 +160,28 @@ public class TestMethod implements  ITestMethod{
         return "26";
     }
 
+    public String test22(String s, int j, boolean bool){
+
+        if (j == 2){
+            test2("s", 2, true);
+            if (j == 2){
+                test4("s", 2, true);
+                if (j == 2){
+                    test5("s", 2, true);
+                    if (j == 2){
+                        test5("s", 2, true);
+                    }
+                    test5("s", 2, true);
+                }
+                test4("s", 2, true);
+            }
+        }
+        if (j == 2){
+            test3("s", 2, true);
+        }
+        return "26";
+    }
+
 
 
 }

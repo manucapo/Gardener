@@ -87,6 +87,9 @@ public class SequenceDiagramGenerator implements ISequenceDiagramGenerator {
             case DEEP:
                 parserContext = new ParserContext(ParserType.DEEP);
                 break;
+            case BLOCK:
+                parserContext = new ParserContext(ParserType.BLOCK);
+                break;
             default:
                 break;
         }
