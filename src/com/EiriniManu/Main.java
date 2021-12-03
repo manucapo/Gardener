@@ -27,7 +27,7 @@ public class Main {
        String packageName = "com.EiriniManu";
        String className = "TestMethod";
 
-       for (int i = 22; i <= 22; i++){
+       for (int i = 0; i <= 22; i++){
          String methodName = "test"  + String.valueOf(i);
 
            // Generate plantUML sequence diagram

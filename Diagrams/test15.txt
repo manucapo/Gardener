@@ -1,0 +1,10 @@
+@startuml 
+participant Actor 
+Actor -> TestMethod: test15
+activate TestMethod
+TestMethod -> DiagramStructure: toString
+activate DiagramStructure
+DiagramStructure-->TestMethod
+deactivate DiagramStructure
+return 
+@enduml 

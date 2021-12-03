@@ -1,0 +1,6 @@
+@startuml 
+participant Actor 
+Actor -> TestMethod: test0
+activate TestMethod
+return 
+@enduml 

@@ -27,6 +27,13 @@ public class DeepJavaParser extends SafeJavaParser{
 
 
     public void execute(String methodName, String className, String classFilePath, String packageName, DiagramStructure structure){
+        for (Package pkg: Package.getPackages()) {
+            if (pkg.getName().contains(packageName)){
+                if (!packageDependencies.contains(pkg.getName())) {
+                    packageDependencies.add(pkg.getName());
+                }
+            }
+        }
         this.ParseMethod(this.ParseFile(className, this.SetSourceRoot(classFilePath,packageName)), className, methodName, structure);
     }
 
@@ -106,6 +113,8 @@ public class DeepJavaParser extends SafeJavaParser{
             MethodCallExpr subMethod = containedMethods.get(i);
             String subMethodName = subMethod.findAll(SimpleName.class, Node.TreeTraversal.BREADTHFIRST).get(0).toString();
 
+            Object[] blockType = {MessageTag.METHODBLOCK, "top 0 0"};
+            sendMessage(blockType);
 
             for (String classMethod : classMethodNames) {                   // check if node is a class method
                 if (classMethod.equals(subMethodName)) {

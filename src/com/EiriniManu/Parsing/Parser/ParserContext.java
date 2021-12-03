@@ -16,7 +16,7 @@ public class ParserContext {
         parser.execute(methodName, className, classFilePath, packageName, structure);
     }
     public void addDependency(String dependency){
-        if(!(parser instanceof SafeJavaParser)) {
+        if((parser instanceof ReflectionJavaParser)) {
             parser.addDependency(dependency);
         }
     }

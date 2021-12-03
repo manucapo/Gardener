@@ -28,10 +28,11 @@ public class BlockJavaParser extends SafeJavaParser {
     }
 
     public void execute(String methodName, String className, String classFilePath, String packageName, DiagramStructure structure){
-        for (Package pkg: Package.getPackages()
-        ) {
+        for (Package pkg: Package.getPackages()) {
             if (pkg.getName().contains(packageName)){
-                packageDependencies.add(pkg.getName());
+                if (!packageDependencies.contains(pkg.getName())) {
+                    packageDependencies.add(pkg.getName());
+                }
             }
         }
         this.ParseMethod(this.ParseFile(className, this.SetSourceRoot(classFilePath,packageName)), className, methodName, structure);
@@ -141,8 +142,8 @@ public class BlockJavaParser extends SafeJavaParser {
                 }
             }
 
-            Object[] type = {MessageTag.METHODBLOCK, blockName};
-            sendMessage(type);
+            Object[] blockType = {MessageTag.METHODBLOCK, blockName};
+            sendMessage(blockType);
 
 
             for (String classMethod : classMethodNames) {                   // check if node is a class method
