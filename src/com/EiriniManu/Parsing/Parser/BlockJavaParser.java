@@ -68,7 +68,7 @@ public class BlockJavaParser extends SafeJavaParser {
                     nodeExplorer.checkNode(node);
                 }
 
-                for (Node node : method.findAll(Statement.class, Node.TreeTraversal.PREORDER)){
+                for (Node node : method.findAll(Statement.class, Node.TreeTraversal.BREADTHFIRST)){                        // extract block information
                     BlockNodeExplorer nodeExplorer = (BlockNodeExplorer) NodeExplorerFactory.create(BlockStmt.class);
                     nodeExplorer.checkNode(node);
                 }
@@ -117,27 +117,27 @@ public class BlockJavaParser extends SafeJavaParser {
 
             MethodCallExpr subMethod = containedMethods.get(i);
             String subMethodName = subMethod.findAll(SimpleName.class, Node.TreeTraversal.BREADTHFIRST).get(0).toString();
-            String blockName = "top";
+            String blockName = "top 0 0";
 
-            for(int index = blockNodes.size() - 1; index >= 0; index--){
-                if (blockNodes.get(index).isAncestorOf(subMethod)){
-                    if (blockNodes.get(index) instanceof  IfStmt){
-                        if (((IfStmt) blockNodes.get(index)).getElseStmt().isPresent()){
-                            Node elseStatement = ((IfStmt) blockNodes.get(index)).getElseStmt().get();
-                            if(elseStatement.isAncestorOf(subMethod)){
-                                blockName = "else " + String.valueOf(index + 1);
-                            } else {
-                                blockName = "if "  + String.valueOf(index + 1);
+            for(int blockIndex = blockNodes.size() - 1; blockIndex >= 0; blockIndex--){             // find deepest block
+                if (blockNodes.get(blockIndex).isAncestorOf(subMethod)){
+                    if (blockIndex == 0){
+                        blockName = "if " + (blockIndex + 1) + " 0";
+                        break;
+                    } else {
+                        boolean parentFound = false;
+                        for(int blockParentIndex = blockIndex - 1; blockParentIndex >= 0; blockParentIndex--){          // find closest block parent
+                            if (blockNodes.get(blockParentIndex).isAncestorOf(subMethod)){
+                                blockName = "if " + (blockIndex + 1) + " " + (blockParentIndex + 1);
+                                parentFound = true;
+                                break;
                             }
-                        } else if (index - 1 >= 0){
-                            if (blockNodes.get(index-1).isAncestorOf(blockNodes.get(index))){
-                                blockName = "if "  + String.valueOf(index) +"." +  String.valueOf(index + 1);
-                            } else {
-                                blockName = "if "  + String.valueOf(index + 1);
-                            }
-                        } else {blockName = "if "  + String.valueOf(index + 1);}
+                        }
+                        if (!parentFound){
+                            blockName = "if " + (blockIndex + 1) + " 0";
+                        }
+                        break;
                     }
-                    break;
                 }
             }
 

@@ -2,47 +2,123 @@
 participant Actor 
 Actor -> TestMethod: test22
 activate TestMethod
-alt if 1
+alt if 1 0
+TestMethod -> TestMethod: test20
+activate TestMethod
+TestMethod-->TestMethod
+deactivate TestMethod
+alt if 3 1
+TestMethod -> TestMethod: test1
+activate TestMethod
+TestMethod-->TestMethod
+deactivate TestMethod
+alt if 6 3
 TestMethod -> TestMethod: test2
 activate TestMethod
 TestMethod-->TestMethod
 deactivate TestMethod
 end 
-alt if 1.2
-TestMethod -> TestMethod: test4
+alt if 7 3
+TestMethod -> TestMethod: test2
+activate TestMethod
+TestMethod-->TestMethod
+deactivate TestMethod
+alt if 10 7
+TestMethod -> TestMethod: test2
 activate TestMethod
 TestMethod-->TestMethod
 deactivate TestMethod
 end 
-alt if 2.3
-TestMethod -> TestMethod: test5
+alt if 11 7
+TestMethod -> TestMethod: test2
+activate TestMethod
+TestMethod-->TestMethod
+deactivate TestMethod
+alt if 14 11
+TestMethod -> TestMethod: test2
+activate TestMethod
+TestMethod-->TestMethod
+deactivate TestMethod
+alt if 16 14
+TestMethod -> TestMethod: test2
 activate TestMethod
 TestMethod-->TestMethod
 deactivate TestMethod
 end 
-alt if 3.4
-TestMethod -> TestMethod: test5
+alt if 17 14
+TestMethod -> TestMethod: test2
 activate TestMethod
 TestMethod-->TestMethod
 deactivate TestMethod
 end 
-alt if 2.3
-TestMethod -> TestMethod: test5
+end 
+end 
+end 
+end 
+end 
+alt if 4 1
+TestMethod -> TestMethod: test2
 activate TestMethod
 TestMethod-->TestMethod
 deactivate TestMethod
 end 
-alt if 1.2
-TestMethod -> TestMethod: test4
+TestMethod -> TestMethod: test20
+activate TestMethod
+TestMethod-->TestMethod
+deactivate TestMethod
+alt if 2 0
+TestMethod -> TestMethod: test20
+activate TestMethod
+TestMethod-->TestMethod
+deactivate TestMethod
+alt if 5 2
+TestMethod -> TestMethod: test1
+activate TestMethod
+TestMethod-->TestMethod
+deactivate TestMethod
+alt if 8 5
+TestMethod -> TestMethod: test2
 activate TestMethod
 TestMethod-->TestMethod
 deactivate TestMethod
 end 
-alt if 5
-TestMethod -> TestMethod: test3
+alt if 9 5
+TestMethod -> TestMethod: test2
 activate TestMethod
 TestMethod-->TestMethod
 deactivate TestMethod
+alt if 12 9
+TestMethod -> TestMethod: test2
+activate TestMethod
+TestMethod-->TestMethod
+deactivate TestMethod
+end 
+alt if 13 9
+TestMethod -> TestMethod: test2
+activate TestMethod
+TestMethod-->TestMethod
+deactivate TestMethod
+alt if 15 13
+TestMethod -> TestMethod: test2
+activate TestMethod
+TestMethod-->TestMethod
+deactivate TestMethod
+alt if 18 15
+TestMethod -> TestMethod: test2
+activate TestMethod
+TestMethod-->TestMethod
+deactivate TestMethod
+end 
+alt if 19 15
+TestMethod -> TestMethod: test2
+activate TestMethod
+TestMethod-->TestMethod
+deactivate TestMethod
+end 
+end 
+end 
+end 
+end 
 end 
 return 
 @enduml 

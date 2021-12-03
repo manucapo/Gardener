@@ -162,23 +162,75 @@ public class TestMethod implements  ITestMethod{
 
     public String test22(String s, int j, boolean bool){
 
-        if (j == 2){
+
+if (true) {
+    test20("s",2,true);
+    if (true) {                         //  if 1 0
+        test1("s", 2, true);
+        if (true) {                     //  if 2 1
             test2("s", 2, true);
-            if (j == 2){
-                test4("s", 2, true);
-                if (j == 2){
-                    test5("s", 2, true);
-                    if (j == 2){
-                        test5("s", 2, true);
+
+        }
+        if (true) {                     //  if 2 1
+            test2("s", 2, true);
+            if (true) {                     //  if 2 1
+                test2("s", 2, true);
+
+            }
+            if (true) {                     //  if 2 1
+                test2("s", 2, true);
+                if (true) {                     //  if 2 1
+                    test2("s", 2, true);
+                    if (true) {                     //  if 2 1
+                        test2("s", 2, true);
+
                     }
-                    test5("s", 2, true);
+                    if (true) {                     //  if 2 1
+                        test2("s", 2, true);
+
+                    }
                 }
-                test4("s", 2, true);
             }
         }
-        if (j == 2){
-            test3("s", 2, true);
-        }
+    }
+
+    if (true) {                     //  if 2 1
+        test2("s", 2, true);
+
+    }
+}
+        test20("s",2,true);
+
+        if (true) {
+            test20("s",2,true);
+            if (true) {                         //  if 1 0
+                test1("s", 2, true);
+                if (true) {                     //  if 2 1
+                    test2("s", 2, true);
+
+                }
+                if (true) {                     //  if 2 1
+                    test2("s", 2, true);
+                    if (true) {                     //  if 2 1
+                        test2("s", 2, true);
+
+                    }
+                    if (true) {                     //  if 2 1
+                        test2("s", 2, true);
+                        if (true) {                     //  if 2 1
+                            test2("s", 2, true);
+                            if (true) {                     //  if 2 1
+                                test2("s", 2, true);
+
+                            }
+                            if (true) {                     //  if 2 1
+                                test2("s", 2, true);
+
+                            }
+                        }
+                    }
+                }
+            }}
         return "26";
     }
 
