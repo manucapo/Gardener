@@ -1,19 +1,27 @@
 package com.EiriniManu.IO;
 
 import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.stmt.ForStmt;
+import com.github.javaparser.ast.stmt.IfStmt;
+import com.github.javaparser.ast.stmt.WhileStmt;
 import jnr.ffi.annotations.In;
 
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DiagramFileWriter {
 
     public void createDiagramFile(String path){
         DiagramStructure structure = DiagramStructure.getInstance();
+        List<Node> methodNodes = structure.getMethodCallNodes();
         List<Node> blockNodes = structure.getBlockNodes();
         List<String> methodBlock = structure.getMethodBlock();
+
+        List<Node> openBlocks = new ArrayList<>();
+
         try{
             FileWriter writer = new FileWriter(path);
             writer.write("@startuml \n");
@@ -24,20 +32,105 @@ public class DiagramFileWriter {
             int blockCount = 0;
             for (String method : structure.getMethodCalls()) {
 
-                if( i != structure.getMethodCalls().size() -1 && !structure.getMethodBlock().get(i).contains("top")) {
-                 if (!structure.getMethodBlock().get(i+1).equals(structure.getMethodBlock().get(i))) {
-                    if (structure.getMethodBlock().get(i+1).contains("top")){
-                        writer.write("alt " + structure.getMethodBlock().get(i) + "\n");
-                        blockCount++;
-                    }
-                    else if (structure.getMethodBlock().get(i-1).contains("top")) {
-                        writer.write("alt " + structure.getMethodBlock().get(i) + "\n");
-                        blockCount++;
-                    }
-                 }
-                }
+            if(i > 0 && !methodBlock.get(i).equals("x")){
+                int count = 0;
+                if (!methodBlock.get(i).equals(methodBlock.get(i-1))) {
+                    if (!methodBlock.get(i).equals("0")){
 
-                if(structure.getMethodCallTargets().get(i) == "this"){
+                    for (int j = openBlocks.size() - 1; j >= 0; j--) {
+                        if (!openBlocks.get(j).isAncestorOf(blockNodes.get(Integer.parseInt(methodBlock.get(i)) - 1))) {
+                            if (!openBlocks.get(j).equals(blockNodes.get(Integer.parseInt(methodBlock.get(i)) - 1))){
+                                count++;
+                            }
+
+                        } else {
+                            break;
+                        }
+
+                    }
+                } else {
+                        if (!methodBlock.get(i-1).equals("0")){
+                            count = blockCount;
+                        }
+                    }
+                }
+                for (int j = 0; j < count ; j++) {
+                    writer.write("end \n");
+                    openBlocks.remove(openBlocks.size()-1);
+                    blockCount--;
+                }
+            }
+
+            if(!methodBlock.get(i).equals("x") ){
+               if (!methodBlock.get(i).equals("0")){
+                   if (blockCount != 0){
+
+
+                   if (!openBlocks.contains(blockNodes.get(Integer.parseInt(methodBlock.get(i))-1))) {
+                       String blockName = "";
+                       String groupType = "alt";
+                      if(blockNodes.get(Integer.parseInt(methodBlock.get(i))-1) instanceof IfStmt){
+                                groupType = "alt";
+                                blockName = "if";
+                      } else if ( blockNodes.get(Integer.parseInt(methodBlock.get(i))-1) instanceof ForStmt){
+                          groupType = "loop";
+                          blockName = "for ";
+                      } else if (blockNodes.get(Integer.parseInt(methodBlock.get(i))-1) instanceof WhileStmt){
+                          groupType = "loop";
+                          blockName = "while ";
+                      }
+                       writer.write(groupType + " " + blockName + " " + methodBlock.get(i) + "\n");
+                       openBlocks.add(blockNodes.get(Integer.parseInt(methodBlock.get(i))-1));
+                       blockCount++;
+                   }
+                   } else {
+                       for (Node node : blockNodes){
+                           if (node.isAncestorOf(blockNodes.get(Integer.parseInt(methodBlock.get(i))-1))){
+                               if(!node.equals(blockNodes.get(Integer.parseInt(methodBlock.get(i))-1))){
+                                   String blockName = "";
+                                   String groupType = "alt";
+                                   if(node instanceof IfStmt){
+                                       groupType = "alt";
+                                       blockName = "if";
+                                   } else if ( node instanceof ForStmt){
+                                       groupType = "loop";
+                                       blockName = "for ";
+                                   } else if (node instanceof WhileStmt){
+                                       groupType = "loop";
+                                       blockName = "while ";
+                                   }
+                                   writer.write(groupType + " " + blockName + " "  + blockNodes.indexOf(node) + "\n");
+                                   openBlocks.add(node);
+                                   blockCount++;
+                               }
+
+                           }
+                       }
+
+
+                       if (!openBlocks.contains(blockNodes.get(Integer.parseInt(methodBlock.get(i))-1))) {
+                           String blockName = "";
+                           String groupType = "alt";
+                           if(blockNodes.get(Integer.parseInt(methodBlock.get(i))-1) instanceof IfStmt){
+                               groupType = "alt";
+                               blockName = "if";
+                           } else if ( blockNodes.get(Integer.parseInt(methodBlock.get(i))-1) instanceof ForStmt){
+                               groupType = "loop";
+                               blockName = "for ";
+                           } else if (blockNodes.get(Integer.parseInt(methodBlock.get(i))-1) instanceof WhileStmt){
+                               groupType = "loop";
+                               blockName = "while ";
+                           }
+                           writer.write(groupType + " " + blockName + " " + methodBlock.get(i) + "\n");
+                           openBlocks.add(blockNodes.get(Integer.parseInt(methodBlock.get(i))-1));
+                           blockCount++;
+                       }
+
+                   }
+               }
+            }
+
+                if(structure.getMethodCallTargets().get(i).equals("this")){
                     writer.write(structure.getImplementingClassName() + " -> " + structure.getImplementingClassName() + ": " + method + "\n");
                     writer.write("activate " + structure.getImplementingClassName() + "\n");
                     writer.write(structure.getImplementingClassName() + "-->" + structure.getImplementingClassName() + '\n');
@@ -56,30 +149,11 @@ public class DiagramFileWriter {
                     writer.write("deactivate " + structure.getMethodCallTargets().get(i) + "\n");
                 }
 
-                if( i == structure.getMethodCalls().size() -1){
-                    for (int j = 0; j < blockCount; j++) {
-                        writer.write("end \n");;
-                    }
-                } else{
-                    String blockMethod = structure.getMethodBlock().get(i);
-                    System.out.println(" BLOCK METHOD : " + blockMethod);
-                    String blockType = structure.getMethodBlock().get(i).split(" ")[0];
-                    System.out.println(" BLOCK TYPE : " + blockType);
-                    int blockId = Integer.parseInt(structure.getMethodBlock().get(i).split(" ")[1]);
-                    System.out.println(" BLOCK ID : " + blockId);
-                    int blockParent = Integer.parseInt(structure.getMethodBlock().get(i).split(" ")[2]);
-                    System.out.println(" BLOCK PARENT : " + blockParent);
-                    if(blockParent <=  Integer.parseInt(structure.getMethodBlock().get(i+1).split(" ")[2])){
-                        if (structure.getMethodBlock().get(i+1).contains("top")){
-                            writer.write("end \n");
-                            blockCount--;
-                        }
-
-                    }
-
-                }
-                System.out.println("-----------------------------------------------------");
                 i++;
+            }
+
+            for (int j = 0; j < blockCount ; j++) {
+                writer.write("end \n");
             }
             writer.write("return \n");
             writer.write("@enduml \n");

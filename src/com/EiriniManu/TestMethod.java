@@ -170,12 +170,57 @@ public class TestMethod implements ITestMethod {
     public String test23(String s, int j, boolean bool) {
         if (true) {
             test1("s", 2, true);
+            if (true) {
+                test1("s", 2, true);
+                if (true) {
+                    test5("s", 2, true);
+                    test6("s", 2, true);
+                    if (true) {
+                        test5("s", 2, true);
+                        test6("s", 2, true);
+                    }
+                }
+                if (true) {
+                    test5("s", 2, true);
+                    test6("s", 2, true);
+                }
+            }
         }
         test1("s", 2, true);
         if (true) {
+            test2(test4("s", 2, true), 2, true);
+            if (true) {
+                test1("s", 2, true);
+                if (true) {
+                    test1("s", 2, true);
+                    if (true) {
+                        test5("s", 2, true);
+                        test6("s", 2, true);
+                        if (true) {
+                            test5("s", 2, true);
+                            test6("s", 2, true);
+                        }
+                    }
+                    if (true) {
+                        test5("s", 2, true);
+                        test6("s", 2, true);
+                    }
+                }
+            }
             test1("s", 2, true);
-            test1("s", 2, true);
+            if (true) {
+                test5("s", 2, true);
+                test6("s", 2, true);
+            }
         }
+        test12("s", 2, true);
+        if (true) {
+            test5("s", 2, true);
+            test6("s", 2, true);
+        }
+        test6("s", 2, true);
+        test6("s", 2, true);
+        test6("s", 2, true);
         return "26";
     }
 
@@ -200,10 +245,120 @@ public class TestMethod implements ITestMethod {
 
         }
         test3("s", 2, true);
-        if(true) {
+        if (true) {
             test3("s", 2, true);
         }
+        test3("s", 2, true);
+        return "26";
+    }
 
+    public String test26(String s, int j, boolean bool) {
+        test3("s", 2, true);
+        if (true) {
+            test1("s", 2, true);
+            for (int i = 0; i < 2; i++) {
+                test3("s", 2, true);
+            }
+
+        }
+        test3("s", 2, true);
+        for (int i = 0; i < 2; i++) {
+            test3("s", 2, true);
+            if (true) {
+                test1("s", 2, true);
+                for (int f = 0; f < 2; f++) {
+                    test3("s", 2, true);
+                }
+
+            }
+        }
+        test3("s", 2, true);
+        return "26";
+    }
+
+    public String test27(String s, int j, boolean bool) {
+        test3("s", 2, true);
+        for (int b = 0; b < 2; b++) {
+
+
+        int x = 0;
+        while (x < 2){
+            if (true) {
+                test1("s", 2, true);
+                for (int i = 0; i < 2; i++) {
+                    test3("s", 2, true);
+                }
+                int k = 0;
+                while (k < 10) {
+                    test3("s", 2, true);
+                    if (true) {
+                        test1("s", 2, true);
+                        for (int i = 0; i < 2; i++) {
+                            test3("s", 2, true);
+                        }
+                        k++;
+                    }
+                }
+                test8("s", 2, true);
+                for (int i = 0; i < 2; i++) {
+                    test3("s", 2, true);
+                    if (true) {
+                        test1("s", 2, true);
+                        for (int f = 0; f < 2; f++) {
+                            test3("s", 2, true);
+                        }
+
+                    }
+                }
+                test3("s", 2, true);
+
+            }
+            test25("s", 2, true);
+            x++;
+        }
+        test25("s", 2, true);
+        test25("s", 2, true);
+        if(true) {
+            test25("s", 2, true);
+        }
+        x = 0;
+        while (x < 2) {
+            while (x < 2) {
+                if (true) {
+                    test1("s", 2, true);
+                    for (int i = 0; i < 2; i++) {
+                        test3("s", 2, true);
+                    }
+                    int k = 0;
+                    while (k < 10) {
+                        test3("s", 2, true);
+                        if (true) {
+                            test1("s", 2, true);
+                            for (int i = 0; i < 2; i++) {
+                                test3("s", 2, true);
+                            }
+                            k++;
+                        }
+                    }
+                    test8("s", 2, true);
+                    for (int i = 0; i < 2; i++) {
+                        test3("s", 2, true);
+                        if (true) {
+                            test1("s", 2, true);
+                            for (int f = 0; f < 2; f++) {
+                                test3("s", 2, true);
+                            }
+
+                        }
+                    }
+                    test3("s", 2, true);
+
+                }
+                test25("s", 2, true);
+                x++;
+            }
+        }
+        }
         return "26";
     }
 

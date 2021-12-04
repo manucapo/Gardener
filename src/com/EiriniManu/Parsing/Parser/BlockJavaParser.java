@@ -104,6 +104,32 @@ public class BlockJavaParser extends SafeJavaParser {
 
         List<MethodCallExpr> containedMethods = methodcallNode.findAll(MethodCallExpr.class, Node.TreeTraversal.BREADTHFIRST);
 
+        String blockName = "0";
+
+        for(int blockIndex = blockNodes.size() - 1; blockIndex >= 0; blockIndex--){             // find deepest block
+            if (blockNodes.get(blockIndex).isAncestorOf(methodcallNode)){
+                if (blockIndex == 0){
+                    blockName = String.valueOf(blockIndex + 1);
+                    break;
+                } else {
+                    boolean parentFound = false;
+                    for(int blockParentIndex = blockIndex - 1; blockParentIndex >= 0; blockParentIndex--){          // find closest block parent
+                        if (blockNodes.get(blockParentIndex).isAncestorOf(methodcallNode)){
+                            blockName = String.valueOf(blockIndex + 1);
+                            parentFound = true;
+                            break;
+                        }
+                    }
+                    if (!parentFound){
+                        blockName = String.valueOf(blockIndex + 1);
+                    }
+                    break;
+                }
+            }
+        }
+
+
+
         for (int i = 0; i < containedMethods.size(); i++) {
             MethodCallExpr subMethod = containedMethods.get(i);
             String subMethodName = subMethod.findAll(SimpleName.class, Node.TreeTraversal.BREADTHFIRST).get(0).toString();
@@ -118,34 +144,13 @@ public class BlockJavaParser extends SafeJavaParser {
 
             MethodCallExpr subMethod = containedMethods.get(i);
             String subMethodName = subMethod.findAll(SimpleName.class, Node.TreeTraversal.BREADTHFIRST).get(0).toString();
-            String blockName = "top 0 0";
 
-            for(int blockIndex = blockNodes.size() - 1; blockIndex >= 0; blockIndex--){             // find deepest block
-                if (blockNodes.get(blockIndex).isAncestorOf(subMethod)){
-                    if (blockIndex == 0){
-                        blockName = "if " + (blockIndex + 1) + " 0";
-                        break;
-                    } else {
-                        boolean parentFound = false;
-                        for(int blockParentIndex = blockIndex - 1; blockParentIndex >= 0; blockParentIndex--){          // find closest block parent
-                            if (blockNodes.get(blockParentIndex).isAncestorOf(subMethod)){
-                                blockName = "if " + (blockIndex + 1 - i) + " " + (blockParentIndex + 1);
-                                parentFound = true;
-                                break;
-                            }
-                        }
-                        if (!parentFound){
-                            blockName = "if " + (blockIndex + 1 - i) + " 0";
-                        }
-                        break;
-                    }
-                }
-            }
+            Object[] methodNode = {MessageTag.METHODCALLNODE, containedMethods.get(i)};
+            sendMessage(methodNode);
 
 
             Object[] blockType = {MessageTag.METHODBLOCK, blockName};
             sendMessage(blockType);
-
 
             for (String classMethod : classMethodNames) {                   // check if node is a class method
                 if (classMethod.equals(subMethodName)) {

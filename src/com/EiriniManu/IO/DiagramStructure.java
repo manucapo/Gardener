@@ -33,6 +33,7 @@ public class DiagramStructure implements IMessageObserver, IMessageSender {
     private List<String> catchParameterTypes;
     private List<String> catchParameterNames;
     private List<String> methodCalls;             //  A list of methodCalls made by the method  ( 1 layer of calls atm)
+    private List<Node> methodCallNodes;
     private List<String> methodCallTargets;       // The target classes of the method calls
     private List<String> variableDeclarations;     //  A list of variable declarations made by the method  ( 1 layer of calls atm)
     private List<String> variableDeclarationTypes; //  The types of variable declarations made by the method  ( 1 layer of calls atm)
@@ -50,6 +51,7 @@ public class DiagramStructure implements IMessageObserver, IMessageSender {
         methodName = "NULL";
         methodReturnType = "NULL";
         methodCalls = new ArrayList<>();
+        methodCallNodes = new ArrayList<>();
         methodCallTargets = new ArrayList<>();
         variableDeclarations = new ArrayList<>();
         variableDeclarationTypes = new ArrayList<>();
@@ -159,6 +161,14 @@ public class DiagramStructure implements IMessageObserver, IMessageSender {
         sendMessage(msg);
     }
 
+    public List<Node> getMethodCallNodes() {
+        return methodCallNodes;
+    }
+
+    public void addMethodCallNode(Node methodCallNode) {
+        this.methodCallNodes.add(methodCallNode);
+    }
+
     public List<String> getMethodCallTargets(){
         return methodCallTargets;
     }
@@ -235,6 +245,7 @@ public class DiagramStructure implements IMessageObserver, IMessageSender {
         methodReturnType = "NULL";
         parameterType = new ArrayList<>();
         methodCalls = new ArrayList<>();
+        methodCallNodes = new ArrayList<>();
         methodCallTargets = new ArrayList<>();
         variableDeclarations = new ArrayList<>();
         variableDeclarationTypes = new ArrayList<>();
@@ -261,7 +272,7 @@ public class DiagramStructure implements IMessageObserver, IMessageSender {
         String string = null;
         Node node = null;
 
-        if (field.equals(MessageTag.BLOCKNODE)){
+        if (field.equals(MessageTag.BLOCKNODE) || field.equals(MessageTag.METHODCALLNODE) ){
             node = (Node) data[1];
         }else {
            string = (String) data[1];
@@ -307,6 +318,9 @@ public class DiagramStructure implements IMessageObserver, IMessageSender {
                 break;
             case METHODCALL:
                 addMethodCall(string);
+                break;
+            case METHODCALLNODE:
+                addMethodCallNode(node);
                 break;
             case METHODCALLTARGET:
                 addMethodCallTarget(string);
