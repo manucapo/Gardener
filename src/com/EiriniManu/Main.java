@@ -6,7 +6,6 @@ public class Main {
     
     public static void main(String[] args)
     {
-
         TestMethod testMethod = new TestMethod();                                                                  // Instantiate a class that provides some simple methods to test the program with.
         SequenceDiagramGenerator sequenceDiagramGenerator = new SequenceDiagramGenerator(ParserType.BLOCK);            // Instantiate a class that can create a plantUML sequence diagram
         sequenceDiagramGenerator.addDependency("com.EiriniManu");                                        // Add packages to help resolve classes
@@ -27,7 +26,7 @@ public class Main {
        String packageName = "com.EiriniManu";
        String className = "TestMethod";
 
-       for (int i = 0; i <= 22; i++){
+       for (int i = 23; i <= 23; i++){
          String methodName = "test"  + String.valueOf(i);
 
            // Generate plantUML sequence diagram

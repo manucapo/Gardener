@@ -6,30 +6,28 @@ package com.EiriniManu;
     This class feeds the python script the necessary information
  */
 
+import com.EiriniManu.IO.DiagramFileWriter;
 import com.EiriniManu.IO.DiagramStructure;
-import com.EiriniManu.IO.JythonCaller;
 import com.EiriniManu.Parsing.Parser.*;
 import com.EiriniManu.Parsing.Reflector;
 import net.sourceforge.plantuml.GeneratedImage;
 import net.sourceforge.plantuml.SourceFileReader;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.util.List;
 
 public class SequenceDiagramGenerator implements ISequenceDiagramGenerator {
     private DiagramStructure structure;
     private Reflector reflector;
     private ParserContext parserContext;
-    private JythonCaller jCaller;
+    private DiagramFileWriter diagramFileWriter;
 
 
     public SequenceDiagramGenerator(ParserType parserType){                // Default constructor.
          structure = DiagramStructure.getInstance();
          reflector = new Reflector();
         reflector.addObserver(structure);
-         jCaller = new JythonCaller();
+         diagramFileWriter = new DiagramFileWriter();
         setParser(parserType);
     }
 
@@ -48,15 +46,7 @@ public class SequenceDiagramGenerator implements ISequenceDiagramGenerator {
     }
 
     public void generateSequenceDiagramTextFile(String path) {     // Use JythonCaller class to generate Text file with plantUML code
-        try {
-            File file = new File( "src\\com\\EiriniManu\\IO\\Script.py");  // Relative path to python Script
-            InputStream stream = new FileInputStream(file);                     // Read File as InputStream
-            jCaller.createDiagramFile(stream, path + "\\" + structure.getMethodName() + ".txt", structure);                 // Pass input stream and script path to the Jython caller. It can then generate the file using the information in the diagram structure
-        }catch (Exception e){
-            System.out.println("ERROR READING PYTHON SCRIPT");
-            System.out.println(e.toString());
-        }
-
+        diagramFileWriter.createDiagramFile(path + "\\" + structure.getMethodName() + ".txt");
     }
 
     public void generateSequenceDiagramImage(String path) {  // Use the plantUML library to generate a sequence diagram image from the plantUML text file

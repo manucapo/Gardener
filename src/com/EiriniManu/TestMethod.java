@@ -11,25 +11,25 @@ import com.github.javaparser.ast.expr.NameExpr;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TestMethod implements  ITestMethod{
+public class TestMethod implements ITestMethod {
 
     List<String> methodTargetStack = new ArrayList<>();
     DiagramStructure structure = DiagramStructure.getInstance();
     int parameterIndex = 0;
     String str = "";
 
-    public TestMethod(){
+    public TestMethod() {
         methodTargetStack.add("TEST");
         // TODO CONSTRUCTOR
     }
 
     public int test1(String s, int i, boolean bool) {
-        this.test2("2",1,true);
+        this.test2("2", 1, true);
         return i;
     }
 
     public int test2(String s, int i, boolean bool) {
-       test1("2",1,true);
+        test1("2", 1, true);
         return 26;
     }
 
@@ -72,50 +72,50 @@ public class TestMethod implements  ITestMethod{
     }
 
 
-    public String test10(String s, int j, boolean bool){
+    public String test10(String s, int j, boolean bool) {
         System.out.println("if testprint");
         Math.abs(2);
         return "26";
     }
 
-    public String test11(String s, int j, boolean bool){
+    public String test11(String s, int j, boolean bool) {
 
-              System.out.println(s.toString());  // BUG DETECTING NESTED SYSTEM CALL
-       return "26";
+        System.out.println(s.toString());  // BUG DETECTING NESTED SYSTEM CALL
+        return "26";
     }
 
-    public String test12(String s, int j, boolean bool){
+    public String test12(String s, int j, boolean bool) {
 
         System.out.println(s.toString().split("").clone().toString());  // BUG DETECTING NESTED SYSTEM CALL
         return "26";
     }
 
-    public String test13(String s, int j, boolean bool){
+    public String test13(String s, int j, boolean bool) {
         s.toString().split("").clone().toString();
         return "26";
     }
 
-    public String test14(String s, int j, boolean bool){
-      try {
-          DiagramStructure e = DiagramStructure.getInstance();
-          str.split("");
-      } catch (Exception e){
-          System.out.println(e.toString());
-      }
-        return "26";
-    }
-
-    public String test15(String s, int j, boolean bool){
+    public String test14(String s, int j, boolean bool) {
         try {
-            String e = "";
-            e.toString();
-        } catch (Exception e){
+            DiagramStructure e = DiagramStructure.getInstance();
+            str.split("");
+        } catch (Exception e) {
             System.out.println(e.toString());
         }
         return "26";
     }
 
-    public String test16(String s, int j, boolean bool){
+    public String test15(String s, int j, boolean bool) {
+        try {
+            String e = "";
+            e.toString();
+        } catch (Exception e) {
+            System.out.println(e.toString());
+        }
+        return "26";
+    }
+
+    public String test16(String s, int j, boolean bool) {
 
         Node node = null;
         node.findFirst(NameExpr.class).isPresent();
@@ -123,7 +123,7 @@ public class TestMethod implements  ITestMethod{
         return "26";
     }
 
-    public String test17(String s, int j, boolean bool){
+    public String test17(String s, int j, boolean bool) {
 
         Node node = null;
         node.findAncestor(NameExpr.class).isPresent();
@@ -131,109 +131,81 @@ public class TestMethod implements  ITestMethod{
         return "26";
     }
 
-    public String test18(String s, int j, boolean bool){        // LIMITATION: RESOLVING THE TYPE OF GENERICS IS SOMETIMES IMPOSSIBLE
+    public String test18(String s, int j, boolean bool) {        // LIMITATION: RESOLVING THE TYPE OF GENERICS IS SOMETIMES IMPOSSIBLE
         Node node = null;
-        if (node.findAncestor(NameExpr.class).isPresent()){
+        if (node.findAncestor(NameExpr.class).isPresent()) {
             s.equals(node.findAncestor(NameExpr.class).get());
         }
 
         return "26";
     }
 
-    public String test19(String s, int j, boolean bool){
+    public String test19(String s, int j, boolean bool) {
         Node node = null;
-        if (node.findAncestor(NameExpr.class).isPresent()){
+        if (node.findAncestor(NameExpr.class).isPresent()) {
             s.equals(node.findAncestor(NameExpr.class).get().toString());
         }
 
         return "26";
     }
 
-    public String test20(String s, int j, boolean bool){
+    public String test20(String s, int j, boolean bool) {
         String f = "2";
-            System.out.println(test1(s.toString(),Integer.parseInt(f),bool));
+        System.out.println(test1(s.toString(), Integer.parseInt(f), bool));
         return "26";
     }
 
-    public String test21(String s, int j, boolean bool){
+    public String test21(String s, int j, boolean bool) {
         structure.getMethodName();
         return "26";
     }
 
-    public String test22(String s, int j, boolean bool){
-
-
-if (true) {
-    test20("s",2,true);
-    if (true) {                         //  if 1 0
-        test1("s", 2, true);
-        if (true) {                     //  if 2 1
-            test2("s", 2, true);
-
-        }
-        if (true) {                     //  if 2 1
-            test2("s", 2, true);
-            if (true) {                     //  if 2 1
-                test2("s", 2, true);
-
-            }
-            if (true) {                     //  if 2 1
-                test2("s", 2, true);
-                if (true) {                     //  if 2 1
-                    test2("s", 2, true);
-                    if (true) {                     //  if 2 1
-                        test2("s", 2, true);
-
-                    }
-                    if (true) {                     //  if 2 1
-                        test2("s", 2, true);
-
-                    }
-                }
-            }
-        }
-    }
-
-    if (true) {                     //  if 2 1
-        test2("s", 2, true);
-
-    }
-}
-        test20("s",2,true);
-
+    public String test22(String s, int j, boolean bool) {
         if (true) {
-            test20("s",2,true);
-            if (true) {                         //  if 1 0
-                test1("s", 2, true);
-                if (true) {                     //  if 2 1
-                    test2("s", 2, true);
-
-                }
-                if (true) {                     //  if 2 1
-                    test2("s", 2, true);
-                    if (true) {                     //  if 2 1
-                        test2("s", 2, true);
-
-                    }
-                    if (true) {                     //  if 2 1
-                        test2("s", 2, true);
-                        if (true) {                     //  if 2 1
-                            test2("s", 2, true);
-                            if (true) {                     //  if 2 1
-                                test2("s", 2, true);
-
-                            }
-                            if (true) {                     //  if 2 1
-                                test2("s", 2, true);
-
-                            }
-                        }
-                    }
-                }
-            }}
+            test1("s", 2, true);
+        }
         return "26";
     }
 
+    public String test23(String s, int j, boolean bool) {
+        if (true) {
+            test1("s", 2, true);
+        }
+        test1("s", 2, true);
+        if (true) {
+            test1("s", 2, true);
+            test1("s", 2, true);
+        }
+        return "26";
+    }
+
+    public String test24(String s, int j, boolean bool) {
+        if (true) {
+            test1("s", 2, true);
+            if (true) {
+                test2("s", 2, true);
+            }
+        }
+
+        if (true) {
+            test1("s", 2, true);
+            test1("s", 2, true);
+        }
+        return "26";
+    }
+
+    public String test25(String s, int j, boolean bool) {
+        if (true) {
+            test1("s", 2, true);
+
+        }
+        test3("s", 2, true);
+        if(true) {
+            test3("s", 2, true);
+        }
+
+        return "26";
+    }
 
 
 }

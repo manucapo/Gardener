@@ -43,6 +43,7 @@ public class SafeJavaParser implements IJavaParser{
     protected List<String> variableDeclarationTypes;
     protected List<String> classFieldNames;
     protected List<String> classFieldTypes;
+    private List<Node> blockNodes;
 
 
 
@@ -438,6 +439,19 @@ public class SafeJavaParser implements IJavaParser{
         }
     }
 
+    public void reset(){
+        catchParameterTypes = new ArrayList<>();
+        catchParameterNames = new ArrayList<>();
+        parameterNames = new ArrayList<>();
+        parameterTypes = new ArrayList<>();
+        classMethodNames = new ArrayList<>();
+        implementingClassName = "NULL";
+        variableDeclarationNames = new ArrayList<>();
+        variableDeclarationTypes = new ArrayList<>();
+        classFieldNames = new ArrayList<>();
+        classFieldTypes = new ArrayList<>();
+    }
+
     @Override
     public void update(Object o) {
 
@@ -488,6 +502,9 @@ public class SafeJavaParser implements IJavaParser{
                 break;
             case VARIABLEDECLARATIONTYPE:
                 addVariableDeclarationType(string);
+                break;
+            case RESET:
+                reset();
                 break;
             default:
                 break;

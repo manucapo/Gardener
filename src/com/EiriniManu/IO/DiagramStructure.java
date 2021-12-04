@@ -216,6 +216,10 @@ public class DiagramStructure implements IMessageObserver, IMessageSender {
         return methodBlock;
     }
 
+    public List<Node> getBlockNodes() {
+        return blockNodes;
+    }
+
     public void addMethodBlock(String methodBlock) {
         this.methodBlock.add(methodBlock);
         Object[] msg = {MessageTag.METHODBLOCK,methodBlock};
@@ -243,6 +247,10 @@ public class DiagramStructure implements IMessageObserver, IMessageSender {
 
         blockNodes = new ArrayList<>();
         methodBlock = new ArrayList<>();
+
+        Object[] msg = {MessageTag.RESET, null};
+        sendMessage(msg);
+
     }
 
     @Override

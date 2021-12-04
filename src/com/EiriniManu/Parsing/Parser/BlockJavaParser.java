@@ -23,6 +23,7 @@ public class BlockJavaParser extends SafeJavaParser {
 
     private List<Node> blockNodes;
 
+
     public BlockJavaParser(){
         blockNodes = new ArrayList<>();
     }
@@ -110,7 +111,6 @@ public class BlockJavaParser extends SafeJavaParser {
         }
 
         Node previousScope = null;
-
         for (int i = containedMethods.size() - 1; i >= 0; i--) {
             boolean targetFound = false;
             boolean classFound = false;
@@ -129,18 +129,19 @@ public class BlockJavaParser extends SafeJavaParser {
                         boolean parentFound = false;
                         for(int blockParentIndex = blockIndex - 1; blockParentIndex >= 0; blockParentIndex--){          // find closest block parent
                             if (blockNodes.get(blockParentIndex).isAncestorOf(subMethod)){
-                                blockName = "if " + (blockIndex + 1) + " " + (blockParentIndex + 1);
+                                blockName = "if " + (blockIndex + 1 - i) + " " + (blockParentIndex + 1);
                                 parentFound = true;
                                 break;
                             }
                         }
                         if (!parentFound){
-                            blockName = "if " + (blockIndex + 1) + " 0";
+                            blockName = "if " + (blockIndex + 1 - i) + " 0";
                         }
                         break;
                     }
                 }
             }
+
 
             Object[] blockType = {MessageTag.METHODBLOCK, blockName};
             sendMessage(blockType);
@@ -379,6 +380,22 @@ public class BlockJavaParser extends SafeJavaParser {
         }
     }
 
+    public void reset(){
+        packageDependencies = new ArrayList<>();
+        catchParameterTypes = new ArrayList<>();
+        catchParameterNames = new ArrayList<>();
+        parameterNames = new ArrayList<>();
+        parameterTypes = new ArrayList<>();
+        classMethodNames = new ArrayList<>();
+        implementingClassName = "NULL";
+        variableDeclarationNames = new ArrayList<>();
+        variableDeclarationTypes = new ArrayList<>();
+        classFieldNames = new ArrayList<>();
+        classFieldTypes = new ArrayList<>();
+
+        blockNodes = new ArrayList<>();
+    }
+
     public void update(Object o) {
 
         Object[] data = (Object[]) o;
@@ -439,10 +456,14 @@ public class BlockJavaParser extends SafeJavaParser {
             case BLOCKNODE:
                 addBlockNode(node);
                 break;
+            case RESET:
+                reset();
+                break;
             default:
                 break;
         }
     }
+
 
     public void addBlockNode(Node blockNode) {
         this.blockNodes.add(blockNode);
