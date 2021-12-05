@@ -71,6 +71,10 @@ public class DiagramStructure implements IMessageObserver, IMessageSender {
         return instance;
     }
 
+    public void serialize(String path){
+        DiagramFileWriter.getInstance().createDiagramFile(path);
+    }
+
     // Getters and setters
     public String getImplementingClassName() {
         return implementingClassName;

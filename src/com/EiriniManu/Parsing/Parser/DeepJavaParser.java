@@ -113,12 +113,16 @@ public class DeepJavaParser extends SafeJavaParser{
             MethodCallExpr subMethod = containedMethods.get(i);
             String subMethodName = subMethod.findAll(SimpleName.class, Node.TreeTraversal.BREADTHFIRST).get(0).toString();
 
-            Object[] blockType = {MessageTag.METHODBLOCK, "top 0 0"};
+            Object[] methodNode = {MessageTag.METHODCALLNODE, containedMethods.get(i)};
+            sendMessage(methodNode);
+
+            Object[] blockType = {MessageTag.METHODBLOCK, "0"};
             sendMessage(blockType);
 
             for (String classMethod : classMethodNames) {                   // check if node is a class method
                 if (classMethod.equals(subMethodName)) {
                     System.out.println("THIS IS A CLASS MEHTOD");
+
                     methodTargetStack.add(implementingClassName);
                     methodTargetTypeNameStack.add("");
                     targetFound = true;

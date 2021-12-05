@@ -27,7 +27,6 @@ public class SequenceDiagramGenerator implements ISequenceDiagramGenerator {
          structure = DiagramStructure.getInstance();
          reflector = new Reflector();
         reflector.addObserver(structure);
-         diagramFileWriter = new DiagramFileWriter();
         setParser(parserType);
     }
 
@@ -46,7 +45,7 @@ public class SequenceDiagramGenerator implements ISequenceDiagramGenerator {
     }
 
     public void generateSequenceDiagramTextFile(String path) {     // Use JythonCaller class to generate Text file with plantUML code
-        diagramFileWriter.createDiagramFile(path + "\\" + structure.getMethodName() + ".txt");
+        structure.serialize(path + "\\" + structure.getMethodName() + ".txt");
     }
 
     public void generateSequenceDiagramImage(String path) {  // Use the plantUML library to generate a sequence diagram image from the plantUML text file

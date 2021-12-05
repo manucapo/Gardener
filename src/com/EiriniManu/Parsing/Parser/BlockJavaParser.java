@@ -148,7 +148,6 @@ public class BlockJavaParser extends SafeJavaParser {
             Object[] methodNode = {MessageTag.METHODCALLNODE, containedMethods.get(i)};
             sendMessage(methodNode);
 
-
             Object[] blockType = {MessageTag.METHODBLOCK, blockName};
             sendMessage(blockType);
 

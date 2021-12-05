@@ -1,0 +1,10 @@
+@startuml 
+participant Actor 
+Actor -> TestMethod: test5
+activate TestMethod
+TestMethod -> String: split
+activate String
+String-->TestMethod
+deactivate String
+return 
+@enduml 
