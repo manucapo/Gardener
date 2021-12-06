@@ -26,6 +26,7 @@ public class DiagramFileWriter {
         List<String> methodBlock = structure.getMethodBlock();
 
         List<Node> openBlocks = new ArrayList<>();
+        List<String> openMethodCalls = new ArrayList<>();
 
         try{
             FileWriter writer = new FileWriter(path);
@@ -130,12 +131,40 @@ public class DiagramFileWriter {
                 } else {
                     writer.write(structure.getImplementingClassName() + " -> " + structure.getMethodCallTargets().get(i) + ": " + method + "\n");
                     writer.write("activate " + structure.getMethodCallTargets().get(i) + "\n");
-                    writer.write(structure.getMethodCallTargets().get(i) + "-->" + structure.getImplementingClassName() + "\n");
-                    writer.write("deactivate " + structure.getMethodCallTargets().get(i) + "\n");
+                    openMethodCalls.add(structure.getMethodCallTargets().get(i));
+                    if (i != 0 && i != structure.getMethodCalls().size()- 1) {
+                        int count = 0;
+                        for (int j = openMethodCalls.size() - 1; j >= 0; j--) {
+                            if (!openMethodCalls.get(j).contains(structure.getMethodCallTargets().get(i))) {
+                                if (!openMethodCalls.get(j).equals(structure.getMethodCallTargets().get(i))){
+                                    count++;
+                                }
+
+                            } else {
+                                break;
+                            }
+
+                        }
+
+                            writer.write(structure.getMethodCallTargets().get(i) + "-->" + structure.getMethodCallTargets().get(i - 1) + "\n");
+                            writer.write("deactivate " + structure.getMethodCallTargets().get(i) + "\n");
+                            openMethodCalls.remove(structure.getMethodCallTargets().get(i));
+
+
+                    } else if (i == structure.getMethodCalls().size()- 1) {
+
+                        for (int j = openMethodCalls.size() - 1; j > 0; j--) {
+                            writer.write(openMethodCalls.get(j) + "-->" + openMethodCalls.get(j-1) + '\n');
+                            writer.write("deactivate " + openMethodCalls.get(j) + "\n");
+                        }
+
+
+                    }
                 }
 
                 i++;
             }
+
 
             for (int j = 0; j < blockCount ; j++) {
                 writer.write("end \n");

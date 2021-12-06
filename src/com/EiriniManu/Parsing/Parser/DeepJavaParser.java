@@ -1,9 +1,7 @@
 package com.EiriniManu.Parsing.Parser;
 
 import com.EiriniManu.IO.DiagramStructure;
-import com.EiriniManu.Messaging.IMessageObserver;
 import com.EiriniManu.Messaging.MessageTag;
-import com.EiriniManu.Parsing.*;
 import com.EiriniManu.Parsing.NodeExplorer.*;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Node;
@@ -13,31 +11,43 @@ import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.stmt.CatchClause;
 import com.github.javaparser.printer.XmlPrinter;
-import com.github.javaparser.utils.CodeGenerationUtils;
-import com.github.javaparser.utils.Log;
-import com.github.javaparser.utils.SourceRoot;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DeepJavaParser extends SafeJavaParser{
+public class DeepJavaParser extends SafeJavaParser {
 
+    private String className;
+    private String classFilePath;
+    private String packageName;
+    private CompilationUnit cu;
+    private int runDepth = 1;
+    private static int run;
 
-    public void execute(String methodName, String className, String classFilePath, String packageName, DiagramStructure structure){
-        for (Package pkg: Package.getPackages()) {
-            if (pkg.getName().contains(packageName)){
+    private boolean nestedMethodFound;
+
+    List<String> methodNameStack = new ArrayList<>();
+    List<String> methodTargetStack = new ArrayList<>();
+    List<String> methodTargetTypeNameStack = new ArrayList<>();
+
+    public void execute(String methodName, String className, String classFilePath, String packageName, DiagramStructure structure) {
+
+        this.className = className;
+        this.classFilePath = classFilePath;
+        this.packageName = packageName;
+        this.cu = this.ParseFile(className, this.SetSourceRoot(classFilePath, packageName));
+        for (Package pkg : Package.getPackages()) {
+            if (pkg.getName().contains(packageName)) {
                 if (!packageDependencies.contains(pkg.getName())) {
                     packageDependencies.add(pkg.getName());
                 }
             }
         }
-        this.ParseMethod(this.ParseFile(className, this.SetSourceRoot(classFilePath,packageName)), className, methodName, structure);
+        run = 0;
+        this.parseMethod(this.ParseFile(className, this.SetSourceRoot(classFilePath, packageName)), className, methodName, structure);
     }
 
-    public void ParseMethod(CompilationUnit cu, String className, String methodName, DiagramStructure diagramStructure) {
+    public void parseMethod(CompilationUnit cu, String className, String methodName, DiagramStructure diagramStructure) {
 
         ClassOrInterfaceDeclaration clsX = new ClassOrInterfaceDeclaration();                 // Holder variable for the class declaration node.
 
@@ -72,12 +82,14 @@ public class DeepJavaParser extends SafeJavaParser{
 
                 for (Node node : method.findAll(MethodCallExpr.class, Node.TreeTraversal.PREORDER)) { // extract information on method calls inside method
 
-                    if (subMethodCounter == 0){
+                    if (subMethodCounter == 0) {
                         MethodNodeExplorer nodeExplorer = (MethodNodeExplorer) NodeExplorerFactory.create(MethodCallExpr.class);
                         subMethodCounter = nodeExplorer.countSubMethods(node);
                         nodeExplorer.setParser(this);
                         nodeExplorer.checkNode(node);
-                    } else {subMethodCounter--;}
+                    } else {
+                        subMethodCounter--;
+                    }
 
                 }
             }
@@ -91,9 +103,8 @@ public class DeepJavaParser extends SafeJavaParser{
         XmlPrinter printer = new XmlPrinter(true);
         System.out.println(printer.output(methodcallNode));
 
-        List<String> methodNameStack = new ArrayList<>();
-        List<String> methodTargetStack = new ArrayList<>();
-        List<String> methodTargetTypeNameStack = new ArrayList<>();
+
+
 
         List<MethodCallExpr> containedMethods = methodcallNode.findAll(MethodCallExpr.class, Node.TreeTraversal.BREADTHFIRST);
 
@@ -102,6 +113,8 @@ public class DeepJavaParser extends SafeJavaParser{
             String subMethodName = subMethod.findAll(SimpleName.class, Node.TreeTraversal.BREADTHFIRST).get(0).toString();
             methodNameStack.add(subMethodName);
         }
+
+        nestedMethodFound = false;
 
         Node previousScope = null;
 
@@ -119,12 +132,24 @@ public class DeepJavaParser extends SafeJavaParser{
             Object[] blockType = {MessageTag.METHODBLOCK, "0"};
             sendMessage(blockType);
 
+
+            Object[] caller = {MessageTag.METHODCALLER, implementingClassName};
+
+
             for (String classMethod : classMethodNames) {                   // check if node is a class method
                 if (classMethod.equals(subMethodName)) {
                     System.out.println("THIS IS A CLASS MEHTOD");
-
                     methodTargetStack.add(implementingClassName);
                     methodTargetTypeNameStack.add("");
+
+                    if(run < runDepth){
+                        run++;
+                    parseMethod(cu,className,subMethodName,DiagramStructure.getInstance());
+                    nestedMethodFound = true;
+
+                         caller[1] = subMethodName;
+
+                            }
                     targetFound = true;
                     break;
                 }
@@ -334,14 +359,14 @@ public class DeepJavaParser extends SafeJavaParser{
 
             if (!targetFound) {
                 System.out.println("COULD NOT RESOLVE ANY TARGETS");
-                methodNameStack.remove(i);   // SAFE MODE
+                methodNameStack.remove(methodNameStack.size() - 1);   // SAFE MODE
             }
-
+            sendMessage(caller);
             previousScope = scope;
             System.out.println("RELOOPING -----------------------------");
         }
 
-        for (int i = methodNameStack.size() - 1; i >= 0; i--) {
+        for (int i = 0; i <= methodNameStack.size() - 1; i++) {
             System.out.println("NAME : " + methodNameStack.get(i));
 
             Object[] type = {MessageTag.METHODCALL, methodNameStack.get(i)};
@@ -359,6 +384,11 @@ public class DeepJavaParser extends SafeJavaParser{
             //
             // structure.addMethodCallTarget(methodTargetStack.get(i));                                                 // first contained name should be method name
         }
-    }
+
+            methodNameStack = new ArrayList<>();
+         methodTargetStack = new ArrayList<>();
+         methodTargetTypeNameStack = new ArrayList<>();
 
     }
+
+}

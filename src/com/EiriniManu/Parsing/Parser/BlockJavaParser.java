@@ -24,11 +24,14 @@ public class BlockJavaParser extends SafeJavaParser {
     private List<Node> blockNodes;
 
 
+
     public BlockJavaParser(){
         blockNodes = new ArrayList<>();
     }
 
+
     public void execute(String methodName, String className, String classFilePath, String packageName, DiagramStructure structure){
+
         for (Package pkg: Package.getPackages()) {
             if (pkg.getName().contains(packageName)){
                 if (!packageDependencies.contains(pkg.getName())) {
@@ -36,10 +39,9 @@ public class BlockJavaParser extends SafeJavaParser {
                 }
             }
         }
-        this.ParseMethod(this.ParseFile(className, this.SetSourceRoot(classFilePath,packageName)), className, methodName, structure);
     }
 
-    public void ParseMethod(CompilationUnit cu, String className, String methodName, DiagramStructure diagramStructure) {
+    public void parseMethod(CompilationUnit cu, String className, String methodName, DiagramStructure diagramStructure) {
 
         ClassOrInterfaceDeclaration clsX = new ClassOrInterfaceDeclaration();                 // Holder variable for the class declaration node.
 
@@ -151,9 +153,14 @@ public class BlockJavaParser extends SafeJavaParser {
             Object[] blockType = {MessageTag.METHODBLOCK, blockName};
             sendMessage(blockType);
 
+
             for (String classMethod : classMethodNames) {                   // check if node is a class method
                 if (classMethod.equals(subMethodName)) {
                     System.out.println("THIS IS A CLASS MEHTOD");
+
+
+
+
                     methodTargetStack.add(implementingClassName);
                     methodTargetTypeNameStack.add("");
                     targetFound = true;

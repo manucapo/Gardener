@@ -20,5 +20,6 @@ public enum MessageTag {
         VARIABLEDECLARATIONTYPE,
         BLOCKNODE,
         METHODBLOCK,
+        METHODCALLER,
         RESET
 }

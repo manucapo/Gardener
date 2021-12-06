@@ -11,7 +11,7 @@ public interface IJavaParser extends  IMessageSender, IMessageObserver {
     SourceRoot SetSourceRoot(String path, String packageName);
     void execute(String methodName, String className, String classFilePath, String packageName, DiagramStructure structure);
     CompilationUnit ParseFile(String fileName, SourceRoot sourceRoot);
-    void ParseMethod(CompilationUnit cu, String className, String methodName, DiagramStructure diagramStructure);
+    void parseMethod(CompilationUnit cu, String className, String methodName, DiagramStructure diagramStructure);
     void parseMethodNode(Node methodcallNode);
     void addDependency(String dependency);
 }

@@ -25,15 +25,19 @@ public class TestMethod implements ITestMethod {
 
     public int test1(String s, int i, boolean bool) {
         this.test2("2", 1, true);
+        structure.getMethodName();
         return i;
     }
 
     public int test2(String s, int i, boolean bool) {
-        test1("2", 1, true);
+        this.test3("2", 1, true);
+        structure.getMethodCallNodes();
+        structure.getMethodName();
         return 26;
     }
 
     public int test3(String s, int i, boolean bool) {
+        structure.getMethodBlock();
         System.out.println("test");
         return 2;
     }

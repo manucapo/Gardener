@@ -41,6 +41,8 @@ public class DiagramStructure implements IMessageObserver, IMessageSender {
     private List<Node> blockNodes;
     private List<String> methodBlock;
 
+    private List<String> methodCaller;
+
     private static final DiagramStructure instance = new DiagramStructure();  // singleton instance
 
     private DiagramStructure() {                    // Default constructor. Initializes the class to "safe" values.
@@ -65,6 +67,8 @@ public class DiagramStructure implements IMessageObserver, IMessageSender {
 
         blockNodes = new ArrayList<>();
         methodBlock = new ArrayList<>();
+
+        methodCaller = new ArrayList<>();
     }
 
     public static DiagramStructure getInstance(){
@@ -240,6 +244,16 @@ public class DiagramStructure implements IMessageObserver, IMessageSender {
         sendMessage(msg);
     }
 
+    public List<String> getMethodCaller() {
+        return methodCaller;
+    }
+
+    public void addMethodCaller(String methodCaller) {
+        this.methodCaller.add(methodCaller);
+        Object[] msg = {MessageTag.METHODCALLER,methodCaller};
+        sendMessage(msg);
+    }
+
     public void reset(){
         implementingClassName = "NULL";
         callingClassName = "NULL";
@@ -262,6 +276,8 @@ public class DiagramStructure implements IMessageObserver, IMessageSender {
 
         blockNodes = new ArrayList<>();
         methodBlock = new ArrayList<>();
+
+        methodCaller = new ArrayList<>();
 
         Object[] msg = {MessageTag.RESET, null};
         sendMessage(msg);
@@ -340,6 +356,9 @@ public class DiagramStructure implements IMessageObserver, IMessageSender {
                 break;
             case METHODBLOCK:
                 addMethodBlock(string);
+                break;
+            case METHODCALLER:
+                addMethodCaller(string);
                 break;
             default:
                 break;

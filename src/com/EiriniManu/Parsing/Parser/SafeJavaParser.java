@@ -11,7 +11,6 @@ import com.EiriniManu.Messaging.MessageTag;
 import com.EiriniManu.Parsing.NodeExplorer.*;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Node;
-import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
@@ -21,10 +20,8 @@ import com.github.javaparser.printer.XmlPrinter;
 import com.github.javaparser.utils.CodeGenerationUtils;
 import com.github.javaparser.utils.Log;
 import com.github.javaparser.utils.SourceRoot;
-import jdk.nashorn.internal.runtime.regexp.joni.constants.Arguments;
 
 
-import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -84,10 +81,10 @@ public class SafeJavaParser implements IJavaParser{
                 }
             }
         }
-        this.ParseMethod(this.ParseFile(className, this.SetSourceRoot(classFilePath,packageName)), className, methodName, structure);
+        this.parseMethod(this.ParseFile(className, this.SetSourceRoot(classFilePath,packageName)), className, methodName, structure);
     }
 
-    public void ParseMethod(CompilationUnit cu, String className, String methodName, DiagramStructure diagramStructure) {
+    public void parseMethod(CompilationUnit cu, String className, String methodName, DiagramStructure diagramStructure) {
 
         ClassOrInterfaceDeclaration clsX = new ClassOrInterfaceDeclaration();                 // Holder variable for the class declaration node.
 

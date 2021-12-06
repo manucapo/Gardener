@@ -4,7 +4,21 @@ Actor -> TestMethod: test1
 activate TestMethod
 TestMethod -> TestMethod: test2
 activate TestMethod
+TestMethod -> TestMethod: test3
+activate TestMethod
 TestMethod-->TestMethod
 deactivate TestMethod
+TestMethod -> DiagramStructure: getMethodCallNodes
+activate DiagramStructure
+DiagramStructure-->TestMethod
+deactivate DiagramStructure
+TestMethod -> DiagramStructure: getMethodName
+activate DiagramStructure
+DiagramStructure-->DiagramStructure
+deactivate DiagramStructure
+TestMethod -> DiagramStructure: getMethodName
+activate DiagramStructure
+DiagramStructure-->TestMethod
+deactivate DiagramStructure
 return 
 @enduml 
