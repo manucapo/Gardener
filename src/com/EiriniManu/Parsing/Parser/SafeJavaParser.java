@@ -166,6 +166,11 @@ public class SafeJavaParser implements IJavaParser{
             Object[] blockType = {MessageTag.METHODBLOCK, "0"};
             sendMessage(blockType);
 
+            Object[] caller = {MessageTag.METHODCALLER, " "};
+            sendMessage(caller);
+
+
+
             for (String classMethod : classMethodNames) {                   // check if node is a class method
                 if (classMethod.equals(subMethodName)) {
                     System.out.println("THIS IS A CLASS MEHTOD");

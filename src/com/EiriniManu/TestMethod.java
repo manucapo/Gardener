@@ -5,6 +5,7 @@ package com.EiriniManu;
 */
 
 import com.EiriniManu.IO.DiagramStructure;
+import com.EiriniManu.Parsing.NodeExplorer.MethodNodeExplorer;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.NameExpr;
 
@@ -13,6 +14,7 @@ import java.util.List;
 
 public class TestMethod implements ITestMethod {
 
+    MethodNodeExplorer explorer;
     List<String> methodTargetStack = new ArrayList<>();
     DiagramStructure structure = DiagramStructure.getInstance();
     int parameterIndex = 0;
@@ -30,14 +32,14 @@ public class TestMethod implements ITestMethod {
     }
 
     public int test2(String s, int i, boolean bool) {
-
+        System.out.println("test");
         structure.getMethodCaller();
         this.test1("2", 1, true);
         return 26;
     }
 
     public int test3(String s, int i, boolean bool) {
-        this.test2("2", 1, true);
+        explorer.checkNode(null);
         System.out.println("test");
         return 2;
     }

@@ -21,16 +21,37 @@ public class DeepJavaParser extends SafeJavaParser {
     private String classFilePath;
     private String packageName;
     private CompilationUnit cu;
-    private int runDepth = 3;
+    private int runDepth = 6;
     private static int run;
     private static String methodCaller;
 
     private boolean nestedMethodFound;
 
 
-    List<String> methodNameStack = new ArrayList<>();
-    List<String> methodTargetStack = new ArrayList<>();
-    List<String> methodTargetTypeNameStack = new ArrayList<>();
+    List<String> methodNameStack;
+    List<String> methodTargetStack;
+    List<String> methodTargetTypeNameStack;
+
+    public DeepJavaParser() {
+
+        packageDependencies = new ArrayList<>();
+        catchParameterTypes = new ArrayList<>();
+        catchParameterNames = new ArrayList<>();
+        parameterNames = new ArrayList<>();
+        parameterTypes = new ArrayList<>();
+        classMethodNames = new ArrayList<>();
+        implementingClassName = "NULL";
+        variableDeclarationNames = new ArrayList<>();
+        variableDeclarationTypes = new ArrayList<>();
+        classFieldNames = new ArrayList<>();
+        classFieldTypes = new ArrayList<>();
+        observerList = new ArrayList<>();
+
+        methodNameStack = new ArrayList<>();
+        methodTargetStack = new ArrayList<>();
+        methodTargetTypeNameStack = new ArrayList<>();
+
+    }
 
     public void execute(String methodName, String className, String classFilePath, String packageName, DiagramStructure structure) {
 
@@ -113,11 +134,6 @@ public class DeepJavaParser extends SafeJavaParser {
 
         List<MethodCallExpr> containedMethods = methodcallNode.findAll(MethodCallExpr.class, Node.TreeTraversal.BREADTHFIRST);
 
-        for (int i = 0; i < containedMethods.size(); i++) {
-            MethodCallExpr subMethod = containedMethods.get(i);
-            String subMethodName = subMethod.findAll(SimpleName.class, Node.TreeTraversal.BREADTHFIRST).get(0).toString();
-            methodNameStack.add(subMethodName);
-        }
 
         nestedMethodFound = false;
 
@@ -140,6 +156,8 @@ public class DeepJavaParser extends SafeJavaParser {
 
             Object[] caller = {MessageTag.METHODCALLER, methodCaller};
             sendMessage(caller);
+
+            methodNameStack.add(subMethodName);
 
 
             for (String classMethod : classMethodNames) {                   // check if node is a class method
@@ -304,6 +322,7 @@ public class DeepJavaParser extends SafeJavaParser {
                                 }
                                 catch (Exception e){
                                     //TODO
+                                    //TODO
                                 }
                             }
                             if (isSafe) {
@@ -364,7 +383,8 @@ public class DeepJavaParser extends SafeJavaParser {
 
             if (!targetFound) {
                 System.out.println("COULD NOT RESOLVE ANY TARGETS");
-                methodNameStack.remove(methodNameStack.size() - 1);   // SAFE MODE
+                    methodNameStack.remove(methodNameStack.size() - 1);   // SAFE MODE
+
                 DiagramStructure.getInstance().getMethodCaller().remove(DiagramStructure.getInstance().getMethodCaller().size()-1);
             }
 
