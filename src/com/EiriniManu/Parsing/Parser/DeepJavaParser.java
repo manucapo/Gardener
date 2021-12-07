@@ -23,8 +23,11 @@ public class DeepJavaParser extends SafeJavaParser {
     private CompilationUnit cu;
     private int runDepth = 1;
     private static int run;
+    private static String methodCaller;
 
     private boolean nestedMethodFound;
+
+    List<String> openMethodCallers = new ArrayList<>();
 
     List<String> methodNameStack = new ArrayList<>();
     List<String> methodTargetStack = new ArrayList<>();
@@ -44,6 +47,7 @@ public class DeepJavaParser extends SafeJavaParser {
             }
         }
         run = 0;
+        methodCaller = methodName;
         this.parseMethod(this.ParseFile(className, this.SetSourceRoot(classFilePath, packageName)), className, methodName, structure);
     }
 
@@ -86,6 +90,8 @@ public class DeepJavaParser extends SafeJavaParser {
                         MethodNodeExplorer nodeExplorer = (MethodNodeExplorer) NodeExplorerFactory.create(MethodCallExpr.class);
                         subMethodCounter = nodeExplorer.countSubMethods(node);
                         nodeExplorer.setParser(this);
+                        openMethodCallers.add(methodName);
+                        methodCaller = methodName;
                         nodeExplorer.checkNode(node);
                     } else {
                         subMethodCounter--;
@@ -94,6 +100,7 @@ public class DeepJavaParser extends SafeJavaParser {
                 }
             }
         }
+
     }
 
     public void parseMethodNode(Node methodcallNode) {
@@ -133,7 +140,8 @@ public class DeepJavaParser extends SafeJavaParser {
             sendMessage(blockType);
 
 
-            Object[] caller = {MessageTag.METHODCALLER, implementingClassName};
+            Object[] caller = {MessageTag.METHODCALLER, methodCaller};
+            sendMessage(caller);
 
 
             for (String classMethod : classMethodNames) {                   // check if node is a class method
@@ -141,14 +149,13 @@ public class DeepJavaParser extends SafeJavaParser {
                     System.out.println("THIS IS A CLASS MEHTOD");
                     methodTargetStack.add(implementingClassName);
                     methodTargetTypeNameStack.add("");
-
                     if(run < runDepth){
                         run++;
-                    parseMethod(cu,className,subMethodName,DiagramStructure.getInstance());
+
                     nestedMethodFound = true;
 
-                         caller[1] = subMethodName;
-
+                         methodCaller = subMethodName;
+                        parseMethodRecursive(cu,className,subMethodName,DiagramStructure.getInstance());
                             }
                     targetFound = true;
                     break;
@@ -187,7 +194,7 @@ public class DeepJavaParser extends SafeJavaParser {
                                     methodTargetStack.add(catchParameterTypes.get(catchParameterIndex).replaceAll("<.*>", " "));
                                     methodTargetTypeNameStack.add("");
                                 } else {
-                                    methodNameStack.remove(i);   // avoid target call and target name list desync
+                                    methodNameStack.remove(methodNameStack.size()-1);   // avoid target call and target name list desync
                                 }
                                 targetFound = true;
                                 break;
@@ -360,8 +367,9 @@ public class DeepJavaParser extends SafeJavaParser {
             if (!targetFound) {
                 System.out.println("COULD NOT RESOLVE ANY TARGETS");
                 methodNameStack.remove(methodNameStack.size() - 1);   // SAFE MODE
+                DiagramStructure.getInstance().getMethodCaller().remove(DiagramStructure.getInstance().getMethodCaller().size()-1);
             }
-            sendMessage(caller);
+
             previousScope = scope;
             System.out.println("RELOOPING -----------------------------");
         }
@@ -391,4 +399,15 @@ public class DeepJavaParser extends SafeJavaParser {
 
     }
 
+    public void parseMethodNodeRecursive(Node methodcallNode){
+
+    }
+
+    public void parseMethodRecursive(CompilationUnit cu, String className, String methodName, DiagramStructure diagramStructure){
+    openMethodCallers.add(methodName);
+    methodCaller = methodName;
+    parseMethod(cu,className,methodName,diagramStructure);
+
+
+    }
 }

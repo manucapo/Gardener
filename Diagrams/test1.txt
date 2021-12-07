@@ -14,11 +14,13 @@ DiagramStructure-->TestMethod
 deactivate DiagramStructure
 TestMethod -> DiagramStructure: getMethodName
 activate DiagramStructure
-DiagramStructure-->DiagramStructure
+DiagramStructure-->TestMethod
 deactivate DiagramStructure
-TestMethod -> DiagramStructure: getMethodName
+TestMethod -> DiagramStructure: getCallingClassName
 activate DiagramStructure
 DiagramStructure-->TestMethod
 deactivate DiagramStructure
+TestMethod-->TestMethod
+deactivate TestMethod
 return 
 @enduml 

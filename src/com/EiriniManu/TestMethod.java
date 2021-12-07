@@ -25,7 +25,7 @@ public class TestMethod implements ITestMethod {
 
     public int test1(String s, int i, boolean bool) {
         this.test2("2", 1, true);
-        structure.getMethodName();
+        structure.getCallingClassName();
         return i;
     }
 
@@ -38,6 +38,7 @@ public class TestMethod implements ITestMethod {
 
     public int test3(String s, int i, boolean bool) {
         structure.getMethodBlock();
+        structure.getMethodCaller();
         System.out.println("test");
         return 2;
     }
