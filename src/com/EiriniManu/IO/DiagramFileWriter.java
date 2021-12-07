@@ -130,41 +130,39 @@ public class DiagramFileWriter {
                 } else if (structure.getMethodCallTargets().get(i).contains("LOSTMESSAGE")){
                     writer.write(structure.getImplementingClassName() + " ->x] " + ": " + method + "\n");
                 } else {
+
+
+                    if (openMethodCalls.contains(structure.getMethodCaller().get(i))) {
+                        int count = openMethodCalls.size() - 1;
+                        for (int j = count; j >= 0 ; j--) {
+                            if (openMethodCalls.get(j).equals(structure.getMethodCaller().get(i))){
+                                writer.write(openMethodTargets.get(j) + "-->" + structure.getImplementingClassName() + "\n");
+                                writer.write("deactivate " + openMethodTargets.get(j) + "\n");
+                                openMethodCalls.remove(openMethodCalls.get(j));
+                                openMethodTargets.remove(openMethodTargets.get(j));
+                                break;
+                            } else {
+                                writer.write(openMethodTargets.get(j) + "-->" + structure.getImplementingClassName() + "\n");
+                                writer.write("deactivate " + openMethodTargets.get(j) + "\n");
+                                openMethodCalls.remove(openMethodCalls.get(j));
+                                openMethodTargets.remove(openMethodTargets.get(j));
+                            }
+                        }
+
+
+                    }
+
                     writer.write(structure.getImplementingClassName() + " -> " + structure.getMethodCallTargets().get(i) + ": " + method + "\n");
                     writer.write("activate " + structure.getMethodCallTargets().get(i) + "\n");
                     openMethodCalls.add(structure.getMethodCaller().get(i));
                     openMethodTargets.add(structure.getMethodCallTargets().get(i));
 
-                    if (i != 0 && i != structure.getMethodCalls().size()- 1) {
+                     if (i == structure.getMethodCalls().size()- 1) {
 
-                        if (openMethodCalls.contains(structure.getMethodCaller().get(i))) {
-                            int count = 0;
-                            for (int j = openMethodCalls.size() - 1; j > 0 ; j--) {
-                                if (openMethodCalls.get(j).equals(structure.getMethodCaller().get(i))){
-                                break;
-                                } else {
-                                    count++;
-                                }
-                            }
-
-                            writer.write(structure.getMethodCallTargets().get(i) + "-->" + structure.getImplementingClassName() + "\n");
-                            writer.write("deactivate " + structure.getMethodCallTargets().get(i) + "\n");
-                            openMethodCalls.remove(structure.getMethodCaller().get(i));
-                            openMethodTargets.remove(structure.getMethodCallTargets().get(i));
-                        }
-
-                    } else if (i == structure.getMethodCalls().size()- 1) {
-                        writer.write(structure.getMethodCallTargets().get(i) + "-->" + structure.getImplementingClassName() + "\n");
-                        writer.write("deactivate " + structure.getMethodCallTargets().get(i) + "\n");
-                        openMethodCalls.remove(structure.getMethodCaller().get(i));
-                        openMethodTargets.remove(structure.getMethodCallTargets().get(i));
-
-                        for (int j = openMethodCalls.size()-1; j >= 0 ; j--) {
-                            writer.write(openMethodTargets.get(j) + "-->" + structure.getImplementingClassName() + "\n");
-                            writer.write("deactivate " + openMethodTargets.get(j) + "\n");
-                            openMethodCalls.remove(openMethodTargets.get(j));
-                            openMethodTargets.remove(structure.getMethodCallTargets().get(i));
-                        }
+                         for (int j = openMethodCalls.size()-1; j >= 0 ; j--) {
+                             writer.write(openMethodTargets.get(j) + "-->" + structure.getImplementingClassName() + "\n");
+                             writer.write("deactivate " + openMethodTargets.get(j) + "\n");
+                         }
 
                     }
                 }

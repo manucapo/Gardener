@@ -30,15 +30,14 @@ public class TestMethod implements ITestMethod {
     }
 
     public int test2(String s, int i, boolean bool) {
-        this.test3("2", 1, true);
-        structure.getMethodCallNodes();
-        structure.getMethodName();
+
+        structure.getMethodCaller();
+        this.test1("2", 1, true);
         return 26;
     }
 
     public int test3(String s, int i, boolean bool) {
-        structure.getMethodBlock();
-        structure.getMethodCaller();
+        this.test2("2", 1, true);
         System.out.println("test");
         return 2;
     }

@@ -21,13 +21,12 @@ public class DeepJavaParser extends SafeJavaParser {
     private String classFilePath;
     private String packageName;
     private CompilationUnit cu;
-    private int runDepth = 1;
+    private int runDepth = 3;
     private static int run;
     private static String methodCaller;
 
     private boolean nestedMethodFound;
 
-    List<String> openMethodCallers = new ArrayList<>();
 
     List<String> methodNameStack = new ArrayList<>();
     List<String> methodTargetStack = new ArrayList<>();
@@ -90,8 +89,7 @@ public class DeepJavaParser extends SafeJavaParser {
                         MethodNodeExplorer nodeExplorer = (MethodNodeExplorer) NodeExplorerFactory.create(MethodCallExpr.class);
                         subMethodCounter = nodeExplorer.countSubMethods(node);
                         nodeExplorer.setParser(this);
-                        openMethodCallers.add(methodName);
-                        methodCaller = methodName;
+                        methodCaller = methodName + run;
                         nodeExplorer.checkNode(node);
                     } else {
                         subMethodCounter--;
@@ -399,14 +397,13 @@ public class DeepJavaParser extends SafeJavaParser {
 
     }
 
-    public void parseMethodNodeRecursive(Node methodcallNode){
-
-    }
-
     public void parseMethodRecursive(CompilationUnit cu, String className, String methodName, DiagramStructure diagramStructure){
-    openMethodCallers.add(methodName);
     methodCaller = methodName;
     parseMethod(cu,className,methodName,diagramStructure);
+
+    if(run != 0) {
+        run--;
+    }
 
 
     }
