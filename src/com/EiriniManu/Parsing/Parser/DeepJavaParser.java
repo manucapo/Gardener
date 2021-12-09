@@ -110,7 +110,7 @@ public class DeepJavaParser extends SafeJavaParser {
                         MethodNodeExplorer nodeExplorer = (MethodNodeExplorer) NodeExplorerFactory.create(MethodCallExpr.class);
                         subMethodCounter = nodeExplorer.countSubMethods(node);
                         nodeExplorer.setParser(this);
-                        methodCaller = methodName + run;
+                        methodCaller = methodName + "." + run;
                         nodeExplorer.checkNode(node);
                     } else {
                         subMethodCounter--;
