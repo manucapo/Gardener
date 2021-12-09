@@ -4,795 +4,149 @@ Actor -> TestMethod: test27
 activate TestMethod
 TestMethod -> TestMethod: test3
 activate TestMethod
-TestMethod -> MethodNodeExplorer: checkNode
-activate MethodNodeExplorer
-MethodNodeExplorer-->TestMethod
-deactivate MethodNodeExplorer
+loop for  0
+loop while  1
+alt if 5
 TestMethod-->TestMethod
 deactivate TestMethod
 TestMethod -> TestMethod: test1
 activate TestMethod
-TestMethod -> TestMethod: test2
-activate TestMethod
-TestMethod -> DiagramStructure: getMethodCaller
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod -> TestMethod: test1
-activate TestMethod
-TestMethod -> TestMethod: test2
-activate TestMethod
-TestMethod -> DiagramStructure: getMethodCaller
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod -> TestMethod: test1
-activate TestMethod
-TestMethod -> TestMethod: test2
-activate TestMethod
-TestMethod -> DiagramStructure: getMethodCaller
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod -> TestMethod: test1
-activate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> DiagramStructure: getCallingClassName
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> DiagramStructure: getCallingClassName
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> DiagramStructure: getCallingClassName
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
+loop for  7
 TestMethod-->TestMethod
 deactivate TestMethod
 TestMethod -> TestMethod: test3
 activate TestMethod
-TestMethod -> MethodNodeExplorer: checkNode
-activate MethodNodeExplorer
-MethodNodeExplorer-->TestMethod
-deactivate MethodNodeExplorer
+end 
+loop while  8
 TestMethod-->TestMethod
 deactivate TestMethod
 TestMethod -> TestMethod: test3
 activate TestMethod
-TestMethod -> MethodNodeExplorer: checkNode
-activate MethodNodeExplorer
-MethodNodeExplorer-->TestMethod
-deactivate MethodNodeExplorer
+alt if 11
 TestMethod-->TestMethod
 deactivate TestMethod
 TestMethod -> TestMethod: test1
 activate TestMethod
-TestMethod -> TestMethod: test2
-activate TestMethod
-TestMethod -> DiagramStructure: getMethodCaller
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod -> TestMethod: test1
-activate TestMethod
-TestMethod -> TestMethod: test2
-activate TestMethod
-TestMethod -> DiagramStructure: getMethodCaller
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod -> TestMethod: test1
-activate TestMethod
-TestMethod -> TestMethod: test2
-activate TestMethod
-TestMethod -> DiagramStructure: getMethodCaller
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod -> TestMethod: test1
-activate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> DiagramStructure: getCallingClassName
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> DiagramStructure: getCallingClassName
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> DiagramStructure: getCallingClassName
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
+loop for  16
 TestMethod-->TestMethod
 deactivate TestMethod
 TestMethod -> TestMethod: test3
 activate TestMethod
-TestMethod -> MethodNodeExplorer: checkNode
-activate MethodNodeExplorer
-MethodNodeExplorer-->TestMethod
-deactivate MethodNodeExplorer
+end 
+end 
+end 
 TestMethod-->TestMethod
 deactivate TestMethod
 TestMethod -> TestMethod: test8
 activate TestMethod
-TestMethod -> TestMethod: test7
-activate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
+loop for  9
 TestMethod-->TestMethod
 deactivate TestMethod
 TestMethod -> TestMethod: test3
 activate TestMethod
-TestMethod -> MethodNodeExplorer: checkNode
-activate MethodNodeExplorer
-MethodNodeExplorer-->TestMethod
-deactivate MethodNodeExplorer
+alt if 12
 TestMethod-->TestMethod
 deactivate TestMethod
 TestMethod -> TestMethod: test1
 activate TestMethod
-TestMethod -> TestMethod: test2
-activate TestMethod
-TestMethod -> DiagramStructure: getMethodCaller
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod -> TestMethod: test1
-activate TestMethod
-TestMethod -> TestMethod: test2
-activate TestMethod
-TestMethod -> DiagramStructure: getMethodCaller
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod -> TestMethod: test1
-activate TestMethod
-TestMethod -> TestMethod: test2
-activate TestMethod
-TestMethod -> DiagramStructure: getMethodCaller
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod -> TestMethod: test1
-activate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> DiagramStructure: getCallingClassName
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> DiagramStructure: getCallingClassName
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> DiagramStructure: getCallingClassName
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
+loop for  17
 TestMethod-->TestMethod
 deactivate TestMethod
 TestMethod -> TestMethod: test3
 activate TestMethod
-TestMethod -> MethodNodeExplorer: checkNode
-activate MethodNodeExplorer
-MethodNodeExplorer-->TestMethod
-deactivate MethodNodeExplorer
+end 
+end 
+end 
 TestMethod-->TestMethod
 deactivate TestMethod
 TestMethod -> TestMethod: test3
 activate TestMethod
-TestMethod -> MethodNodeExplorer: checkNode
-activate MethodNodeExplorer
-MethodNodeExplorer-->TestMethod
-deactivate MethodNodeExplorer
+end 
 TestMethod-->TestMethod
 deactivate TestMethod
 TestMethod -> TestMethod: test25
 activate TestMethod
-TestMethod -> TestMethod: test1
-activate TestMethod
-TestMethod -> TestMethod: test2
-activate TestMethod
-TestMethod -> DiagramStructure: getMethodCaller
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod -> TestMethod: test1
-activate TestMethod
-TestMethod -> TestMethod: test2
-activate TestMethod
-TestMethod -> DiagramStructure: getMethodCaller
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod -> TestMethod: test1
-activate TestMethod
-TestMethod -> TestMethod: test2
-activate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> DiagramStructure: getCallingClassName
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> DiagramStructure: getCallingClassName
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> DiagramStructure: getCallingClassName
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> TestMethod: test3
-activate TestMethod
-TestMethod -> MethodNodeExplorer: checkNode
-activate MethodNodeExplorer
-MethodNodeExplorer-->TestMethod
-deactivate MethodNodeExplorer
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> TestMethod: test3
-activate TestMethod
-TestMethod -> MethodNodeExplorer: checkNode
-activate MethodNodeExplorer
-MethodNodeExplorer-->TestMethod
-deactivate MethodNodeExplorer
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> TestMethod: test3
-activate TestMethod
-TestMethod -> MethodNodeExplorer: checkNode
-activate MethodNodeExplorer
-MethodNodeExplorer-->TestMethod
-deactivate MethodNodeExplorer
-TestMethod-->TestMethod
-deactivate TestMethod
+end 
 TestMethod-->TestMethod
 deactivate TestMethod
 TestMethod -> TestMethod: test25
 activate TestMethod
-TestMethod -> TestMethod: test1
-activate TestMethod
-TestMethod -> TestMethod: test2
-activate TestMethod
-TestMethod -> DiagramStructure: getMethodCaller
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod -> TestMethod: test1
-activate TestMethod
-TestMethod -> TestMethod: test2
-activate TestMethod
-TestMethod -> DiagramStructure: getMethodCaller
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod -> TestMethod: test1
-activate TestMethod
-TestMethod -> TestMethod: test2
-activate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> DiagramStructure: getCallingClassName
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> DiagramStructure: getCallingClassName
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> DiagramStructure: getCallingClassName
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> TestMethod: test3
-activate TestMethod
-TestMethod -> MethodNodeExplorer: checkNode
-activate MethodNodeExplorer
-MethodNodeExplorer-->TestMethod
-deactivate MethodNodeExplorer
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> TestMethod: test3
-activate TestMethod
-TestMethod -> MethodNodeExplorer: checkNode
-activate MethodNodeExplorer
-MethodNodeExplorer-->TestMethod
-deactivate MethodNodeExplorer
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> TestMethod: test3
-activate TestMethod
-TestMethod -> MethodNodeExplorer: checkNode
-activate MethodNodeExplorer
-MethodNodeExplorer-->TestMethod
-deactivate MethodNodeExplorer
-TestMethod-->TestMethod
-deactivate TestMethod
 TestMethod-->TestMethod
 deactivate TestMethod
 TestMethod -> TestMethod: test25
 activate TestMethod
-TestMethod -> TestMethod: test1
-activate TestMethod
-TestMethod -> TestMethod: test2
-activate TestMethod
-TestMethod -> DiagramStructure: getMethodCaller
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod -> TestMethod: test1
-activate TestMethod
-TestMethod -> TestMethod: test2
-activate TestMethod
-TestMethod -> DiagramStructure: getMethodCaller
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod -> TestMethod: test1
-activate TestMethod
-TestMethod -> TestMethod: test2
-activate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> DiagramStructure: getCallingClassName
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> DiagramStructure: getCallingClassName
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> DiagramStructure: getCallingClassName
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> TestMethod: test3
-activate TestMethod
-TestMethod -> MethodNodeExplorer: checkNode
-activate MethodNodeExplorer
-MethodNodeExplorer-->TestMethod
-deactivate MethodNodeExplorer
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> TestMethod: test3
-activate TestMethod
-TestMethod -> MethodNodeExplorer: checkNode
-activate MethodNodeExplorer
-MethodNodeExplorer-->TestMethod
-deactivate MethodNodeExplorer
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> TestMethod: test3
-activate TestMethod
-TestMethod -> MethodNodeExplorer: checkNode
-activate MethodNodeExplorer
-MethodNodeExplorer-->TestMethod
-deactivate MethodNodeExplorer
-TestMethod-->TestMethod
-deactivate TestMethod
+alt if 3
 TestMethod-->TestMethod
 deactivate TestMethod
 TestMethod -> TestMethod: test25
 activate TestMethod
+end 
+loop while  3
+loop while  1
+alt if 10
+TestMethod-->TestMethod
+deactivate TestMethod
 TestMethod -> TestMethod: test1
 activate TestMethod
-TestMethod -> TestMethod: test2
-activate TestMethod
-TestMethod -> DiagramStructure: getMethodCaller
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod -> TestMethod: test1
-activate TestMethod
-TestMethod -> TestMethod: test2
-activate TestMethod
-TestMethod -> DiagramStructure: getMethodCaller
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod -> TestMethod: test1
-activate TestMethod
-TestMethod -> TestMethod: test2
-activate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> DiagramStructure: getCallingClassName
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> DiagramStructure: getCallingClassName
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> DiagramStructure: getCallingClassName
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
+loop for  13
 TestMethod-->TestMethod
 deactivate TestMethod
 TestMethod -> TestMethod: test3
 activate TestMethod
-TestMethod -> MethodNodeExplorer: checkNode
-activate MethodNodeExplorer
-MethodNodeExplorer-->TestMethod
-deactivate MethodNodeExplorer
+end 
+loop while  14
 TestMethod-->TestMethod
 deactivate TestMethod
 TestMethod -> TestMethod: test3
 activate TestMethod
-TestMethod -> MethodNodeExplorer: checkNode
-activate MethodNodeExplorer
-MethodNodeExplorer-->TestMethod
-deactivate MethodNodeExplorer
+alt if 18
+TestMethod-->TestMethod
+deactivate TestMethod
+TestMethod -> TestMethod: test1
+activate TestMethod
+loop for  20
 TestMethod-->TestMethod
 deactivate TestMethod
 TestMethod -> TestMethod: test3
 activate TestMethod
-TestMethod -> MethodNodeExplorer: checkNode
-activate MethodNodeExplorer
-MethodNodeExplorer-->TestMethod
-deactivate MethodNodeExplorer
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> TestMethod: test1
-activate TestMethod
-TestMethod -> TestMethod: test2
-activate TestMethod
-TestMethod -> DiagramStructure: getMethodCaller
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod -> TestMethod: test1
-activate TestMethod
-TestMethod -> TestMethod: test2
-activate TestMethod
-TestMethod -> DiagramStructure: getMethodCaller
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod -> TestMethod: test1
-activate TestMethod
-TestMethod -> TestMethod: test2
-activate TestMethod
-TestMethod -> DiagramStructure: getMethodCaller
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod -> TestMethod: test1
-activate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> DiagramStructure: getCallingClassName
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> DiagramStructure: getCallingClassName
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> DiagramStructure: getCallingClassName
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> TestMethod: test3
-activate TestMethod
-TestMethod -> MethodNodeExplorer: checkNode
-activate MethodNodeExplorer
-MethodNodeExplorer-->TestMethod
-deactivate MethodNodeExplorer
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> TestMethod: test3
-activate TestMethod
-TestMethod -> MethodNodeExplorer: checkNode
-activate MethodNodeExplorer
-MethodNodeExplorer-->TestMethod
-deactivate MethodNodeExplorer
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> TestMethod: test1
-activate TestMethod
-TestMethod -> TestMethod: test2
-activate TestMethod
-TestMethod -> DiagramStructure: getMethodCaller
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod -> TestMethod: test1
-activate TestMethod
-TestMethod -> TestMethod: test2
-activate TestMethod
-TestMethod -> DiagramStructure: getMethodCaller
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod -> TestMethod: test1
-activate TestMethod
-TestMethod -> TestMethod: test2
-activate TestMethod
-TestMethod -> DiagramStructure: getMethodCaller
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod -> TestMethod: test1
-activate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> DiagramStructure: getCallingClassName
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> DiagramStructure: getCallingClassName
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> DiagramStructure: getCallingClassName
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> TestMethod: test3
-activate TestMethod
-TestMethod -> MethodNodeExplorer: checkNode
-activate MethodNodeExplorer
-MethodNodeExplorer-->TestMethod
-deactivate MethodNodeExplorer
+end 
+end 
+end 
 TestMethod-->TestMethod
 deactivate TestMethod
 TestMethod -> TestMethod: test8
 activate TestMethod
-TestMethod -> TestMethod: test7
-activate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
+loop for  15
 TestMethod-->TestMethod
 deactivate TestMethod
 TestMethod -> TestMethod: test3
 activate TestMethod
-TestMethod -> MethodNodeExplorer: checkNode
-activate MethodNodeExplorer
-MethodNodeExplorer-->TestMethod
-deactivate MethodNodeExplorer
+alt if 19
 TestMethod-->TestMethod
 deactivate TestMethod
 TestMethod -> TestMethod: test1
 activate TestMethod
-TestMethod -> TestMethod: test2
-activate TestMethod
-TestMethod -> DiagramStructure: getMethodCaller
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod -> TestMethod: test1
-activate TestMethod
-TestMethod -> TestMethod: test2
-activate TestMethod
-TestMethod -> DiagramStructure: getMethodCaller
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod -> TestMethod: test1
-activate TestMethod
-TestMethod -> TestMethod: test2
-activate TestMethod
-TestMethod -> DiagramStructure: getMethodCaller
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod -> TestMethod: test1
-activate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> DiagramStructure: getCallingClassName
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> DiagramStructure: getCallingClassName
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> DiagramStructure: getCallingClassName
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
+loop for  21
 TestMethod-->TestMethod
 deactivate TestMethod
 TestMethod -> TestMethod: test3
 activate TestMethod
-TestMethod -> MethodNodeExplorer: checkNode
-activate MethodNodeExplorer
-MethodNodeExplorer-->TestMethod
-deactivate MethodNodeExplorer
+end 
+end 
+end 
 TestMethod-->TestMethod
 deactivate TestMethod
 TestMethod -> TestMethod: test3
 activate TestMethod
-TestMethod -> MethodNodeExplorer: checkNode
-activate MethodNodeExplorer
-MethodNodeExplorer-->TestMethod
-deactivate MethodNodeExplorer
+end 
 TestMethod-->TestMethod
 deactivate TestMethod
 TestMethod -> TestMethod: test25
 activate TestMethod
-TestMethod -> TestMethod: test1
-activate TestMethod
-TestMethod -> TestMethod: test2
-activate TestMethod
-TestMethod -> DiagramStructure: getMethodCaller
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod -> TestMethod: test1
-activate TestMethod
-TestMethod -> TestMethod: test2
-activate TestMethod
-TestMethod -> DiagramStructure: getMethodCaller
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod -> TestMethod: test1
-activate TestMethod
-TestMethod -> TestMethod: test2
-activate TestMethod
 TestMethod-->TestMethod
 deactivate TestMethod
-TestMethod -> DiagramStructure: getCallingClassName
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> DiagramStructure: getCallingClassName
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> DiagramStructure: getCallingClassName
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> TestMethod: test3
-activate TestMethod
-TestMethod -> MethodNodeExplorer: checkNode
-activate MethodNodeExplorer
-MethodNodeExplorer-->TestMethod
-deactivate MethodNodeExplorer
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> TestMethod: test3
-activate TestMethod
-TestMethod -> MethodNodeExplorer: checkNode
-activate MethodNodeExplorer
-MethodNodeExplorer-->TestMethod
-deactivate MethodNodeExplorer
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> TestMethod: test3
-activate TestMethod
-TestMethod -> MethodNodeExplorer: checkNode
-activate MethodNodeExplorer
-MethodNodeExplorer-->TestMethod
-deactivate MethodNodeExplorer
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
+end 
+end 
+end 
 return 
 @enduml 

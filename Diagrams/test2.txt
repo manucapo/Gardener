@@ -8,54 +8,6 @@ DiagramStructure-->TestMethod
 deactivate DiagramStructure
 TestMethod -> TestMethod: test1
 activate TestMethod
-TestMethod -> TestMethod: test2
-activate TestMethod
-TestMethod -> DiagramStructure: getMethodCaller
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod -> TestMethod: test1
-activate TestMethod
-TestMethod -> TestMethod: test2
-activate TestMethod
-TestMethod -> DiagramStructure: getMethodCaller
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod -> TestMethod: test1
-activate TestMethod
-TestMethod -> TestMethod: test2
-activate TestMethod
-TestMethod -> DiagramStructure: getMethodCaller
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod -> TestMethod: test1
-activate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> DiagramStructure: getCallingClassName
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> DiagramStructure: getCallingClassName
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> DiagramStructure: getCallingClassName
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
 TestMethod-->TestMethod
 deactivate TestMethod
 return 

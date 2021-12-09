@@ -39,6 +39,7 @@ public class BlockJavaParser extends SafeJavaParser {
                 }
             }
         }
+        this.parseMethod(this.ParseFile(className, this.SetSourceRoot(classFilePath,packageName)), className, methodName, structure);
     }
 
     public void parseMethod(CompilationUnit cu, String className, String methodName, DiagramStructure diagramStructure) {
@@ -152,6 +153,9 @@ public class BlockJavaParser extends SafeJavaParser {
 
             Object[] blockType = {MessageTag.METHODBLOCK, blockName};
             sendMessage(blockType);
+
+            Object[] caller = {MessageTag.METHODCALLER, " "};
+            sendMessage(caller);
 
 
             for (String classMethod : classMethodNames) {                   // check if node is a class method

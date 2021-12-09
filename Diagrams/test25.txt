@@ -2,80 +2,24 @@
 participant Actor 
 Actor -> TestMethod: test25
 activate TestMethod
+alt if 1
 TestMethod -> TestMethod: test1
 activate TestMethod
-TestMethod -> TestMethod: test2
-activate TestMethod
-TestMethod -> DiagramStructure: getMethodCaller
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod -> TestMethod: test1
-activate TestMethod
-TestMethod -> TestMethod: test2
-activate TestMethod
-TestMethod -> DiagramStructure: getMethodCaller
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod -> TestMethod: test1
-activate TestMethod
-TestMethod -> TestMethod: test2
-activate TestMethod
-TestMethod -> DiagramStructure: getMethodCaller
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod -> TestMethod: test1
-activate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> DiagramStructure: getCallingClassName
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> DiagramStructure: getCallingClassName
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> DiagramStructure: getCallingClassName
-activate DiagramStructure
-DiagramStructure-->TestMethod
-deactivate DiagramStructure
+end 
 TestMethod-->TestMethod
 deactivate TestMethod
 TestMethod -> TestMethod: test3
 activate TestMethod
-TestMethod -> MethodNodeExplorer: checkNode
-activate MethodNodeExplorer
-MethodNodeExplorer-->TestMethod
-deactivate MethodNodeExplorer
+alt if 2
 TestMethod-->TestMethod
 deactivate TestMethod
 TestMethod -> TestMethod: test3
 activate TestMethod
-TestMethod -> MethodNodeExplorer: checkNode
-activate MethodNodeExplorer
-MethodNodeExplorer-->TestMethod
-deactivate MethodNodeExplorer
+end 
 TestMethod-->TestMethod
 deactivate TestMethod
 TestMethod -> TestMethod: test3
 activate TestMethod
-TestMethod -> MethodNodeExplorer: checkNode
-activate MethodNodeExplorer
-MethodNodeExplorer-->TestMethod
-deactivate MethodNodeExplorer
 TestMethod-->TestMethod
 deactivate TestMethod
 return 
