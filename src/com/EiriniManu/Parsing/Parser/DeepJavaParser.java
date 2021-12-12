@@ -415,8 +415,6 @@ public class DeepJavaParser extends SafeJavaParser {
 
             Object[] type = {MessageTag.METHODCALLTARGET, methodTargetStack.get(i)};
             sendMessage(type);
-            //
-            // structure.addMethodCallTarget(methodTargetStack.get(i));                                                 // first contained name should be method name
         }
 
             methodNameStack = new ArrayList<>();
