@@ -1,5 +1,13 @@
 package com.EiriniManu.Parsing.Parser;
 
+/*
+    This class represents an object that can create an AST (abstract symbol tree) from java source code and parse the resulting tree for information.
+    This is the second layer of information extraction in our process.
+
+    The "Deep" java parser attempts to resolve method calls inside the original method call recursively.
+    Any nodes that can´t be resolved are removed from the diagram
+*/
+
 import com.EiriniManu.IO.DiagramStructure;
 import com.EiriniManu.Messaging.MessageTag;
 import com.EiriniManu.Parsing.NodeExplorer.*;
@@ -21,7 +29,7 @@ public class DeepJavaParser extends SafeJavaParser {
     private String classFilePath;
     private String packageName;
     private CompilationUnit cu;
-    private int runDepth = 6;
+    private int runDepth = 4;
     private static int run;
     private static String methodCaller;
 

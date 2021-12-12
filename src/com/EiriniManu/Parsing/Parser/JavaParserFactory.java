@@ -1,7 +1,10 @@
 package com.EiriniManu.Parsing.Parser;
 
+/*
+    This class represents an object that can instantiate the adequate parser for the chosen parsing strategy
+*/
+
 import com.EiriniManu.IO.DiagramStructure;
-import com.EiriniManu.Messaging.IMessageObserver;
 import com.EiriniManu.ParserType;
 
 

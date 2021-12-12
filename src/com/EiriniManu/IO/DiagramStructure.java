@@ -69,6 +69,8 @@ public class DiagramStructure implements IMessageObserver, IMessageSender {
         methodBlock = new ArrayList<>();
 
         methodCaller = new ArrayList<>();
+
+        addObserver(DiagramFileWriter.getInstance());
     }
 
     public static DiagramStructure getInstance(){
@@ -77,12 +79,10 @@ public class DiagramStructure implements IMessageObserver, IMessageSender {
 
     public void serialize(String path){
         DiagramFileWriter.getInstance().createDiagramFile(path);
+        DiagramFileWriter.getInstance().reset();
     }
 
     // Getters and setters
-    public String getImplementingClassName() {
-        return implementingClassName;
-    }
 
     public void setImplementingClassName(String implementingClassName) {
         this.implementingClassName = implementingClassName;
@@ -90,9 +90,6 @@ public class DiagramStructure implements IMessageObserver, IMessageSender {
         sendMessage(msg);
     }
 
-    public String getCallingClassName() {
-        return callingClassName;
-    }
 
     private void setCallingClassName(String callingClassName) {
 
@@ -110,9 +107,6 @@ public class DiagramStructure implements IMessageObserver, IMessageSender {
     }
 
 
-    public String getMethodName() {
-        return methodName;
-    }
 
     private void setMethodName(String methodName) {
 
@@ -158,9 +152,7 @@ public class DiagramStructure implements IMessageObserver, IMessageSender {
         sendMessage(msg);
     }
 
-    public List<String> getMethodCalls() {
-        return methodCalls;
-    }
+
 
 
     public void addMethodCall(String methodCall) {
@@ -169,17 +161,12 @@ public class DiagramStructure implements IMessageObserver, IMessageSender {
         sendMessage(msg);
     }
 
-    public List<Node> getMethodCallNodes() {
-        return methodCallNodes;
-    }
 
     public void addMethodCallNode(Node methodCallNode) {
         this.methodCallNodes.add(methodCallNode);
     }
 
-    public List<String> getMethodCallTargets(){
-        return methodCallTargets;
-    }
+
 
     public void addMethodCallTarget(String methodCallTarget) {
 
@@ -230,13 +217,7 @@ public class DiagramStructure implements IMessageObserver, IMessageSender {
         sendMessage(msg);
     }
 
-    public List<String> getMethodBlock() {
-        return methodBlock;
-    }
 
-    public List<Node> getBlockNodes() {
-        return blockNodes;
-    }
 
     public void addMethodBlock(String methodBlock) {
         this.methodBlock.add(methodBlock);

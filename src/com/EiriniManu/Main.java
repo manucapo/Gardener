@@ -1,6 +1,5 @@
 package com.EiriniManu;
 
-import com.EiriniManu.Parsing.Parser.ReflectionJavaParser;
 
 public class Main {
     
@@ -8,8 +7,7 @@ public class Main {
     {
         TestMethod testMethod = new TestMethod();                                                                  // Instantiate a class that provides some simple methods to test the program with.
         SequenceDiagramGenerator sequenceDiagramGenerator = new SequenceDiagramGenerator(ParserType.BLOCK);            // Instantiate a class that can create a plantUML sequence diagram
-        sequenceDiagramGenerator.addDependency("com.EiriniManu");                                        // Add packages to help resolve classes
-        sequenceDiagramGenerator.addDependency("java.lang");
+        sequenceDiagramGenerator.addDependency("java.lang");                                                          // Add external packages to help resolve classes ( only if using reflection parser type)
         sequenceDiagramGenerator.addDependency("java.util");
         sequenceDiagramGenerator.addDependency("java.util.Optional<T>");
         sequenceDiagramGenerator.addDependency("java.util.Optional");
@@ -21,10 +19,10 @@ public class Main {
         sequenceDiagramGenerator.addDependency("com.github.javaparser.HasParentNode");
 
         // Some extra metadata entered by the user. (NEED TO FIND A BETTER WAY TO PASS THIS)
-       String pathToSource = "src";                        // Relative path to TestMethod Class
-        String pathToSequenceDiagram = "Diagrams";                                            // Choose desired (relative) path to sequence diagram file
-       String packageName = "com.EiriniManu";
-       String className = "TestMethod";
+       String pathToSource = "src";                                                            // Relative path to TestMethod Class
+        String pathToSequenceDiagram = "Diagrams/BLOCK";                                            // Choose desired (relative) path to sequence diagram file
+       String packageName = "com.EiriniManu";                                                 // Package name
+       String className = "TestMethod";                                                       // Class name
 
        for (int i = 1; i <= 27; i++){
          String methodName = "test"  + String.valueOf(i);

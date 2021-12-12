@@ -1,8 +1,12 @@
 package com.EiriniManu.Parsing.Parser;
 
 /*
-    This class represents an object that can create an AST (abstract symbol tree) from java source code and pass the resulting tree for information.
+    This class represents an object that can create an AST (abstract symbol tree) from java source code and parse the resulting tree for information.
     This is the second layer of information extraction in our process.
+
+    The "Safe" java parser only parses methods that are in the same package as the initial method call.
+    Any nodes that aren`t parsed are excluded from the diagram.
+    Any nodes that can´t be resolved are excluded from the diagram
 */
 
 import com.EiriniManu.IO.DiagramStructure;
@@ -40,10 +44,6 @@ public class SafeJavaParser implements IJavaParser{
     protected List<String> variableDeclarationTypes;
     protected List<String> classFieldNames;
     protected List<String> classFieldTypes;
-    private List<Node> blockNodes;
-
-
-
 
     public SafeJavaParser() {
 
@@ -66,15 +66,15 @@ public class SafeJavaParser implements IJavaParser{
         return new SourceRoot(CodeGenerationUtils.packageAbsolutePath(path, packageName));
     }
 
-    public CompilationUnit ParseFile(String className, SourceRoot sourceRoot) {                    // Parse the code and return the AST
-        Log.setAdapter(new Log.StandardOutStandardErrorAdapter());                     // Set the parser to log errors to standard out.
-        CompilationUnit cu = sourceRoot.parse("", className + ".java");               // parse the file with a corresponding name in the root path.
+    public CompilationUnit ParseFile(String className, SourceRoot sourceRoot) {                          // Parse the source code and return the AST
+        Log.setAdapter(new Log.StandardOutStandardErrorAdapter());                                       // Set the parser to log errors to standard out.
+        CompilationUnit cu = sourceRoot.parse("", className + ".java");               // parse the file at the root path.
         Log.info("DONE PARSING");
         return cu;
     }
 
-    public void execute(String methodName, String className, String classFilePath, String packageName, DiagramStructure structure){
-        for (Package pkg: Package.getPackages()) {
+    public void execute(String methodName, String className, String classFilePath, String packageName, DiagramStructure structure){    // execute AST parsing
+        for (Package pkg: Package.getPackages()) {                                                                                     // Add user package into the list of dependencies
             if (pkg.getName().contains(packageName)){
                 if (!packageDependencies.contains(pkg.getName())) {
                     packageDependencies.add(pkg.getName());
@@ -84,7 +84,7 @@ public class SafeJavaParser implements IJavaParser{
         this.parseMethod(this.ParseFile(className, this.SetSourceRoot(classFilePath,packageName)), className, methodName, structure);
     }
 
-    public void parseMethod(CompilationUnit cu, String className, String methodName, DiagramStructure diagramStructure) {
+    public void parseMethod(CompilationUnit cu, String className, String methodName, DiagramStructure diagramStructure) {           // parse the method chosen by the user
 
         ClassOrInterfaceDeclaration clsX = new ClassOrInterfaceDeclaration();                 // Holder variable for the class declaration node.
 
@@ -96,7 +96,7 @@ public class SafeJavaParser implements IJavaParser{
             if (method.getName().toString().equals(methodName)) {                            // Find method with given name
 
                 XmlPrinter printer = new XmlPrinter(true);
-             //   System.out.println(printer.output(method));                                // DEBUG PRINTER
+             //   System.out.println(printer.output(method));                                // DEBUG AST PRINTER
 
 
                 for (Parameter node : method.getParameters()) {                       // extract method parameters
@@ -119,7 +119,7 @@ public class SafeJavaParser implements IJavaParser{
 
                 for (Node node : method.findAll(MethodCallExpr.class, Node.TreeTraversal.PREORDER)) { // extract information on method calls inside method
 
-                    if (subMethodCounter == 0){
+                    if (subMethodCounter == 0){                                                                                 //Avoids parsing nested method call nodes twice
                         MethodNodeExplorer nodeExplorer = (MethodNodeExplorer) NodeExplorerFactory.create(MethodCallExpr.class);
                        subMethodCounter = nodeExplorer.countSubMethods(node);
                        nodeExplorer.setParser(this);
@@ -131,20 +131,20 @@ public class SafeJavaParser implements IJavaParser{
     }
     }
 
-    public void parseMethodNode(Node methodcallNode) {
+    public void parseMethodNode(Node methodcallNode) {                                // parse the individual AST method nodes
         System.out.println("--------------------TEST PARSER--------------------");
         System.out.println("ORIGINAL METHOD CALL : " + methodcallNode);
 
         XmlPrinter printer = new XmlPrinter(true);
-        System.out.println(printer.output(methodcallNode));
+     //   System.out.println(printer.output(methodcallNode));                        // DEBUG AST PRINTER
 
         List<String> methodNameStack = new ArrayList<>();
         List<String> methodTargetStack = new ArrayList<>();
         List<String> methodTargetTypeNameStack = new ArrayList<>();
 
-        List<MethodCallExpr> containedMethods = methodcallNode.findAll(MethodCallExpr.class, Node.TreeTraversal.BREADTHFIRST);
+        List<MethodCallExpr> containedMethods = methodcallNode.findAll(MethodCallExpr.class, Node.TreeTraversal.BREADTHFIRST);     // finds all nested method nodes
 
-        for (int i = 0; i < containedMethods.size(); i++) {
+        for (int i = 0; i < containedMethods.size(); i++) {                                                                           // add every nested method name to a list
             MethodCallExpr subMethod = containedMethods.get(i);
             String subMethodName = subMethod.findAll(SimpleName.class, Node.TreeTraversal.BREADTHFIRST).get(0).toString();
             methodNameStack.add(subMethodName);
@@ -152,29 +152,26 @@ public class SafeJavaParser implements IJavaParser{
 
         Node previousScope = null;
 
-        for (int i = containedMethods.size() - 1; i >= 0; i--) {
-            boolean targetFound = false;
-            boolean classFound = false;
-            Class<?> lastClass = null;
+        for (int i = containedMethods.size() - 1; i >= 0; i--) {                                                      // Start with the node nested deepest
+            boolean targetFound = false;                                                                              // track sucess
+            Class<?> lastClass = null;                                                                                // store last class targeted for lookback target resolution
 
             MethodCallExpr subMethod = containedMethods.get(i);
-            String subMethodName = subMethod.findAll(SimpleName.class, Node.TreeTraversal.BREADTHFIRST).get(0).toString();
+            String subMethodName = subMethod.findAll(SimpleName.class, Node.TreeTraversal.BREADTHFIRST).get(0).toString();         // find nested method name
 
-            Object[] methodNode = {MessageTag.METHODCALLNODE, containedMethods.get(i)};
+            Object[] methodNode = {MessageTag.METHODCALLNODE, containedMethods.get(i)};                                            // store method AST node
             sendMessage(methodNode);
 
-            Object[] blockType = {MessageTag.METHODBLOCK, "0"};
+            Object[] blockType = {MessageTag.METHODBLOCK, "0"};                                                                      // used by the BLOCK parser type
             sendMessage(blockType);
 
-            Object[] caller = {MessageTag.METHODCALLER, " "};
+            Object[] caller = {MessageTag.METHODCALLER, " "};                                                                        // used by the DEEP parser type
             sendMessage(caller);
-
-
 
             for (String classMethod : classMethodNames) {                   // check if node is a class method
                 if (classMethod.equals(subMethodName)) {
                     System.out.println("THIS IS A CLASS MEHTOD");
-                    methodTargetStack.add(implementingClassName);
+                    methodTargetStack.add(implementingClassName);           // add to nested target stack
                     methodTargetTypeNameStack.add("");
                     targetFound = true;
                     break;
@@ -200,7 +197,7 @@ public class SafeJavaParser implements IJavaParser{
                             if (methodCatchParameter.equals(scope.findFirst(SimpleName.class).get().toString())) {
                                 System.out.println("THIS IS A CATCH PARAMETER");
                                 boolean isSafe = false;
-                                for (String pkg : packageDependencies) {
+                                for (String pkg : packageDependencies) {                                                         // check if method is part of user project
                                     try {
                                     Class.forName(pkg + "." + catchParameterTypes.get(catchParameterIndex).replaceAll("<.*>", " "));
                                     isSafe = true;
@@ -227,7 +224,7 @@ public class SafeJavaParser implements IJavaParser{
                     int parameterIndex = 0;
                     if (scope.findFirst(SimpleName.class).isPresent()) {
                         for (String methodParameter : parameterNames) {
-                            if (methodParameter.equals(scope.findFirst(SimpleName.class).get().toString())) {
+                            if (methodParameter.equals(scope.findFirst(SimpleName.class).get().toString())) {      // check if method scope is a parameter passed to the original method
                                 System.out.println("THIS IS A PARAMETER");
                                 boolean isSafe = false;
                                 for (String pkg : packageDependencies) {
@@ -256,7 +253,7 @@ public class SafeJavaParser implements IJavaParser{
                     int variableIndex = 0;
                     if (scope.findFirst(SimpleName.class).isPresent()) {
                         for (String classMethod : variableDeclarationNames) {
-                            if (classMethod.equals(scope.findFirst(SimpleName.class).get().toString())) {
+                            if (classMethod.equals(scope.findFirst(SimpleName.class).get().toString())) {                  // check if method scope is a variable defined in the original method call
                                 System.out.println("THIS IS A VARIABLE");
                                 boolean isSafe = false;
                                 for (String pkg : packageDependencies) {
@@ -287,7 +284,7 @@ public class SafeJavaParser implements IJavaParser{
                     if (scope.findFirst(SimpleName.class).isPresent()) {
                         for (String classField : classFieldNames) {
                             System.out.println("CLASS FIELD FINDING AT " + classField);
-                            if (classField.equals(scope.findFirst(SimpleName.class).get().toString())) {
+                            if (classField.equals(scope.findFirst(SimpleName.class).get().toString())) {                        // check if method scope is a field defined in the original class
                                 System.out.println("THIS IS A CLASS FIELD");
                                 boolean isSafe = false;
                                 for (String pkg : packageDependencies) {
@@ -316,7 +313,7 @@ public class SafeJavaParser implements IJavaParser{
 
                     if (scope.findFirst(FieldAccessExpr.class).isPresent()) {
                         Node fieldAcess = scope.findFirst(FieldAccessExpr.class).get();
-                        if (fieldAcess.findFirst(NameExpr.class).isPresent()) {
+                        if (fieldAcess.findFirst(NameExpr.class).isPresent()) {                                          // check if scope is a Field Acess Expression I.E System.out
                             boolean isSafe = false;
                             for (String pkg : packageDependencies) {
                                 try {
@@ -337,7 +334,7 @@ public class SafeJavaParser implements IJavaParser{
                 }
 
 
-            if (!targetFound) {         // try to resolve method target by using last class
+            if (!targetFound) {                                                     // try to resolve method target by using last targeted class
                 for (String pkg : packageDependencies) {
                     try {
                         lastClass = Class.forName(pkg + "." + scope.findFirst(SimpleName.class).get().toString());     // MUST CHECK FOR ALL PACKAGES
@@ -352,7 +349,7 @@ public class SafeJavaParser implements IJavaParser{
             }
             }
 
-            if (!targetFound) {                                             // try to resolve method if last class was a container class
+            if (!targetFound) {                                             // try to resolve method if last class was a container class I.E List<String> , int[]
                 for (String pkg : packageDependencies) {
                     try {
                         String previousTarget = methodTargetStack.get(methodTargetStack.size() - 1);
@@ -372,7 +369,6 @@ public class SafeJavaParser implements IJavaParser{
                             }
                         }
                         lastClass = Class.forName(pkg + "." + previousTarget);     // MUST CHECK FOR ALL PACKAGES
-                        classFound = true;
                         break;
                     } catch (Exception e) {
                         // TODO
@@ -384,7 +380,7 @@ public class SafeJavaParser implements IJavaParser{
             }
 
             if (!targetFound) {
-                System.out.println("COULD NOT RESOLVE ANY TARGETS");
+                System.out.println("COULD NOT RESOLVE ANY TARGETS");                                     // if failed to resolve
                     methodNameStack.remove(i);   // SAFE MODE
             }
 
@@ -392,35 +388,20 @@ public class SafeJavaParser implements IJavaParser{
             System.out.println("RELOOPING -----------------------------");
         }
 
-        for (int i = methodNameStack.size() - 1; i >= 0; i--) {
+        for (int i = methodNameStack.size() - 1; i >= 0; i--) {                                            // pop nested method name stack
             System.out.println("NAME : " + methodNameStack.get(i));
 
             Object[] type = {MessageTag.METHODCALL, methodNameStack.get(i)};
             sendMessage(type);
 
-            //    structure.addMethodCall(methodNameStack.get(i));                                                 // first contained name should be method name
-
         }
 
-        for (int i = 0; i <= methodTargetStack.size() - 1; i++) {
+        for (int i = 0; i <= methodTargetStack.size() - 1; i++) {                                      // pop nested method target stack
             System.out.println("TARGET : " + methodTargetStack.get(i));
 
             Object[] type = {MessageTag.METHODCALLTARGET, methodTargetStack.get(i)};
             sendMessage(type);
-            //
-            // structure.addMethodCallTarget(methodTargetStack.get(i));                                                 // first contained name should be method name
         }
-    }
-
-    // GETTERS AND SETTERS
-
-
-    public List<String> getPackageDependencies() {
-        return packageDependencies;
-    }
-
-    public void setPackageDependencies(List<String> packageDependencies) {
-        this.packageDependencies = packageDependencies;
     }
 
     public void addDependency(String packageDependency) {

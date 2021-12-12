@@ -1,5 +1,13 @@
 package com.EiriniManu.Parsing.Parser;
 
+/*
+    This class represents an object that can create an AST (abstract symbol tree) from java source code and parse the resulting tree for information.
+    This is the second layer of information extraction in our process.
+
+    The "Block" java parser attempts to assign each method call an execution block. This way execution blocks can be shown in the sequence diagram
+    Any nodes that can´t be resolved are removed from the diagram
+*/
+
 import com.EiriniManu.IO.DiagramStructure;
 import com.EiriniManu.Messaging.MessageTag;
 import com.EiriniManu.Parsing.NodeExplorer.*;

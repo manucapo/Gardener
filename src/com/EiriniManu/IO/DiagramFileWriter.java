@@ -1,29 +1,92 @@
 package com.EiriniManu.IO;
 
+import com.EiriniManu.Messaging.IMessageObserver;
+import com.EiriniManu.Messaging.MessageTag;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.stmt.ForStmt;
 import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.stmt.WhileStmt;
-import jnr.ffi.annotations.In;
+
 
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DiagramFileWriter {
+public class DiagramFileWriter implements IMessageObserver {
 
     private static final DiagramFileWriter instance = new DiagramFileWriter();  // singleton instance
 
+    private String methodName;
+    private String implementingClassName;
+    private List<String> methodCalls;
+    private List<String> methodBlocks;
+    private List<Node> blockNodes;
+    private List<String> methodCallTargets;
+    private List<String> methodCaller;
+
     private DiagramFileWriter(){
-        //TODO
+        methodName = "NULL";
+        implementingClassName = "NULL";
+        methodCalls = new ArrayList<>();
+        blockNodes = new ArrayList<>();
+        methodBlocks = new ArrayList<>();
+        methodCallTargets = new ArrayList<>();
+        methodCaller = new ArrayList<>();
+    }
+
+    public void reset(){
+        methodName = "NULL";
+        implementingClassName = "NULL";
+        methodCalls = new ArrayList<>();
+        blockNodes = new ArrayList<>();
+        methodBlocks = new ArrayList<>();
+        methodCallTargets = new ArrayList<>();
+        methodCaller = new ArrayList<>();
+    }
+    @Override
+    public void update(Object o) {
+
+        Object[] data = (Object[]) o;
+        MessageTag field = (MessageTag) data[0];
+        String string = null;
+        Node node = null;
+
+        if (field.equals(MessageTag.BLOCKNODE)){
+            node = (Node) data[1];
+        } else {
+            string =     (String) data[1];
+        }
+
+
+        switch (field){
+            case IMPLEMENTINGCLASS:
+                setImplementingClassName(string);
+                break;
+            case METHODNAME:
+                setMethodName(string);
+                break;
+            case METHODCALL:
+                addMethodCall(string);
+                break;
+            case METHODBLOCK:
+                addMethodBlock(string);
+            case BLOCKNODE:
+                addBlockNode(node);
+                break;
+            case METHODCALLTARGET:
+                addMethodCallTarget(string);
+                break;
+            case METHODCALLER:
+                addMethodCaller(string);
+                break;
+            default:
+                break;
+        }
     }
 
     public void createDiagramFile(String path){
-        DiagramStructure structure = DiagramStructure.getInstance();
-        List<Node> methodNodes = structure.getMethodCallNodes();
-        List<Node> blockNodes = structure.getBlockNodes();
-        List<String> methodBlock = structure.getMethodBlock();
+
 
         List<Node> openBlocks = new ArrayList<>();
         List<String> openMethodCalls = new ArrayList<>();
@@ -33,20 +96,20 @@ public class DiagramFileWriter {
             FileWriter writer = new FileWriter(path);
             writer.write("@startuml \n");
             writer.write("participant Actor \n");
-            writer.write("Actor -> " + structure.getImplementingClassName() + ": " + structure.getMethodName() + "\n");
-            writer.write("activate " + structure.getImplementingClassName() + "\n");
+            writer.write("Actor -> " + implementingClassName + ": " + methodName + "\n");
+            writer.write("activate " + implementingClassName + "\n");
             int i = 0;
             int blockCount = 0;
-            for (String method : structure.getMethodCalls()) {
+            for (String method : methodCalls) {
 
-            if(i > 0 && !methodBlock.get(i).equals("x")){
+            if(i > 0 && !methodBlocks.get(i).equals("x")){
                 int count = 0;
-                if (!methodBlock.get(i).equals(methodBlock.get(i-1))) {
-                    if (!methodBlock.get(i).equals("0")){
+                if (!methodBlocks.get(i).equals(methodBlocks.get(i-1))) {
+                    if (!methodBlocks.get(i).equals("0")){
 
                     for (int j = openBlocks.size() - 1; j >= 0; j--) {
-                        if (!openBlocks.get(j).isAncestorOf(blockNodes.get(Integer.parseInt(methodBlock.get(i)) - 1))) {
-                            if (!openBlocks.get(j).equals(blockNodes.get(Integer.parseInt(methodBlock.get(i)) - 1))){
+                        if (!openBlocks.get(j).isAncestorOf(blockNodes.get(Integer.parseInt(methodBlocks.get(i)) - 1))) {
+                            if (!openBlocks.get(j).equals(blockNodes.get(Integer.parseInt(methodBlocks.get(i)) - 1))){
                                 count++;
                             }
 
@@ -56,7 +119,7 @@ public class DiagramFileWriter {
 
                     }
                 } else {
-                        if (!methodBlock.get(i-1).equals("0")){
+                        if (!methodBlocks.get(i-1).equals("0")){
                             count = blockCount;
                         }
                     }
@@ -68,12 +131,12 @@ public class DiagramFileWriter {
                 }
             }
 
-            if(!methodBlock.get(i).equals("x") ){
-               if (!methodBlock.get(i).equals("0")){
+            if(!methodBlocks.get(i).equals("x") ){
+               if (!methodBlocks.get(i).equals("0")){
 
                        for (Node node : blockNodes){
-                           if (node.isAncestorOf(blockNodes.get(Integer.parseInt(methodBlock.get(i))-1)) && !openBlocks.contains(node)){
-                               if(!node.equals(blockNodes.get(Integer.parseInt(methodBlock.get(i))-1))){
+                           if (node.isAncestorOf(blockNodes.get(Integer.parseInt(methodBlocks.get(i))-1)) && !openBlocks.contains(node)){
+                               if(!node.equals(blockNodes.get(Integer.parseInt(methodBlocks.get(i))-1))){
                                    String blockName = "";
                                    String groupType = "alt";
                                    if(node instanceof IfStmt){
@@ -95,21 +158,21 @@ public class DiagramFileWriter {
                        }
 
 
-                       if (!openBlocks.contains(blockNodes.get(Integer.parseInt(methodBlock.get(i))-1))) {
+                       if (!openBlocks.contains(blockNodes.get(Integer.parseInt(methodBlocks.get(i))-1))) {
                            String blockName = "";
                            String groupType = "alt";
-                           if(blockNodes.get(Integer.parseInt(methodBlock.get(i))-1) instanceof IfStmt){
+                           if(blockNodes.get(Integer.parseInt(methodBlocks.get(i))-1) instanceof IfStmt){
                                groupType = "alt";
                                blockName = "if";
-                           } else if ( blockNodes.get(Integer.parseInt(methodBlock.get(i))-1) instanceof ForStmt){
+                           } else if ( blockNodes.get(Integer.parseInt(methodBlocks.get(i))-1) instanceof ForStmt){
                                groupType = "loop";
                                blockName = "for ";
-                           } else if (blockNodes.get(Integer.parseInt(methodBlock.get(i))-1) instanceof WhileStmt){
+                           } else if (blockNodes.get(Integer.parseInt(methodBlocks.get(i))-1) instanceof WhileStmt){
                                groupType = "loop";
                                blockName = "while ";
                            }
-                           writer.write(groupType + " " + blockName + " " + methodBlock.get(i) + "\n");
-                           openBlocks.add(blockNodes.get(Integer.parseInt(methodBlock.get(i))-1));
+                           writer.write(groupType + " " + blockName + " " + methodBlocks.get(i) + "\n");
+                           openBlocks.add(blockNodes.get(Integer.parseInt(methodBlocks.get(i))-1));
                            blockCount++;
                        }
 
@@ -117,19 +180,19 @@ public class DiagramFileWriter {
                }
             }
 
-                if(structure.getMethodCallTargets().get(i).equals("this")){
+                if(methodCallTargets.get(i).equals("this")){
 
-                    if (openMethodCalls.contains(structure.getMethodCaller().get(i))) {
+                    if (openMethodCalls.contains(methodCaller.get(i))) {
                         int count = openMethodCalls.size() - 1;
                         for (int j = count; j >= 0 ; j--) {
-                            if (openMethodCalls.get(j).equals(structure.getMethodCaller().get(i))){
-                                writer.write(openMethodTargets.get(j) + "-->" + structure.getImplementingClassName() + "\n");
+                            if (openMethodCalls.get(j).equals(methodCaller.get(i))){
+                                writer.write(openMethodTargets.get(j) + "-->" + implementingClassName + "\n");
                                 writer.write("deactivate " + openMethodTargets.get(j) + "\n");
                                 openMethodCalls.remove(openMethodCalls.get(j));
                                 openMethodTargets.remove(openMethodTargets.get(j));
                                 break;
                             } else {
-                                writer.write(openMethodTargets.get(j) + "-->" + structure.getImplementingClassName() + "\n");
+                                writer.write(openMethodTargets.get(j) + "-->" + implementingClassName + "\n");
                                 writer.write("deactivate " + openMethodTargets.get(j) + "\n");
                                 openMethodCalls.remove(openMethodCalls.get(j));
                                 openMethodTargets.remove(openMethodTargets.get(j));
@@ -139,24 +202,24 @@ public class DiagramFileWriter {
 
                     }
 
-                    writer.write(structure.getImplementingClassName() + " -> " + structure.getImplementingClassName() + ": " + method + "\n");
-                    writer.write("activate " + structure.getImplementingClassName() + "\n");
-                    openMethodCalls.add(structure.getMethodCaller().get(i));
-                    openMethodTargets.add(structure.getImplementingClassName());
+                    writer.write(implementingClassName + " -> " + implementingClassName + ": " + method + "\n");
+                    writer.write("activate " + implementingClassName + "\n");
+                    openMethodCalls.add(methodCaller.get(i));
+                    openMethodTargets.add(implementingClassName);
 
-                } else if (structure.getMethodCallTargets().get(i).contains("[]")){
+                } else if (methodCallTargets.get(i).contains("[]")){
 
-                    if (openMethodCalls.contains(structure.getMethodCaller().get(i))) {
+                    if (openMethodCalls.contains(methodCaller.get(i))) {
                         int count = openMethodCalls.size() - 1;
                         for (int j = count; j >= 0 ; j--) {
-                            if (openMethodCalls.get(j).equals(structure.getMethodCaller().get(i))){
-                                writer.write(openMethodTargets.get(j) + "-->" + structure.getImplementingClassName() + "\n");
+                            if (openMethodCalls.get(j).equals(methodCaller.get(i))){
+                                writer.write(openMethodTargets.get(j) + "-->" + implementingClassName + "\n");
                                 writer.write("deactivate " + openMethodTargets.get(j) + "\n");
                                 openMethodCalls.remove(openMethodCalls.get(j));
                                 openMethodTargets.remove(openMethodTargets.get(j));
                                 break;
                             } else {
-                                writer.write(openMethodTargets.get(j) + "-->" + structure.getImplementingClassName() + "\n");
+                                writer.write(openMethodTargets.get(j) + "-->" + implementingClassName + "\n");
                                 writer.write("deactivate " + openMethodTargets.get(j) + "\n");
                                 openMethodCalls.remove(openMethodCalls.get(j));
                                 openMethodTargets.remove(openMethodTargets.get(j));
@@ -168,27 +231,27 @@ public class DiagramFileWriter {
 
 
 
-                    writer.write(structure.getImplementingClassName() + " -> " + "__Array__" + ": " + method + "\n");
+                    writer.write(implementingClassName + " -> " + "__Array__" + ": " + method + "\n");
                     writer.write("activate " + "__Array__" + "\n");
-                    openMethodCalls.add(structure.getMethodCaller().get(i));
+                    openMethodCalls.add(methodCaller.get(i));
                     openMethodTargets.add("__Array__");
 
-                } else if (structure.getMethodCallTargets().get(i).contains("LOSTMESSAGE")){
-                    writer.write(structure.getImplementingClassName() + " ->x] " + ": " + method + "\n");
+                } else if (methodCallTargets.get(i).contains("LOSTMESSAGE")){
+                    writer.write(implementingClassName + " ->x] " + ": " + method + "\n");
                 } else {
 
 
-                    if (openMethodCalls.contains(structure.getMethodCaller().get(i))) {
+                    if (openMethodCalls.contains(methodCaller.get(i))) {
                         int count = openMethodCalls.size() - 1;
                         for (int j = count; j >= 0 ; j--) {
-                            if (openMethodCalls.get(j).equals(structure.getMethodCaller().get(i))){
-                                writer.write(openMethodTargets.get(j) + "-->" + structure.getImplementingClassName() + "\n");
+                            if (openMethodCalls.get(j).equals(methodCaller.get(i))){
+                                writer.write(openMethodTargets.get(j) + "-->" + implementingClassName + "\n");
                                 writer.write("deactivate " + openMethodTargets.get(j) + "\n");
                                 openMethodCalls.remove(openMethodCalls.get(j));
                                 openMethodTargets.remove(openMethodTargets.get(j));
                                 break;
                             } else {
-                                writer.write(openMethodTargets.get(j) + "-->" + structure.getImplementingClassName() + "\n");
+                                writer.write(openMethodTargets.get(j) + "-->" + implementingClassName + "\n");
                                 writer.write("deactivate " + openMethodTargets.get(j) + "\n");
                                 openMethodCalls.remove(openMethodCalls.get(j));
                                 openMethodTargets.remove(openMethodTargets.get(j));
@@ -198,15 +261,15 @@ public class DiagramFileWriter {
 
                     }
 
-                    writer.write(structure.getImplementingClassName() + " -> " + structure.getMethodCallTargets().get(i) + ": " + method + "\n");
-                    writer.write("activate " + structure.getMethodCallTargets().get(i) + "\n");
-                    openMethodCalls.add(structure.getMethodCaller().get(i));
-                    openMethodTargets.add(structure.getMethodCallTargets().get(i));
+                    writer.write(implementingClassName + " -> " + methodCallTargets.get(i) + ": " + method + "\n");
+                    writer.write("activate " + methodCallTargets.get(i) + "\n");
+                    openMethodCalls.add(methodCaller.get(i));
+                    openMethodTargets.add(methodCallTargets.get(i));
                 }
-                     if (i == structure.getMethodCalls().size()- 1) {
+                     if (i == methodCalls.size()- 1) {
 
                          for (int j = openMethodCalls.size()-1; j >= 0 ; j--) {
-                             writer.write(openMethodTargets.get(j) + "-->" + structure.getImplementingClassName() + "\n");
+                             writer.write(openMethodTargets.get(j) + "-->" + implementingClassName + "\n");
                              writer.write("deactivate " + openMethodTargets.get(j) + "\n");
                          }
 
@@ -234,6 +297,33 @@ public class DiagramFileWriter {
         return instance;
     }
 
+    public void setMethodName(String methodName) {
+        this.methodName = methodName;
+    }
+
+    public void setImplementingClassName(String implementingClassName) {
+        this.implementingClassName = implementingClassName;
+    }
+
+    public void addMethodCall(String methodCall) {
+        this.methodCalls.add(methodCall);
+    }
+
+    public void addMethodBlock(String methodBlock) {
+        this.methodBlocks.add(methodBlock);
+    }
+
+    public void addBlockNode(Node blockNode) {
+        this.blockNodes.add(blockNode);
+    }
+
+    public void addMethodCallTarget(String methodCallTarget) {
+        this.methodCallTargets.add(methodCallTarget);
+    }
+
+    public void addMethodCaller(String methodCaller) {
+        this.methodCaller.add(methodCaller);
+    }
 }
 
 

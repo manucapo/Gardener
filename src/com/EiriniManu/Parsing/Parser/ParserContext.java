@@ -1,5 +1,10 @@
 package com.EiriniManu.Parsing.Parser;
 
+/*
+    This class represents an object that holds context of the strategy pattern used to implement different parsing algorithms
+*/
+
+
 import com.EiriniManu.IO.DiagramStructure;
 import com.EiriniManu.ParserType;
 
