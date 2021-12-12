@@ -1,5 +1,14 @@
 package com.EiriniManu.Parsing.Parser;
 
+
+/*
+    This class represents an object that can create an AST (abstract symbol tree) from java source code and parse the resulting tree for information.
+    This is the second layer of information extraction in our process.
+
+    The "Reflection" java parser attempts to resolve methods outside of the user package by a variety of means. Including checking a list of external packages provided by the user
+    Any nodes that can´t be resolved are shown as Lost Messages in the sequence diagram
+*/
+
 import com.EiriniManu.IO.DiagramStructure;
 import com.EiriniManu.Messaging.MessageTag;
 import com.EiriniManu.Parsing.NodeExplorer.*;
@@ -114,7 +123,7 @@ public class ReflectionJavaParser extends SafeJavaParser implements IJavaParser 
             Object[] blockType = {MessageTag.METHODBLOCK, "0"};
             sendMessage(blockType);
 
-            Object[] caller = {MessageTag.METHODCALLER, " "};
+            Object[] caller = {MessageTag.ADDMETHODCALLER, " "};
             sendMessage(caller);
 
             for (String classMethod : classMethodNames) {                   // check if node is a class method
@@ -319,13 +328,8 @@ public class ReflectionJavaParser extends SafeJavaParser implements IJavaParser 
                 System.out.println("COULD NOT RESOLVE ANY TARGETS");
 
 
-                if (false) {                     // SAFE MODE
-                    methodNameStack.remove(i);
-                } else if (true) {                       // LOST MESSAGE MODE
                     methodTargetStack.add("LOSTMESSAGE");
-                } else {
-                    methodTargetStack.add("ERROR");
-                }
+
 
             }
 
@@ -339,8 +343,6 @@ public class ReflectionJavaParser extends SafeJavaParser implements IJavaParser 
             Object[] type = {MessageTag.METHODCALL, methodNameStack.get(i)};
             sendMessage(type);
 
-            //    structure.addMethodCall(methodNameStack.get(i));                                                 // first contained name should be method name
-
         }
 
         for (int i = 0; i <= methodTargetStack.size() - 1; i++) {
@@ -348,8 +350,6 @@ public class ReflectionJavaParser extends SafeJavaParser implements IJavaParser 
 
             Object[] type = {MessageTag.METHODCALLTARGET, methodTargetStack.get(i)};
             sendMessage(type);
-            //
-            // structure.addMethodCallTarget(methodTargetStack.get(i));                                                 // first contained name should be method name
         }
     }
 }

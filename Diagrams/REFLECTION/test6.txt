@@ -1,0 +1,10 @@
+@startuml 
+participant Actor 
+Actor -> TestMethod: test6
+activate TestMethod
+TestMethod -> __Array__: clone
+activate __Array__
+__Array__-->TestMethod
+deactivate __Array__
+return 
+@enduml 

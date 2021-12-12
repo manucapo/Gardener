@@ -12,7 +12,7 @@ import com.github.javaparser.ast.expr.NameExpr;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TestMethod implements ITestMethod {
+public class TestMethod {
 
     MethodNodeExplorer explorer;
     List<String> methodTargetStack = new ArrayList<>();
@@ -27,13 +27,12 @@ public class TestMethod implements ITestMethod {
 
     public int test1(String s, int i, boolean bool) {
         this.test2("2", 1, true);
-        structure.getCallingClassName();
         return i;
     }
 
     public int test2(String s, int i, boolean bool) {
         System.out.println("test");
-        structure.getMethodCaller();
+
         this.test1("2", 1, true);
         return 26;
     }
@@ -86,13 +85,13 @@ public class TestMethod implements ITestMethod {
 
     public String test11(String s, int j, boolean bool) {
 
-        System.out.println(s.toString());  // BUG DETECTING NESTED SYSTEM CALL
+        System.out.println(s.toString());
         return "26";
     }
 
     public String test12(String s, int j, boolean bool) {
 
-        System.out.println(s.toString().split("").clone().toString());  // BUG DETECTING NESTED SYSTEM CALL
+        System.out.println(s.toString().split("").clone().toString());
         return "26";
     }
 
@@ -162,7 +161,6 @@ public class TestMethod implements ITestMethod {
     }
 
     public String test21(String s, int j, boolean bool) {
-        structure.getMethodName();
         return "26";
     }
 

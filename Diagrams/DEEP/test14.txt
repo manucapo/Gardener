@@ -1,0 +1,10 @@
+@startuml 
+participant Actor 
+Actor -> TestMethod: test14
+activate TestMethod
+TestMethod -> DiagramStructure: getInstance
+activate DiagramStructure
+DiagramStructure-->TestMethod
+deactivate DiagramStructure
+return 
+@enduml 

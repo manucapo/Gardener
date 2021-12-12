@@ -1,5 +1,13 @@
 package com.EiriniManu.Parsing.Parser;
 
+/*
+    This class represents an object that can create an AST (abstract symbol tree) from java source code and parse the resulting tree for information.
+    This is the second layer of information extraction in our process.
+
+    The "Deep" java parser attempts to resolve method calls inside the original method call recursively.
+    Any nodes that can´t be resolved are removed from the diagram
+*/
+
 import com.EiriniManu.IO.DiagramStructure;
 import com.EiriniManu.Messaging.MessageTag;
 import com.EiriniManu.Parsing.NodeExplorer.*;
@@ -21,7 +29,7 @@ public class DeepJavaParser extends SafeJavaParser {
     private String classFilePath;
     private String packageName;
     private CompilationUnit cu;
-    private int runDepth = 6;
+    private int runDepth = 4;
     private static int run;
     private static String methodCaller;
 
@@ -154,7 +162,7 @@ public class DeepJavaParser extends SafeJavaParser {
             sendMessage(blockType);
 
 
-            Object[] caller = {MessageTag.METHODCALLER, methodCaller};
+            Object[] caller = {MessageTag.ADDMETHODCALLER, methodCaller};
             sendMessage(caller);
 
             methodNameStack.add(subMethodName);
@@ -385,7 +393,8 @@ public class DeepJavaParser extends SafeJavaParser {
                 System.out.println("COULD NOT RESOLVE ANY TARGETS");
                     methodNameStack.remove(methodNameStack.size() - 1);   // SAFE MODE
 
-                DiagramStructure.getInstance().getMethodCaller().remove(DiagramStructure.getInstance().getMethodCaller().size()-1);
+                Object[] index = {MessageTag.REMOVEMETHODCALLER, DiagramStructure.getInstance().getMethodCaller().size()-1};
+                sendMessage(index);
             }
 
             previousScope = scope;
@@ -407,8 +416,6 @@ public class DeepJavaParser extends SafeJavaParser {
 
             Object[] type = {MessageTag.METHODCALLTARGET, methodTargetStack.get(i)};
             sendMessage(type);
-            //
-            // structure.addMethodCallTarget(methodTargetStack.get(i));                                                 // first contained name should be method name
         }
 
             methodNameStack = new ArrayList<>();
