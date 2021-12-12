@@ -71,6 +71,7 @@ public class DiagramFileWriter implements IMessageObserver {
                 break;
             case METHODBLOCK:
                 addMethodBlock(string);
+                break;
             case BLOCKNODE:
                 addBlockNode(node);
                 break;
