@@ -11,7 +11,7 @@ import com.EiriniManu.Messaging.IMessageSender;
 import com.EiriniManu.Messaging.MessageTag;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;           // Import Java Reflection API
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,18 +31,18 @@ public class Reflector implements IReflector, IMessageSender {
         Object[] className = {MessageTag.IMPLEMENTINGCLASS,cls.getSimpleName()};
         sendMessage(className);
 
-        for (Method method : cls.getDeclaredMethods()) {                      // for every Method declared in the clas
-            Object[] methodName = {MessageTag.CLASSMETHODNAME,method.getName()};
+        for (Method method : cls.getDeclaredMethods()) {                                   // for every Method declared in the class
+            Object[] methodName = {MessageTag.CLASSMETHODNAME,method.getName()};                            // get method name
             sendMessage(methodName);
-            Object[] returnType = {MessageTag.CLASSMETHODRETURNTYPE,method.getReturnType().getSimpleName()};
+            Object[] returnType = {MessageTag.CLASSMETHODRETURNTYPE,method.getReturnType().getSimpleName()};  // get method return type
             sendMessage(returnType);
         }
 
 
-        for (Field field : cls.getDeclaredFields()) {
-            Object[] name = {MessageTag.CLASSFIELDNAME,field.getName()};
+        for (Field field : cls.getDeclaredFields()) {                                    // for every field declared in a class
+            Object[] name = {MessageTag.CLASSFIELDNAME,field.getName()};                            // get field name
             sendMessage(name);
-            Object[] returnType = {MessageTag.CLASSFIELDTYPE,field.getType().getSimpleName()};
+            Object[] returnType = {MessageTag.CLASSFIELDTYPE,field.getType().getSimpleName()};     // get field type
             sendMessage(returnType);
         }
     }
@@ -50,7 +50,7 @@ public class Reflector implements IReflector, IMessageSender {
     public void ReflectOnMethod(Object obj, String methodName, Class<?>... parameterTypes) { // Get information on a java method implemented in class by name
 
 
-        Object[] mtdName = {MessageTag.METHODNAME,methodName};// get class
+        Object[] mtdName = {MessageTag.METHODNAME,methodName};// get method name
         sendMessage(mtdName);
 
         Class<?> cls = obj.getClass();
@@ -64,7 +64,7 @@ public class Reflector implements IReflector, IMessageSender {
             for (Class<?> param : mtd.getParameterTypes()) {                                // for each parameter type in list
 
             }
-            Object[] returnType = {MessageTag.METHODRETURNTYPE,mtd.getReturnType().getSimpleName()};
+            Object[] returnType = {MessageTag.METHODRETURNTYPE,mtd.getReturnType().getSimpleName()};                 // get the method return type
             sendMessage(returnType);
         } catch (Exception e) {
             System.out.println("ERROR TESTING METHOD ");

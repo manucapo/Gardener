@@ -1,0 +1,26 @@
+@startuml 
+participant Actor 
+Actor -> TestMethod: test18
+activate TestMethod
+TestMethod -> Node: findAncestor
+activate Node
+Node-->TestMethod
+deactivate Node
+TestMethod -> Optional: isPresent
+activate Optional
+Optional-->TestMethod
+deactivate Optional
+TestMethod -> Node: findAncestor
+activate Node
+Node-->TestMethod
+deactivate Node
+TestMethod -> Optional: get
+activate Optional
+Optional-->TestMethod
+deactivate Optional
+TestMethod -> String: equals
+activate String
+String-->TestMethod
+deactivate String
+return 
+@enduml 

@@ -10,6 +10,7 @@ package com.EiriniManu.IO;
 import com.EiriniManu.Messaging.IMessageObserver;
 import com.EiriniManu.Messaging.IMessageSender;
 import com.EiriniManu.Messaging.MessageTag;
+import com.github.javaparser.ast.Node;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,9 +33,15 @@ public class DiagramStructure implements IMessageObserver, IMessageSender {
     private List<String> catchParameterTypes;
     private List<String> catchParameterNames;
     private List<String> methodCalls;             //  A list of methodCalls made by the method  ( 1 layer of calls atm)
+    private List<Node> methodCallNodes;
     private List<String> methodCallTargets;       // The target classes of the method calls
     private List<String> variableDeclarations;     //  A list of variable declarations made by the method  ( 1 layer of calls atm)
     private List<String> variableDeclarationTypes; //  The types of variable declarations made by the method  ( 1 layer of calls atm)
+
+    private List<Node> blockNodes;
+    private List<String> methodBlock;
+
+    private List<String> methodCaller;
 
     private static final DiagramStructure instance = new DiagramStructure();  // singleton instance
 
@@ -46,6 +53,7 @@ public class DiagramStructure implements IMessageObserver, IMessageSender {
         methodName = "NULL";
         methodReturnType = "NULL";
         methodCalls = new ArrayList<>();
+        methodCallNodes = new ArrayList<>();
         methodCallTargets = new ArrayList<>();
         variableDeclarations = new ArrayList<>();
         variableDeclarationTypes = new ArrayList<>();
@@ -56,16 +64,24 @@ public class DiagramStructure implements IMessageObserver, IMessageSender {
         classFieldNames = new ArrayList<>();
         classFieldTypes = new ArrayList<>();
         observerList = new ArrayList<>();
+
+        blockNodes = new ArrayList<>();
+        methodBlock = new ArrayList<>();
+
+        methodCaller = new ArrayList<>();
+
+        addObserver(DiagramFileWriter.getInstance());
     }
 
     public static DiagramStructure getInstance(){
         return instance;
     }
 
-    // Getters and setters
-    public String getImplementingClassName() {
-        return implementingClassName;
+    public void serialize(String path){
+        DiagramFileWriter.getInstance().createDiagramFile(path);
     }
+
+    // Getters and setters
 
     public void setImplementingClassName(String implementingClassName) {
         this.implementingClassName = implementingClassName;
@@ -73,9 +89,6 @@ public class DiagramStructure implements IMessageObserver, IMessageSender {
         sendMessage(msg);
     }
 
-    public String getCallingClassName() {
-        return callingClassName;
-    }
 
     private void setCallingClassName(String callingClassName) {
 
@@ -93,9 +106,6 @@ public class DiagramStructure implements IMessageObserver, IMessageSender {
     }
 
 
-    public String getMethodName() {
-        return methodName;
-    }
 
     private void setMethodName(String methodName) {
 
@@ -141,9 +151,7 @@ public class DiagramStructure implements IMessageObserver, IMessageSender {
         sendMessage(msg);
     }
 
-    public List<String> getMethodCalls() {
-        return methodCalls;
-    }
+
 
 
     public void addMethodCall(String methodCall) {
@@ -152,9 +160,12 @@ public class DiagramStructure implements IMessageObserver, IMessageSender {
         sendMessage(msg);
     }
 
-    public List<String> getMethodCallTargets(){
-        return methodCallTargets;
+
+    public void addMethodCallNode(Node methodCallNode) {
+        this.methodCallNodes.add(methodCallNode);
     }
+
+
 
     public void addMethodCallTarget(String methodCallTarget) {
 
@@ -199,6 +210,36 @@ public class DiagramStructure implements IMessageObserver, IMessageSender {
         sendMessage(msg);
     }
 
+    private void addBlockNode(Node blockNode) {
+        this.blockNodes.add(blockNode);
+        Object[] msg = {MessageTag.BLOCKNODE,blockNode };
+        sendMessage(msg);
+    }
+
+
+
+    public void addMethodBlock(String methodBlock) {
+        this.methodBlock.add(methodBlock);
+        Object[] msg = {MessageTag.METHODBLOCK,methodBlock};
+        sendMessage(msg);
+    }
+
+    public List<String> getMethodCaller() {
+        return methodCaller;
+    }
+
+    public void removeMethodCaller(int index){
+        methodCaller.remove(index);
+        Object[] msg = {MessageTag.REMOVEMETHODCALLER,index};
+        sendMessage(msg);
+    }
+
+    public void addMethodCaller(String methodCaller) {
+        this.methodCaller.add(methodCaller);
+        Object[] msg = {MessageTag.ADDMETHODCALLER,methodCaller};
+        sendMessage(msg);
+    }
+
     public void reset(){
         implementingClassName = "NULL";
         callingClassName = "NULL";
@@ -208,6 +249,7 @@ public class DiagramStructure implements IMessageObserver, IMessageSender {
         methodReturnType = "NULL";
         parameterType = new ArrayList<>();
         methodCalls = new ArrayList<>();
+        methodCallNodes = new ArrayList<>();
         methodCallTargets = new ArrayList<>();
         variableDeclarations = new ArrayList<>();
         variableDeclarationTypes = new ArrayList<>();
@@ -217,6 +259,15 @@ public class DiagramStructure implements IMessageObserver, IMessageSender {
         catchParameterNames = new ArrayList<>();
         classFieldNames = new ArrayList<>();
         classFieldTypes = new ArrayList<>();
+
+        blockNodes = new ArrayList<>();
+        methodBlock = new ArrayList<>();
+
+        methodCaller = new ArrayList<>();
+
+        Object[] msg = {MessageTag.RESET, null};
+        sendMessage(msg);
+
     }
 
     @Override
@@ -224,7 +275,18 @@ public class DiagramStructure implements IMessageObserver, IMessageSender {
 
         Object[] data = (Object[]) o;
         MessageTag field = (MessageTag) data[0];
-        String string = (String) data[1];
+        String string = null;
+        Node node = null;
+        int index = 0;
+
+        if (field.equals(MessageTag.BLOCKNODE) || field.equals(MessageTag.METHODCALLNODE) ){
+            node = (Node) data[1];
+        } else if (field.equals(MessageTag.REMOVEMETHODCALLER)){
+            index = (int) data[1];
+        }
+        else {
+           string = (String) data[1];
+        }
 
 
         switch (field){
@@ -267,6 +329,9 @@ public class DiagramStructure implements IMessageObserver, IMessageSender {
             case METHODCALL:
                 addMethodCall(string);
                 break;
+            case METHODCALLNODE:
+                addMethodCallNode(node);
+                break;
             case METHODCALLTARGET:
                 addMethodCallTarget(string);
                 break;
@@ -276,6 +341,17 @@ public class DiagramStructure implements IMessageObserver, IMessageSender {
             case VARIABLEDECLARATIONTYPE:
                 addVariableDeclarationTypes(string);
                 break;
+            case BLOCKNODE:
+                addBlockNode(node);
+                break;
+            case METHODBLOCK:
+                addMethodBlock(string);
+                break;
+            case ADDMETHODCALLER:
+                addMethodCaller(string);
+                break;
+            case REMOVEMETHODCALLER:
+                removeMethodCaller(index);
             default:
                 break;
         }

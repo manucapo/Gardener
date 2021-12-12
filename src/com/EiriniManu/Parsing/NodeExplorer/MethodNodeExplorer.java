@@ -24,13 +24,11 @@ public class MethodNodeExplorer extends NodeExplorer{
     public int countSubMethods(Node node){
 
         int subMethodCounter = 0;
-
         for (Node subNode : node.findAll(MethodCallExpr.class)) {  // check for nested method calls
             if (subNode != node) {                                                               // ignore original node
                 subMethodCounter += 1;
             }
         }
-
         return subMethodCounter;
     }
 
