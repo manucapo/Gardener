@@ -79,7 +79,6 @@ public class DiagramStructure implements IMessageObserver, IMessageSender {
 
     public void serialize(String path){
         DiagramFileWriter.getInstance().createDiagramFile(path);
-        DiagramFileWriter.getInstance().reset();
     }
 
     // Getters and setters
@@ -229,9 +228,15 @@ public class DiagramStructure implements IMessageObserver, IMessageSender {
         return methodCaller;
     }
 
+    public void removeMethodCaller(int index){
+        methodCaller.remove(index);
+        Object[] msg = {MessageTag.REMOVEMETHODCALLER,index};
+        sendMessage(msg);
+    }
+
     public void addMethodCaller(String methodCaller) {
         this.methodCaller.add(methodCaller);
-        Object[] msg = {MessageTag.METHODCALLER,methodCaller};
+        Object[] msg = {MessageTag.ADDMETHODCALLER,methodCaller};
         sendMessage(msg);
     }
 
@@ -272,10 +277,14 @@ public class DiagramStructure implements IMessageObserver, IMessageSender {
         MessageTag field = (MessageTag) data[0];
         String string = null;
         Node node = null;
+        int index = 0;
 
         if (field.equals(MessageTag.BLOCKNODE) || field.equals(MessageTag.METHODCALLNODE) ){
             node = (Node) data[1];
-        }else {
+        } else if (field.equals(MessageTag.REMOVEMETHODCALLER)){
+            index = (int) data[1];
+        }
+        else {
            string = (String) data[1];
         }
 
@@ -338,9 +347,11 @@ public class DiagramStructure implements IMessageObserver, IMessageSender {
             case METHODBLOCK:
                 addMethodBlock(string);
                 break;
-            case METHODCALLER:
+            case ADDMETHODCALLER:
                 addMethodCaller(string);
                 break;
+            case REMOVEMETHODCALLER:
+                removeMethodCaller(index);
             default:
                 break;
         }

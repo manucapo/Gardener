@@ -19,10 +19,8 @@ import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.CatchClause;
-import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.printer.XmlPrinter;
-import jdk.nashorn.internal.ir.Block;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -162,7 +160,7 @@ public class BlockJavaParser extends SafeJavaParser {
             Object[] blockType = {MessageTag.METHODBLOCK, blockName};
             sendMessage(blockType);
 
-            Object[] caller = {MessageTag.METHODCALLER, " "};
+            Object[] caller = {MessageTag.ADDMETHODCALLER, " "};
             sendMessage(caller);
 
 
@@ -429,7 +427,9 @@ public class BlockJavaParser extends SafeJavaParser {
         if (field.equals(MessageTag.BLOCKNODE)){
             node = (Node) data[1];
         } else {
-            string =     (String) data[1];
+            if (data[1] instanceof  String) {
+                string = (String) data[1];
+            }
         }
 
 

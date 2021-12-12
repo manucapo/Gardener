@@ -51,10 +51,14 @@ public class DiagramFileWriter implements IMessageObserver {
         MessageTag field = (MessageTag) data[0];
         String string = null;
         Node node = null;
+        int index = 0;
 
         if (field.equals(MessageTag.BLOCKNODE)){
             node = (Node) data[1];
-        } else {
+        } else if (field.equals(MessageTag.REMOVEMETHODCALLER)){
+            index = (int) data[1];
+        }
+        else {
             string =     (String) data[1];
         }
 
@@ -78,8 +82,14 @@ public class DiagramFileWriter implements IMessageObserver {
             case METHODCALLTARGET:
                 addMethodCallTarget(string);
                 break;
-            case METHODCALLER:
+            case ADDMETHODCALLER:
                 addMethodCaller(string);
+                break;
+            case REMOVEMETHODCALLER:
+                removeMethodCaller(index);
+                break;
+            case RESET:
+                reset();
                 break;
             default:
                 break;
@@ -324,6 +334,10 @@ public class DiagramFileWriter implements IMessageObserver {
 
     public void addMethodCaller(String methodCaller) {
         this.methodCaller.add(methodCaller);
+    }
+
+    public  void removeMethodCaller(int index){
+        this.methodCaller.remove(index);
     }
 }
 

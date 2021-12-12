@@ -123,7 +123,7 @@ public class ReflectionJavaParser extends SafeJavaParser implements IJavaParser 
             Object[] blockType = {MessageTag.METHODBLOCK, "0"};
             sendMessage(blockType);
 
-            Object[] caller = {MessageTag.METHODCALLER, " "};
+            Object[] caller = {MessageTag.ADDMETHODCALLER, " "};
             sendMessage(caller);
 
             for (String classMethod : classMethodNames) {                   // check if node is a class method

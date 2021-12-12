@@ -165,7 +165,7 @@ public class SafeJavaParser implements IJavaParser{
             Object[] blockType = {MessageTag.METHODBLOCK, "0"};                                                                      // used by the BLOCK parser type
             sendMessage(blockType);
 
-            Object[] caller = {MessageTag.METHODCALLER, " "};                                                                        // used by the DEEP parser type
+            Object[] caller = {MessageTag.ADDMETHODCALLER, " "};                                                                        // used by the DEEP parser type
             sendMessage(caller);
 
             for (String classMethod : classMethodNames) {                   // check if node is a class method
@@ -443,7 +443,11 @@ public class SafeJavaParser implements IJavaParser{
 
         Object[] data = (Object[]) o;
         MessageTag field = (MessageTag) data[0];
-        String string = (String) data[1];
+        String string = null;
+
+        if (data[1] instanceof String) {
+            string = (String) data[1];
+        }
 
 
         switch (field){

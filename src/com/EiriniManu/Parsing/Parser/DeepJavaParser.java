@@ -162,7 +162,7 @@ public class DeepJavaParser extends SafeJavaParser {
             sendMessage(blockType);
 
 
-            Object[] caller = {MessageTag.METHODCALLER, methodCaller};
+            Object[] caller = {MessageTag.ADDMETHODCALLER, methodCaller};
             sendMessage(caller);
 
             methodNameStack.add(subMethodName);
@@ -393,7 +393,8 @@ public class DeepJavaParser extends SafeJavaParser {
                 System.out.println("COULD NOT RESOLVE ANY TARGETS");
                     methodNameStack.remove(methodNameStack.size() - 1);   // SAFE MODE
 
-                DiagramStructure.getInstance().getMethodCaller().remove(DiagramStructure.getInstance().getMethodCaller().size()-1);
+                Object[] index = {MessageTag.REMOVEMETHODCALLER, DiagramStructure.getInstance().getMethodCaller().size()-1};
+                sendMessage(index);
             }
 
             previousScope = scope;
