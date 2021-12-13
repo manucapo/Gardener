@@ -454,7 +454,7 @@ public class SafeJavaParser implements IJavaParser{
             case IMPLEMENTINGCLASS:
                 setImplementingClassName(string);
                 break;
-            case CALLINGCLASS:
+            case ADDCALLINGCLASS:
                 break;
             case CLASSMETHODNAME:
                 setClassMethodName(string);

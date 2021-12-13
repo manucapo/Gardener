@@ -1,5 +1,6 @@
 package com.EiriniManu.Parsing.NodeExplorer;
 
+import com.EiriniManu.IO.DiagramStructure;
 import com.EiriniManu.Messaging.IMessageObserver;
 import com.EiriniManu.Parsing.Parser.IJavaParser;
 import com.EiriniManu.Parsing.Parser.SafeJavaParser;
@@ -35,5 +36,6 @@ public class MethodNodeExplorer extends NodeExplorer{
     @Override
     public void checkNode(Node node) {
        parser.parseMethodNode(node);
+        DiagramStructure.getInstance();
     }
 }

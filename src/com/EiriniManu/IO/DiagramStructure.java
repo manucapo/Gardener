@@ -21,7 +21,7 @@ public class DiagramStructure implements IMessageObserver, IMessageSender {
     private List<IMessageObserver> observerList;
 
     private String implementingClassName;         // Name of class where method is implemented
-    private String callingClassName;              // Name of class that calls a method (must it be given by user ?)
+    private List<String> callingClassNames;              // Name of class that calls a method (must it be given by user ?)
     private List<String> classMethodNames;        // A list of names of every method implemented in the implementing class
     private List<String> classMethodReturnTypes;        // A list of names of every method return type  in the implementing class
     private List<String> classFieldNames;              // A list of names of every declared field  in the implementing class
@@ -47,7 +47,7 @@ public class DiagramStructure implements IMessageObserver, IMessageSender {
 
     private DiagramStructure() {                    // Default constructor. Initializes the class to "safe" values.
         implementingClassName = "NULL";           // The string "NULL" was chosen as default as a class or method could never be called "NULL". Allowing error detection
-        callingClassName = "NULL";
+        callingClassNames = new ArrayList<>();
         classMethodNames = new ArrayList<>();     // Are ArrayLists the best data structure for our lists of Strings?
         classMethodReturnTypes = new ArrayList<>();
         methodName = "NULL";
@@ -89,12 +89,21 @@ public class DiagramStructure implements IMessageObserver, IMessageSender {
         sendMessage(msg);
     }
 
+    public List<String> getCallingClassNames() {
+        return callingClassNames;
+    }
 
-    private void setCallingClassName(String callingClassName) {
+    private void addCallingClassName(String callingClassName) {
 
-        this.callingClassName = callingClassName;
+        this.callingClassNames.add(callingClassName);
 
-        Object[] msg = {MessageTag.CALLINGCLASS,this.callingClassName };
+        Object[] msg = {MessageTag.ADDCALLINGCLASS,callingClassName};
+        sendMessage(msg);
+    }
+
+    public void removeCallingClassName(int index){
+        callingClassNames.remove(index);
+        Object[] msg = {MessageTag.REMOVECALLINGCLASS,index};
         sendMessage(msg);
     }
 
@@ -242,7 +251,7 @@ public class DiagramStructure implements IMessageObserver, IMessageSender {
 
     public void reset(){
         implementingClassName = "NULL";
-        callingClassName = "NULL";
+        callingClassNames = new ArrayList<>();
         classMethodNames = new ArrayList<>();
         classMethodReturnTypes = new ArrayList<>();
         methodName = "NULL";
@@ -281,7 +290,7 @@ public class DiagramStructure implements IMessageObserver, IMessageSender {
 
         if (field.equals(MessageTag.BLOCKNODE) || field.equals(MessageTag.METHODCALLNODE) ){
             node = (Node) data[1];
-        } else if (field.equals(MessageTag.REMOVEMETHODCALLER)){
+        } else if (field.equals(MessageTag.REMOVEMETHODCALLER) ||field.equals(MessageTag.REMOVECALLINGCLASS) ){
             index = (int) data[1];
         }
         else {
@@ -293,8 +302,11 @@ public class DiagramStructure implements IMessageObserver, IMessageSender {
             case IMPLEMENTINGCLASS:
                 setImplementingClassName(string);
                 break;
-            case CALLINGCLASS:
-                setCallingClassName(string);
+            case ADDCALLINGCLASS:
+                addCallingClassName(string);
+                break;
+            case REMOVECALLINGCLASS:
+                removeCallingClassName(index);
                 break;
             case CLASSMETHODNAME:
                 addClassMethodName(string);

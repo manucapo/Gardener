@@ -24,6 +24,7 @@ public class DiagramFileWriter implements IMessageObserver {
     private List<Node> blockNodes;
     private List<String> methodCallTargets;
     private List<String> methodCaller;
+    private List<String> callingClassNames;
 
     private DiagramFileWriter(){
         methodName = "NULL";
@@ -33,6 +34,7 @@ public class DiagramFileWriter implements IMessageObserver {
         methodBlocks = new ArrayList<>();
         methodCallTargets = new ArrayList<>();
         methodCaller = new ArrayList<>();
+        callingClassNames = new ArrayList<>();
     }
 
     public void reset(){
@@ -43,6 +45,7 @@ public class DiagramFileWriter implements IMessageObserver {
         methodBlocks = new ArrayList<>();
         methodCallTargets = new ArrayList<>();
         methodCaller = new ArrayList<>();
+        callingClassNames = new ArrayList<>();
     }
     @Override
     public void update(Object o) {
@@ -59,7 +62,9 @@ public class DiagramFileWriter implements IMessageObserver {
             index = (int) data[1];
         }
         else {
-            string =     (String) data[1];
+            if (data[1] instanceof  String) {
+                string = (String) data[1];
+            }
         }
 
 
@@ -87,6 +92,12 @@ public class DiagramFileWriter implements IMessageObserver {
                 break;
             case REMOVEMETHODCALLER:
                 removeMethodCaller(index);
+                break;
+            case ADDCALLINGCLASS:
+                addCallingClassName(string);
+                break;
+            case REMOVECALLINGCLASS:
+                removeCallingClassName(index);
                 break;
             case RESET:
                 reset();
@@ -338,6 +349,14 @@ public class DiagramFileWriter implements IMessageObserver {
 
     public  void removeMethodCaller(int index){
         this.methodCaller.remove(index);
+    }
+
+    public void addCallingClassName(String callingClassName) {
+        this.callingClassNames.add(callingClassName);
+    }
+
+    public void removeCallingClassName(int index) {
+        this.callingClassNames.remove(index);
     }
 }
 

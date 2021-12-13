@@ -55,7 +55,7 @@ public class Reflector implements IReflector, IMessageSender {
 
         Class<?> cls = obj.getClass();
 
-        Object[] clsName = {MessageTag.CALLINGCLASS,cls.getSimpleName()};// get class
+        Object[] clsName = {MessageTag.ADDCALLINGCLASS,cls.getSimpleName()};// get class
         sendMessage(mtdName);
 
         try {

@@ -2,7 +2,8 @@ package com.EiriniManu.Messaging;
 
 public enum MessageTag {
         IMPLEMENTINGCLASS,
-        CALLINGCLASS,
+        ADDCALLINGCLASS,
+        REMOVECALLINGCLASS,
         CLASSMETHODNAME,
         CLASSMETHODRETURNTYPE,
         CLASSFIELDNAME,

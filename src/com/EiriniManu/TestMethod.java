@@ -39,7 +39,7 @@ public class TestMethod {
 
     public int test3(String s, int i, boolean bool) {
         explorer.checkNode(null);
-        System.out.println("test");
+        test4("2", 1, true);
         return 2;
     }
 

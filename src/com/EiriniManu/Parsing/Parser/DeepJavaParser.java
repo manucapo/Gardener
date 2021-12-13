@@ -32,6 +32,7 @@ public class DeepJavaParser extends SafeJavaParser {
     private int runDepth = 4;
     private static int run;
     private static String methodCaller;
+    private static String callingClass;
 
     private boolean nestedMethodFound;
 
@@ -76,6 +77,7 @@ public class DeepJavaParser extends SafeJavaParser {
         }
         run = 0;
         methodCaller = methodName;
+        callingClass = className;
         this.parseMethod(this.ParseFile(className, this.SetSourceRoot(classFilePath, packageName)), className, methodName, structure);
     }
 
@@ -119,6 +121,7 @@ public class DeepJavaParser extends SafeJavaParser {
                         subMethodCounter = nodeExplorer.countSubMethods(node);
                         nodeExplorer.setParser(this);
                         methodCaller = methodName + "." + run;
+                        callingClass = className;
                         nodeExplorer.checkNode(node);
                     } else {
                         subMethodCounter--;
@@ -165,6 +168,9 @@ public class DeepJavaParser extends SafeJavaParser {
             Object[] caller = {MessageTag.ADDMETHODCALLER, methodCaller};
             sendMessage(caller);
 
+            Object[] clsName = {MessageTag.ADDCALLINGCLASS, callingClass};
+            sendMessage(clsName);
+
             methodNameStack.add(subMethodName);
 
 
@@ -179,6 +185,7 @@ public class DeepJavaParser extends SafeJavaParser {
                     nestedMethodFound = true;
 
                          methodCaller = subMethodName;
+                         callingClass = className;
                         parseMethodRecursive(cu,className,subMethodName,DiagramStructure.getInstance());
                             }
                     targetFound = true;
@@ -307,6 +314,30 @@ public class DeepJavaParser extends SafeJavaParser {
                                 if (isSafe) {
                                     methodTargetStack.add(classFieldTypes.get(classFieldIndex).replaceAll("<.*>", " "));
                                     methodTargetTypeNameStack.add("");
+
+                                    if(run < runDepth){
+                                        run++;
+
+                                        nestedMethodFound = true;
+
+                                        methodCaller = subMethodName;
+                                        callingClass = className;
+
+                                        for (String pkg : packageDependencies) {
+                                            try {
+                                              String className = Class.forName(pkg + "." + classFieldTypes.get(classFieldIndex).replaceAll("<.*>", " ")).getSimpleName();
+                                              parseMethodRecursive(this.ParseFile(className, this.SetSourceRoot(classFilePath, pkg)),classFieldTypes.get(classFieldIndex).replaceAll("<.*>", " "),subMethodName,DiagramStructure.getInstance());
+                                              break;
+                                            }
+                                            catch (Exception e){
+                                                //TODO
+                                                //TODO
+                                            }
+                                        }
+
+                                    //
+                                    }
+
                                     targetFound = true;
                                 }
 
@@ -393,8 +424,11 @@ public class DeepJavaParser extends SafeJavaParser {
                 System.out.println("COULD NOT RESOLVE ANY TARGETS");
                     methodNameStack.remove(methodNameStack.size() - 1);   // SAFE MODE
 
-                Object[] index = {MessageTag.REMOVEMETHODCALLER, DiagramStructure.getInstance().getMethodCaller().size()-1};
-                sendMessage(index);
+                Object[] index1 = {MessageTag.REMOVEMETHODCALLER, DiagramStructure.getInstance().getMethodCaller().size()-1};
+                sendMessage(index1);
+
+                Object[] index2 = {MessageTag.REMOVECALLINGCLASS, DiagramStructure.getInstance().getCallingClassNames().size()-1};
+                sendMessage(index2);
             }
 
             previousScope = scope;
@@ -406,8 +440,6 @@ public class DeepJavaParser extends SafeJavaParser {
 
             Object[] type = {MessageTag.METHODCALL, methodNameStack.get(i)};
             sendMessage(type);
-
-            //    structure.addMethodCall(methodNameStack.get(i));                                                 // first contained name should be method name
 
         }
 
@@ -426,6 +458,7 @@ public class DeepJavaParser extends SafeJavaParser {
 
     public void parseMethodRecursive(CompilationUnit cu, String className, String methodName, DiagramStructure diagramStructure){
     methodCaller = methodName;
+    callingClass = className;
     parseMethod(cu,className,methodName,diagramStructure);
 
     if(run != 0) {

@@ -1,6 +1,0 @@
-@startuml 
-participant Actor 
-Actor -> TestMethod: test17
-activate TestMethod
-return 
-@enduml 
