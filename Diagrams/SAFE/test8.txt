@@ -2,9 +2,13 @@
 participant Actor 
 Actor -> TestMethod: test8
 activate TestMethod
-TestMethod -> TestMethod: test7
-activate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
+TestMethod -> NodeExplorerFactory: create
+activate NodeExplorerFactory
+NodeExplorerFactory-->TestMethod
+deactivate NodeExplorerFactory
+TestMethod -> ParameterNodeExplorer: checkNode
+activate ParameterNodeExplorer
+ParameterNodeExplorer-->TestMethod
+deactivate ParameterNodeExplorer
 return 
 @enduml 

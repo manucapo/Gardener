@@ -2,13 +2,9 @@
 participant Actor 
 Actor -> TestMethod: test9
 activate TestMethod
-TestMethod -> TestMethod: test7
-activate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> String: split
-activate String
-String-->TestMethod
-deactivate String
+TestMethod -> Math: abs
+activate Math
+Math-->TestMethod
+deactivate Math
 return 
 @enduml 

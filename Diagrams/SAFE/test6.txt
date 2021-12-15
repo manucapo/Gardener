@@ -2,5 +2,9 @@
 participant Actor 
 Actor -> TestMethod: test6
 activate TestMethod
+TestMethod -> MethodNodeExplorer: checkNode
+activate MethodNodeExplorer
+MethodNodeExplorer-->TestMethod
+deactivate MethodNodeExplorer
 return 
 @enduml 

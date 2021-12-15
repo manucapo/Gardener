@@ -18,5 +18,9 @@ TestMethod -> Object: toString
 activate Object
 Object-->TestMethod
 deactivate Object
+TestMethod -> System: println
+activate System
+System-->TestMethod
+deactivate System
 return 
 @enduml 

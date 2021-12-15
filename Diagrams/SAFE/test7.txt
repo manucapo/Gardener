@@ -2,5 +2,9 @@
 participant Actor 
 Actor -> TestMethod: test7
 activate TestMethod
+TestMethod -> CatchNodeExplorer: checkNode
+activate CatchNodeExplorer
+CatchNodeExplorer-->TestMethod
+deactivate CatchNodeExplorer
 return 
 @enduml 

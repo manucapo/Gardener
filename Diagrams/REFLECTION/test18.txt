@@ -2,25 +2,21 @@
 participant Actor 
 Actor -> TestMethod: test18
 activate TestMethod
-TestMethod -> Node: findAncestor
-activate Node
-Node-->TestMethod
-deactivate Node
-TestMethod -> Optional: isPresent
-activate Optional
-Optional-->TestMethod
-deactivate Optional
-TestMethod -> Node: findAncestor
-activate Node
-Node-->TestMethod
-deactivate Node
-TestMethod -> Optional: get
-activate Optional
-Optional-->TestMethod
-deactivate Optional
-TestMethod -> String: equals
+TestMethod -> Integer: parseInt
+activate Integer
+Integer-->TestMethod
+deactivate Integer
+TestMethod -> String: toString
 activate String
 String-->TestMethod
 deactivate String
+TestMethod -> TestMethod: test1
+activate TestMethod
+TestMethod-->TestMethod
+deactivate TestMethod
+TestMethod -> System: println
+activate System
+System-->TestMethod
+deactivate System
 return 
 @enduml 
