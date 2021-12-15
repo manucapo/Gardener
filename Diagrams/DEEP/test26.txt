@@ -2,93 +2,53 @@
 participant Actor 
 Actor -> TestMethod: test26
 activate TestMethod
-TestMethod -> TestMethod: test3
+TestMethod -> TestMethod: test27
 activate TestMethod
+TestMethod -> DiagramStructure: getMethodCaller
+activate DiagramStructure
+DiagramStructure-->TestMethod
+deactivate DiagramStructure
+TestMethod -> TestMethod: test26
+activate TestMethod
+TestMethod -> TestMethod: test27
+activate TestMethod
+TestMethod -> DiagramStructure: getMethodCaller
+activate DiagramStructure
+DiagramStructure-->TestMethod
+deactivate DiagramStructure
+TestMethod -> TestMethod: test26
+activate TestMethod
+TestMethod -> TestMethod: test27
+activate TestMethod
+TestMethod-->TestMethod
+deactivate TestMethod
+TestMethod -> DiagramStructure: getInstance
+activate DiagramStructure
+DiagramStructure-->TestMethod
+deactivate DiagramStructure
+TestMethod-->TestMethod
+deactivate TestMethod
 TestMethod -> MethodNodeExplorer: checkNode
 activate MethodNodeExplorer
 MethodNodeExplorer-->TestMethod
 deactivate MethodNodeExplorer
 TestMethod-->TestMethod
 deactivate TestMethod
-TestMethod -> TestMethod: test1
-activate TestMethod
-TestMethod -> TestMethod: test2
-activate TestMethod
-TestMethod -> TestMethod: test1
-activate TestMethod
-TestMethod -> TestMethod: test2
-activate TestMethod
-TestMethod -> TestMethod: test1
-activate TestMethod
+TestMethod -> DiagramStructure: getInstance
+activate DiagramStructure
+DiagramStructure-->TestMethod
+deactivate DiagramStructure
 TestMethod-->TestMethod
 deactivate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> TestMethod: test3
-activate TestMethod
 TestMethod -> MethodNodeExplorer: checkNode
 activate MethodNodeExplorer
 MethodNodeExplorer-->TestMethod
 deactivate MethodNodeExplorer
 TestMethod-->TestMethod
 deactivate TestMethod
-TestMethod -> TestMethod: test3
-activate TestMethod
-TestMethod -> MethodNodeExplorer: checkNode
-activate MethodNodeExplorer
-MethodNodeExplorer-->TestMethod
-deactivate MethodNodeExplorer
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> TestMethod: test3
-activate TestMethod
-TestMethod -> MethodNodeExplorer: checkNode
-activate MethodNodeExplorer
-MethodNodeExplorer-->TestMethod
-deactivate MethodNodeExplorer
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> TestMethod: test1
-activate TestMethod
-TestMethod -> TestMethod: test2
-activate TestMethod
-TestMethod -> TestMethod: test1
-activate TestMethod
-TestMethod -> TestMethod: test2
-activate TestMethod
-TestMethod -> TestMethod: test1
-activate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> TestMethod: test3
-activate TestMethod
-TestMethod -> MethodNodeExplorer: checkNode
-activate MethodNodeExplorer
-MethodNodeExplorer-->TestMethod
-deactivate MethodNodeExplorer
-TestMethod-->TestMethod
-deactivate TestMethod
-TestMethod -> TestMethod: test3
-activate TestMethod
-TestMethod -> MethodNodeExplorer: checkNode
-activate MethodNodeExplorer
-MethodNodeExplorer-->TestMethod
-deactivate MethodNodeExplorer
-TestMethod-->TestMethod
-deactivate TestMethod
+TestMethod -> DiagramStructure: getInstance
+activate DiagramStructure
+DiagramStructure-->TestMethod
+deactivate DiagramStructure
 return 
 @enduml 

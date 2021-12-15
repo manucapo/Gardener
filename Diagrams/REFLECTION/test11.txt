@@ -2,13 +2,17 @@
 participant Actor 
 Actor -> TestMethod: test11
 activate TestMethod
-TestMethod -> String: toString
-activate String
-String-->TestMethod
-deactivate String
-TestMethod -> System: println
-activate System
-System-->TestMethod
-deactivate System
+TestMethod -> __Array__: clone
+activate __Array__
+__Array__-->TestMethod
+deactivate __Array__
+TestMethod -> List : get
+activate List 
+List -->TestMethod
+deactivate List 
+TestMethod -> Optional: of
+activate Optional
+Optional-->TestMethod
+deactivate Optional
 return 
 @enduml 

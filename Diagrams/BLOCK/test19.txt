@@ -2,5 +2,11 @@
 participant Actor 
 Actor -> TestMethod: test19
 activate TestMethod
+alt if 1
+TestMethod -> TestMethod: test1
+activate TestMethod
+TestMethod-->TestMethod
+deactivate TestMethod
+end 
 return 
 @enduml 
