@@ -9,16 +9,16 @@ TestMethod-->TestMethod
 deactivate TestMethod
 TestMethod -> MethodNodeExplorer: checkNode
 activate MethodNodeExplorer
-alt if 3
 MethodNodeExplorer-->TestMethod
 deactivate MethodNodeExplorer
+alt if 3
 TestMethod -> TestMethod: test2
 activate TestMethod
+TestMethod-->TestMethod
+deactivate TestMethod
 end 
 end 
 alt if 2
-TestMethod-->TestMethod
-deactivate TestMethod
 TestMethod -> TestMethod: test1
 activate TestMethod
 TestMethod-->TestMethod

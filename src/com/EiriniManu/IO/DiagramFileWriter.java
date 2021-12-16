@@ -113,83 +113,7 @@ public class DiagramFileWriter implements IMessageObserver {
             int blockCount = 0;
             for (String method : methodCalls) {
 
-            if(i > 0 && !methodBlocks.get(i).equals("x")){
-                int count = 0;
-                if (!methodBlocks.get(i).equals(methodBlocks.get(i-1))) {
-                    if (!methodBlocks.get(i).equals("0")){
 
-                    for (int j = openBlocks.size() - 1; j >= 0; j--) {
-                        if (!openBlocks.get(j).isAncestorOf(blockNodes.get(Integer.parseInt(methodBlocks.get(i)) - 1))) {
-                            if (!openBlocks.get(j).equals(blockNodes.get(Integer.parseInt(methodBlocks.get(i)) - 1))){
-                                count++;
-                            }
-
-                        } else {
-                            break;
-                        }
-
-                    }
-                } else {
-                        if (!methodBlocks.get(i-1).equals("0")){
-                            count = blockCount;
-                        }
-                    }
-                }
-                for (int j = 0; j < count ; j++) {
-                    writer.write("end \n");
-                    openBlocks.remove(openBlocks.size()-1);
-                    blockCount--;
-                }
-            }
-
-            if(!methodBlocks.get(i).equals("x") ){
-               if (!methodBlocks.get(i).equals("0")){
-
-                       for (Node node : blockNodes){
-                           if (node.isAncestorOf(blockNodes.get(Integer.parseInt(methodBlocks.get(i))-1)) && !openBlocks.contains(node)){
-                               if(!node.equals(blockNodes.get(Integer.parseInt(methodBlocks.get(i))-1))){
-                                   String blockName = "";
-                                   String groupType = "alt";
-                                   if(node instanceof IfStmt){
-                                       groupType = "alt";
-                                       blockName = "if";
-                                   } else if ( node instanceof ForStmt){
-                                       groupType = "loop";
-                                       blockName = "for ";
-                                   } else if (node instanceof WhileStmt){
-                                       groupType = "loop";
-                                       blockName = "while ";
-                                   }
-                                   writer.write(groupType + " " + blockName + " "  + blockNodes.indexOf(node) + "\n");
-                                   openBlocks.add(node);
-                                   blockCount++;
-                               }
-
-                           }
-                       }
-
-
-                       if (!openBlocks.contains(blockNodes.get(Integer.parseInt(methodBlocks.get(i))-1))) {
-                           String blockName = "";
-                           String groupType = "alt";
-                           if(blockNodes.get(Integer.parseInt(methodBlocks.get(i))-1) instanceof IfStmt){
-                               groupType = "alt";
-                               blockName = "if";
-                           } else if ( blockNodes.get(Integer.parseInt(methodBlocks.get(i))-1) instanceof ForStmt){
-                               groupType = "loop";
-                               blockName = "for ";
-                           } else if (blockNodes.get(Integer.parseInt(methodBlocks.get(i))-1) instanceof WhileStmt){
-                               groupType = "loop";
-                               blockName = "while ";
-                           }
-                           writer.write(groupType + " " + blockName + " " + methodBlocks.get(i) + "\n");
-                           openBlocks.add(blockNodes.get(Integer.parseInt(methodBlocks.get(i))-1));
-                           blockCount++;
-                       }
-
-
-               }
-            }
 
                 if(methodCallTargets.get(i).equals("this")){
 
@@ -211,6 +135,84 @@ public class DiagramFileWriter implements IMessageObserver {
                         }
 
 
+                    }
+
+                    if(i > 0 && !methodBlocks.get(i).equals("x")){
+                        int count = 0;
+                        if (!methodBlocks.get(i).equals(methodBlocks.get(i-1))) {
+                            if (!methodBlocks.get(i).equals("0")){
+
+                                for (int j = openBlocks.size() - 1; j >= 0; j--) {
+                                    if (!openBlocks.get(j).isAncestorOf(blockNodes.get(Integer.parseInt(methodBlocks.get(i)) - 1))) {
+                                        if (!openBlocks.get(j).equals(blockNodes.get(Integer.parseInt(methodBlocks.get(i)) - 1))){
+                                            count++;
+                                        }
+
+                                    } else {
+                                        break;
+                                    }
+
+                                }
+                            } else {
+                                if (!methodBlocks.get(i-1).equals("0")){
+                                    count = blockCount;
+                                }
+                            }
+                        }
+                        for (int j = 0; j < count ; j++) {
+                            writer.write("end \n");
+                            openBlocks.remove(openBlocks.size()-1);
+                            blockCount--;
+                        }
+                    }
+
+                    if(!methodBlocks.get(i).equals("x") ){
+                        if (!methodBlocks.get(i).equals("0")){
+
+                            for (Node node : blockNodes){
+                                if (node.isAncestorOf(blockNodes.get(Integer.parseInt(methodBlocks.get(i))-1)) && !openBlocks.contains(node)){
+                                    if(!node.equals(blockNodes.get(Integer.parseInt(methodBlocks.get(i))-1))){
+                                        String blockName = "";
+                                        String groupType = "alt";
+                                        if(node instanceof IfStmt){
+                                            groupType = "alt";
+                                            blockName = "if";
+                                        } else if ( node instanceof ForStmt){
+                                            groupType = "loop";
+                                            blockName = "for ";
+                                        } else if (node instanceof WhileStmt){
+                                            groupType = "loop";
+                                            blockName = "while ";
+                                        }
+                                        writer.write(groupType + " " + blockName + " "  + blockNodes.indexOf(node) + "\n");
+                                        openBlocks.add(node);
+                                        blockCount++;
+                                    }
+
+                                }
+                            }
+
+
+                            if (!openBlocks.contains(blockNodes.get(Integer.parseInt(methodBlocks.get(i))-1))) {
+                                String blockName = "";
+                                String groupType = "alt";
+                                if(blockNodes.get(Integer.parseInt(methodBlocks.get(i))-1) instanceof IfStmt){
+                                    groupType = "alt";
+                                    blockName = "if";
+                                } else if ( blockNodes.get(Integer.parseInt(methodBlocks.get(i))-1) instanceof ForStmt){
+                                    groupType = "loop";
+                                    blockName = "for ";
+                                } else if (blockNodes.get(Integer.parseInt(methodBlocks.get(i))-1) instanceof WhileStmt){
+                                    groupType = "loop";
+                                    blockName = "while ";
+                                }
+                                writer.write(groupType + " " + blockName + " " + methodBlocks.get(i) + "\n");
+                                openBlocks.add(blockNodes.get(Integer.parseInt(methodBlocks.get(i))-1));
+                                blockCount++;
+                            }
+
+
+                        }
                     }
 
                     writer.write(implementingClassName + " -> " + implementingClassName + ": " + method + "\n");
@@ -238,6 +240,84 @@ public class DiagramFileWriter implements IMessageObserver {
                         }
 
 
+                    }
+
+                    if(i > 0 && !methodBlocks.get(i).equals("x")){
+                        int count = 0;
+                        if (!methodBlocks.get(i).equals(methodBlocks.get(i-1))) {
+                            if (!methodBlocks.get(i).equals("0")){
+
+                                for (int j = openBlocks.size() - 1; j >= 0; j--) {
+                                    if (!openBlocks.get(j).isAncestorOf(blockNodes.get(Integer.parseInt(methodBlocks.get(i)) - 1))) {
+                                        if (!openBlocks.get(j).equals(blockNodes.get(Integer.parseInt(methodBlocks.get(i)) - 1))){
+                                            count++;
+                                        }
+
+                                    } else {
+                                        break;
+                                    }
+
+                                }
+                            } else {
+                                if (!methodBlocks.get(i-1).equals("0")){
+                                    count = blockCount;
+                                }
+                            }
+                        }
+                        for (int j = 0; j < count ; j++) {
+                            writer.write("end \n");
+                            openBlocks.remove(openBlocks.size()-1);
+                            blockCount--;
+                        }
+                    }
+
+                    if(!methodBlocks.get(i).equals("x") ){
+                        if (!methodBlocks.get(i).equals("0")){
+
+                            for (Node node : blockNodes){
+                                if (node.isAncestorOf(blockNodes.get(Integer.parseInt(methodBlocks.get(i))-1)) && !openBlocks.contains(node)){
+                                    if(!node.equals(blockNodes.get(Integer.parseInt(methodBlocks.get(i))-1))){
+                                        String blockName = "";
+                                        String groupType = "alt";
+                                        if(node instanceof IfStmt){
+                                            groupType = "alt";
+                                            blockName = "if";
+                                        } else if ( node instanceof ForStmt){
+                                            groupType = "loop";
+                                            blockName = "for ";
+                                        } else if (node instanceof WhileStmt){
+                                            groupType = "loop";
+                                            blockName = "while ";
+                                        }
+                                        writer.write(groupType + " " + blockName + " "  + blockNodes.indexOf(node) + "\n");
+                                        openBlocks.add(node);
+                                        blockCount++;
+                                    }
+
+                                }
+                            }
+
+
+                            if (!openBlocks.contains(blockNodes.get(Integer.parseInt(methodBlocks.get(i))-1))) {
+                                String blockName = "";
+                                String groupType = "alt";
+                                if(blockNodes.get(Integer.parseInt(methodBlocks.get(i))-1) instanceof IfStmt){
+                                    groupType = "alt";
+                                    blockName = "if";
+                                } else if ( blockNodes.get(Integer.parseInt(methodBlocks.get(i))-1) instanceof ForStmt){
+                                    groupType = "loop";
+                                    blockName = "for ";
+                                } else if (blockNodes.get(Integer.parseInt(methodBlocks.get(i))-1) instanceof WhileStmt){
+                                    groupType = "loop";
+                                    blockName = "while ";
+                                }
+                                writer.write(groupType + " " + blockName + " " + methodBlocks.get(i) + "\n");
+                                openBlocks.add(blockNodes.get(Integer.parseInt(methodBlocks.get(i))-1));
+                                blockCount++;
+                            }
+
+
+                        }
                     }
 
 
@@ -270,6 +350,84 @@ public class DiagramFileWriter implements IMessageObserver {
                         }
 
 
+                    }
+
+                    if(i > 0 && !methodBlocks.get(i).equals("x")){
+                        int count = 0;
+                        if (!methodBlocks.get(i).equals(methodBlocks.get(i-1))) {
+                            if (!methodBlocks.get(i).equals("0")){
+
+                                for (int j = openBlocks.size() - 1; j >= 0; j--) {
+                                    if (!openBlocks.get(j).isAncestorOf(blockNodes.get(Integer.parseInt(methodBlocks.get(i)) - 1))) {
+                                        if (!openBlocks.get(j).equals(blockNodes.get(Integer.parseInt(methodBlocks.get(i)) - 1))){
+                                            count++;
+                                        }
+
+                                    } else {
+                                        break;
+                                    }
+
+                                }
+                            } else {
+                                if (!methodBlocks.get(i-1).equals("0")){
+                                    count = blockCount;
+                                }
+                            }
+                        }
+                        for (int j = 0; j < count ; j++) {
+                            writer.write("end \n");
+                            openBlocks.remove(openBlocks.size()-1);
+                            blockCount--;
+                        }
+                    }
+
+                    if(!methodBlocks.get(i).equals("x") ){
+                        if (!methodBlocks.get(i).equals("0")){
+
+                            for (Node node : blockNodes){
+                                if (node.isAncestorOf(blockNodes.get(Integer.parseInt(methodBlocks.get(i))-1)) && !openBlocks.contains(node)){
+                                    if(!node.equals(blockNodes.get(Integer.parseInt(methodBlocks.get(i))-1))){
+                                        String blockName = "";
+                                        String groupType = "alt";
+                                        if(node instanceof IfStmt){
+                                            groupType = "alt";
+                                            blockName = "if";
+                                        } else if ( node instanceof ForStmt){
+                                            groupType = "loop";
+                                            blockName = "for ";
+                                        } else if (node instanceof WhileStmt){
+                                            groupType = "loop";
+                                            blockName = "while ";
+                                        }
+                                        writer.write(groupType + " " + blockName + " "  + blockNodes.indexOf(node) + "\n");
+                                        openBlocks.add(node);
+                                        blockCount++;
+                                    }
+
+                                }
+                            }
+
+
+                            if (!openBlocks.contains(blockNodes.get(Integer.parseInt(methodBlocks.get(i))-1))) {
+                                String blockName = "";
+                                String groupType = "alt";
+                                if(blockNodes.get(Integer.parseInt(methodBlocks.get(i))-1) instanceof IfStmt){
+                                    groupType = "alt";
+                                    blockName = "if";
+                                } else if ( blockNodes.get(Integer.parseInt(methodBlocks.get(i))-1) instanceof ForStmt){
+                                    groupType = "loop";
+                                    blockName = "for ";
+                                } else if (blockNodes.get(Integer.parseInt(methodBlocks.get(i))-1) instanceof WhileStmt){
+                                    groupType = "loop";
+                                    blockName = "while ";
+                                }
+                                writer.write(groupType + " " + blockName + " " + methodBlocks.get(i) + "\n");
+                                openBlocks.add(blockNodes.get(Integer.parseInt(methodBlocks.get(i))-1));
+                                blockCount++;
+                            }
+
+
+                        }
                     }
 
                     writer.write(implementingClassName + " -> " + methodCallTargets.get(i) + ": " + method + "\n");
