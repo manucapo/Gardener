@@ -16,10 +16,14 @@ TestMethod-->TestMethod
 deactivate TestMethod
 TestMethod -> TestMethod: test3
 activate TestMethod
-end 
-loop while  8
 TestMethod-->TestMethod
 deactivate TestMethod
+TestMethod -> DiagramStructure: getMethodCaller
+activate DiagramStructure
+end 
+loop while  8
+DiagramStructure-->TestMethod
+deactivate DiagramStructure
 TestMethod -> TestMethod: test3
 activate TestMethod
 alt if 11
@@ -80,12 +84,16 @@ TestMethod-->TestMethod
 deactivate TestMethod
 TestMethod -> TestMethod: test25
 activate TestMethod
-end 
-loop while  3
-loop while  1
-alt if 10
 TestMethod-->TestMethod
 deactivate TestMethod
+TestMethod -> DiagramStructure: getMethodCaller
+activate DiagramStructure
+end 
+loop while  3
+loop while  5
+alt if 10
+DiagramStructure-->TestMethod
+deactivate DiagramStructure
 TestMethod -> TestMethod: test1
 activate TestMethod
 loop for  13
@@ -126,9 +134,13 @@ TestMethod-->TestMethod
 deactivate TestMethod
 TestMethod -> TestMethod: test1
 activate TestMethod
-loop for  21
 TestMethod-->TestMethod
 deactivate TestMethod
+TestMethod -> MethodNodeExplorer: checkNode
+activate MethodNodeExplorer
+loop for  21
+MethodNodeExplorer-->TestMethod
+deactivate MethodNodeExplorer
 TestMethod -> TestMethod: test3
 activate TestMethod
 end 
@@ -152,5 +164,9 @@ TestMethod -> TestMethod: test3
 activate TestMethod
 TestMethod-->TestMethod
 deactivate TestMethod
+TestMethod -> MethodNodeExplorer: checkNode
+activate MethodNodeExplorer
+MethodNodeExplorer-->TestMethod
+deactivate MethodNodeExplorer
 return 
 @enduml 

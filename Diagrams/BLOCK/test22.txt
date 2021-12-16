@@ -5,9 +5,13 @@ activate TestMethod
 alt if 1
 TestMethod -> TestMethod: test1
 activate TestMethod
-alt if 3
 TestMethod-->TestMethod
 deactivate TestMethod
+TestMethod -> MethodNodeExplorer: checkNode
+activate MethodNodeExplorer
+alt if 3
+MethodNodeExplorer-->TestMethod
+deactivate MethodNodeExplorer
 TestMethod -> TestMethod: test2
 activate TestMethod
 end 
@@ -19,6 +23,10 @@ TestMethod -> TestMethod: test1
 activate TestMethod
 TestMethod-->TestMethod
 deactivate TestMethod
+TestMethod -> DiagramStructure: getMethodCaller
+activate DiagramStructure
+DiagramStructure-->TestMethod
+deactivate DiagramStructure
 TestMethod -> TestMethod: test1
 activate TestMethod
 TestMethod-->TestMethod

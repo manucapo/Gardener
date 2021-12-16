@@ -185,6 +185,7 @@ public class TestMethod {
     public String test22(String s, int j, boolean bool) {  // the block parser can identify  nested blocks
         if (true) {
             test1("s", 2, true);
+            explorer.checkNode(null);
             if (true) {
                 test2("s", 2, true);
             }
@@ -192,6 +193,7 @@ public class TestMethod {
 
         if (true) {
             test1("s", 2, true);
+            structure.getMethodCaller();
             test1("s", 2, true);
         }
         return "26";
@@ -207,6 +209,7 @@ public class TestMethod {
                     test1("s", 2, true);
                     for (int i = 0; i < 2; i++) {
                         test3("s", 2, true);
+                        structure.getMethodCaller();
                     }
                     int k = 0;
                     while (k < 10) {
@@ -240,6 +243,7 @@ public class TestMethod {
             test25("s", 2, true);
             if(true) {
                 test25("s", 2, true);
+                structure.getMethodCaller();
             }
             x = 0;
             while (x < 2) {
@@ -265,6 +269,7 @@ public class TestMethod {
                             test3("s", 2, true);
                             if (true) {
                                 test1("s", 2, true);
+                                explorer.checkNode(null);
                                 for (int f = 0; f < 2; f++) {
                                     test3("s", 2, true);
                                 }
@@ -280,6 +285,7 @@ public class TestMethod {
             }
         }
         test3("s", 2, true);
+        explorer.checkNode(null);
         return "26";
     }
 
