@@ -27,17 +27,17 @@ public class SequenceDiagramGenerator implements ISequenceDiagramGenerator {
     }
 
 
-    public void updateDiagramStructure(String methodName, Object cls, String className , String classFilePath, String packageName, Class<?>... params){            // Update structure with information gathered by reflector and parser
+    private void updateDiagramStructure(String methodName, Object cls, String className , String classFilePath, String packageName, Class<?>... params){            // Update structure with information gathered by reflector and parser
         reflector.ReflectOnClass(cls);
         reflector.ReflectOnMethod(cls,methodName,params);
         parserContext.executeParsing(methodName, className, classFilePath, packageName,DiagramStructure.getInstance());
     }
 
-    public void generateSequenceDiagramTextFile(String path, String methodName) {                        // generate Text file with plantUML syntax
+    private void generateSequenceDiagramTextFile(String path, String methodName) {                        // generate Text file with plantUML syntax
         DiagramStructure.getInstance().serialize(path + "\\" + methodName + ".txt");
     }
 
-    public void generateSequenceDiagramImage(String path, String methodName) {  // Use the plantUML library to generate a sequence diagram image from the plantUML syntax text file
+    private void generateSequenceDiagramImage(String path, String methodName) {  // Use the plantUML library to generate a sequence diagram image from the plantUML syntax text file
         try {
             File file = new File(path + "\\" + methodName + ".txt");
             SourceFileReader fileReader = new SourceFileReader(file);     // instantiate plantUML file reader
@@ -60,7 +60,7 @@ public class SequenceDiagramGenerator implements ISequenceDiagramGenerator {
         parserContext.addDependency(dependency);
     }
 
-    public void setParser(ParserType type){            // set desired parser strategy
+     private void setParser(ParserType type){            // set desired parser strategy
 
         switch (type){
             case SAFE:

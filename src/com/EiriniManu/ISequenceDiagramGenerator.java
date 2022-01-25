@@ -7,5 +7,4 @@ package com.EiriniManu;
 
 public interface ISequenceDiagramGenerator {
     void generateSequenceDiagram(String pathToSource, String pathToDiagram, String methodName, Object cls, String className, String packageName, Class<?>... params);
-    void setParser(ParserType type);
 }
