@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class VariableNodeExplorer extends NodeExplorer{
 
-    public VariableNodeExplorer(IMessageObserver observer){
+    VariableNodeExplorer(IMessageObserver observer){
         setObserverList(new ArrayList<>());
         this.addObserver(observer);
     }

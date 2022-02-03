@@ -24,7 +24,7 @@ public class Reflector implements IReflector, IMessageSender {
         this.observerList = new ArrayList<>();
     }
 
-    public void ReflectOnClass(Object obj) {   // Get information on a java class and update diagram structure
+    public void reflectOnClass(Object obj) {   // Get information on a java class and update diagram structure
         Class<?> cls = obj.getClass();                                           // get class
 
 
@@ -47,7 +47,7 @@ public class Reflector implements IReflector, IMessageSender {
         }
     }
 
-    public void ReflectOnMethod(Object obj, String methodName, Class<?>... parameterTypes) { // Get information on a java method implemented in class by name
+    public void reflectOnMethod(Object obj, String methodName, Class<?>... parameterTypes) { // Get information on a java method implemented in class by name
 
 
         Object[] mtdName = {MessageTag.METHODNAME,methodName};// get method name

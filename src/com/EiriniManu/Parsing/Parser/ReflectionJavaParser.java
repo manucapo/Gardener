@@ -27,7 +27,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ReflectionJavaParser extends SafeJavaParser implements IJavaParser {
+public class ReflectionJavaParser extends SafeJavaParser {
 
     public void execute(String methodName, String className, String classFilePath, String packageName, DiagramStructure structure){
         for (Package pkg: Package.getPackages()) {

@@ -12,7 +12,7 @@ public class MethodNodeExplorer extends NodeExplorer{
 
     private IJavaParser parser;
 
-    public MethodNodeExplorer(IMessageObserver observer){
+     MethodNodeExplorer(IMessageObserver observer){
         setObserverList(new ArrayList<>());
         this.addObserver(observer);
     }

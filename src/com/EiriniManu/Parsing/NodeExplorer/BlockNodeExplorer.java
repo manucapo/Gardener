@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class BlockNodeExplorer extends  NodeExplorer{
 
-    public BlockNodeExplorer(IMessageObserver observer){
+    BlockNodeExplorer(IMessageObserver observer){
         setObserverList(new ArrayList<>());
         this.addObserver(observer);
     }

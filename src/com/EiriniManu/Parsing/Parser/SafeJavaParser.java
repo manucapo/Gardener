@@ -33,7 +33,6 @@ public class SafeJavaParser implements IJavaParser{
 
     protected List<String> packageDependencies;
     protected List<IMessageObserver> observerList;
-
     protected List<String> catchParameterNames;
     protected List<String> catchParameterTypes;
     protected List<String> parameterNames;

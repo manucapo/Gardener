@@ -25,7 +25,7 @@ import com.github.javaparser.printer.XmlPrinter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BlockJavaParser extends SafeJavaParser {
+public class BlockJavaParser extends SafeJavaParser  {
 
     private List<Node> blockNodes;
 

@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class ParameterNodeExplorer extends  NodeExplorer{
 
-    public ParameterNodeExplorer(IMessageObserver observer){
+    ParameterNodeExplorer(IMessageObserver observer){
         setObserverList(new ArrayList<>());
         this.addObserver(observer);
     }

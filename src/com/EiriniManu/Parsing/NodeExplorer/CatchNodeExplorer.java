@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class CatchNodeExplorer extends NodeExplorer {
 
-    public CatchNodeExplorer(IMessageObserver observer){
+    CatchNodeExplorer(IMessageObserver observer){
         setObserverList(new ArrayList<>());
         this.addObserver(observer);
     }

@@ -6,7 +6,6 @@ package com.EiriniManu;
     It also lets the user provide some extra metadata necessary for the creation of the plantUML diagrams
  */
 
-import com.EiriniManu.IO.DiagramFileWriter;
 import com.EiriniManu.IO.DiagramStructure;
 import com.EiriniManu.Parsing.Parser.*;
 import com.EiriniManu.Parsing.Reflector;
@@ -21,15 +20,15 @@ public class SequenceDiagramGenerator implements ISequenceDiagramGenerator {
     private ParserContext parserContext;
 
     public SequenceDiagramGenerator(ParserType parserType){
-         reflector = new Reflector();
+        reflector = new Reflector();
         reflector.addObserver(DiagramStructure.getInstance());
         setParser(parserType);
     }
 
 
     private void updateDiagramStructure(String methodName, Object cls, String className , String classFilePath, String packageName, Class<?>... params){            // Update structure with information gathered by reflector and parser
-        reflector.ReflectOnClass(cls);
-        reflector.ReflectOnMethod(cls,methodName,params);
+        reflector.reflectOnClass(cls);
+        reflector.reflectOnMethod(cls,methodName,params);
         parserContext.executeParsing(methodName, className, classFilePath, packageName,DiagramStructure.getInstance());
     }
 

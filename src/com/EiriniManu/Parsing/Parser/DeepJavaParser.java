@@ -23,7 +23,7 @@ import com.github.javaparser.printer.XmlPrinter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DeepJavaParser extends SafeJavaParser {
+public class DeepJavaParser extends SafeJavaParser  {
 
     private String className;
     private String classFilePath;
