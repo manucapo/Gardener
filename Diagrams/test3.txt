@@ -4,9 +4,9 @@ Actor -> TestMethod: test3
 activate TestMethod
 TestMethod -> MethodNodeExplorer: checkNode
 activate MethodNodeExplorer
-TestMethod -> DiagramStructure: getInstance
+MethodNodeExplorer -> DiagramStructure: getInstance
 activate DiagramStructure
-DiagramStructure-->TestMethod
+DiagramStructure-->MethodNodeExplorer
 deactivate DiagramStructure
 MethodNodeExplorer-->TestMethod
 deactivate MethodNodeExplorer
@@ -14,5 +14,9 @@ TestMethod -> TestMethod: test4
 activate TestMethod
 TestMethod-->TestMethod
 deactivate TestMethod
+TestMethod -> DiagramStructure: getClass
+activate DiagramStructure
+DiagramStructure-->TestMethod
+deactivate DiagramStructure
 return 
 @enduml 

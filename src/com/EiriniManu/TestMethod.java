@@ -4,8 +4,10 @@ package com.EiriniManu;
     This class represents an object that can expose some methods to test the program with.
 */
 
+import com.EiriniManu.IO.DiagramFileWriter;
 import com.EiriniManu.IO.DiagramStructure;
 import com.EiriniManu.Parsing.NodeExplorer.MethodNodeExplorer;
+import com.EiriniManu.Parsing.NodeExplorer.ParameterNodeExplorer;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.NameExpr;
 
@@ -15,6 +17,7 @@ import java.util.List;
 public class TestMethod {
 
     MethodNodeExplorer explorer;
+    ParameterNodeExplorer parame;
     List<String> methodTargetStack = new ArrayList<>();
     DiagramStructure structure = DiagramStructure.getInstance();
     int parameterIndex = 0;
@@ -31,8 +34,7 @@ public class TestMethod {
     }
 
     public int test2(String s, int i, boolean bool) {
-        System.out.println("test");
-
+        explorer.checkNode(null);
         this.test1("2", 1, true);
         return 26;
     }
@@ -40,6 +42,7 @@ public class TestMethod {
     public int test3(String s, int i, boolean bool) {
         explorer.checkNode(null);
         test4("2", 1, true);
+        structure.getClass();
         return 2;
     }
 

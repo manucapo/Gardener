@@ -273,7 +273,7 @@ public class DiagramFileWriter implements IMessageObserver {
                                 openMethodTargets.remove(openMethodTargets.get(j));
                                 break;
                             } else {
-                                writer.write(openMethodTargets.get(j) + "-->" + implementingClassName + "\n");
+                                writer.write(openMethodTargets.get(j) + "-->" + callingClassNames.get(j-1) + "\n");
                                 writer.write("deactivate " + openMethodTargets.get(j) + "\n");
                                 openMethodCalls.remove(openMethodCalls.get(j));
                                 openMethodTargets.remove(openMethodTargets.get(j));
@@ -282,11 +282,18 @@ public class DiagramFileWriter implements IMessageObserver {
 
 
                     }
+                    if (i == 0) {
+                        writer.write(implementingClassName + " -> " + methodCallTargets.get(i) + ": " + method + "\n");
+                        writer.write("activate " + methodCallTargets.get(i) + "\n");
+                        openMethodCalls.add(methodCaller.get(i));
+                        openMethodTargets.add(methodCallTargets.get(i));
+                    } else {
+                        writer.write(callingClassNames.get(i-1) + " -> " + methodCallTargets.get(i) + ": " + method + "\n");
+                        writer.write("activate " + methodCallTargets.get(i) + "\n");
+                        openMethodCalls.add(methodCaller.get(i));
+                        openMethodTargets.add(methodCallTargets.get(i));
+                    }
 
-                    writer.write(implementingClassName + " -> " + methodCallTargets.get(i) + ": " + method + "\n");
-                    writer.write("activate " + methodCallTargets.get(i) + "\n");
-                    openMethodCalls.add(methodCaller.get(i));
-                    openMethodTargets.add(methodCallTargets.get(i));
                 }
                      if (i == methodCalls.size()- 1) {
 
