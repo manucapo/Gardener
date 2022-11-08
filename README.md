@@ -21,7 +21,7 @@ Java 1.8 extension valid methods
 
 CURRENT FEATURES:
 
-The parser single methods and attribute them to the target
+Parse single methods and attribute them to the call target
 
 Resolve call targets using scope information
 
