@@ -1,5 +1,5 @@
 # Gardener
-A project to automatically generate plantUML sequence diagrams from java methods.
+A tool to automatically generate plantUML sequence diagrams from java methods.
 
 DEPENDENCIES:
 
