@@ -33,7 +33,7 @@ SOMETIMES resolve generic methods from scope context
 
 Identify deeply nested blocks (if, for, while)
 
-Parse and regognize the order of calls in deeply recursively nested method calls
+Parse and recognize the order of calls in deeply recursively nested method calls
 
 USE CASES:
 
