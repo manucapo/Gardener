@@ -21,19 +21,19 @@ Java 1.8 extension valid methods
 
 CURRENT FEATURES:
 
-Parse single methods and attribute them to the call target
+Parse single method calls and attribute them to the correct call target
 
-Resolve call targets using scope information
+Resolve method call target using contextual scope information
 
-Correctly identify the order of method calls
+Correctly identify the order of method calls inside functions
 
-Resolve symbols declared inside of catch blocks
+Resolve type for symbols declared inside of method blocks or catch blocks
 
-SOMETIMES resolve generic methods from scope context
+SOMETIMES resolve generic method calls using method call scope context
 
-Identify deeply nested blocks (if, for, while)
+Identify and parse deeply nested block structures ( if, for, while )
 
-Parse and recognize the order of calls in deeply recursively nested method calls
+Parse and recognize the order of  calls in deeply recursively nested method calls
 
 USE CASES:
 
